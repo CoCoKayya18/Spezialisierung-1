@@ -1,0 +1,11 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/coco/CATKINWS/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/coco/CATKINWS/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "cmake.sourceDirectory": "/home/coco/SLAM_ws/src/slam_pkg"
+}

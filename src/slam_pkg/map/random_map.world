@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="example_world">
+    <!-- Light Source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- Ground Plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- Random World Model -->
+    <include>
+      <uri>model://RandomWorld</uri>
+    </include>
+
+    <!-- Other models or environment elements can be added here -->
+  </world>
+</sdf>

@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/coco/CATKINWS/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/coco/CATKINWS/src/bootcamp/include/**",
+        "/home/coco/CATKINWS/src/homework_1_kayyalakkakam/include/**",
+        "/home/coco/CATKINWS/src/kayyalakkakam/include/**",
+        "/home/coco/CATKINWS/src/kayyalakkakam_hw3/include/**",
+        "/home/coco/SLAM_ws/src/slam_pkg/include/**",
+        "/home/coco/catkin_ws/src/turtlebot3_simulations/turtlebot3_fake/include/**",
+        "/home/coco/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/include/**",
+        "/home/coco/CATKINWS/src/turtlebot_project/include/**",
+        "/home/coco/CATKINWS/src/tutorial_sev/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
