@@ -1,0 +1,10 @@
+<launch>
+  <!-- Include the turtlebot3_gazebo turtlebot3_world.launch file -->
+  <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_world.launch" />
+
+  <!-- Add additional configurations and nodes here -->
+  <!-- For example, add your own custom node -->
+  <node name="my_custom_node" pkg="my_package" type="my_node.py" output="screen">
+    <!-- Add node parameters if needed -->
+  </node>
+</launch>
