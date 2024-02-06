@@ -9,6 +9,8 @@ project(slam_pkg)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  nav_msgs
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -202,3 +204,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(EKF_Slamer code/main.cpp code/EKF_Namespace.cpp)
+target_link_libraries(EKF_Slamer ${catkin_LIBRARIES})
