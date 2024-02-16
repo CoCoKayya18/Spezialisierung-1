@@ -4,7 +4,7 @@
 
   <!-- Add additional configurations and nodes here -->
   <!-- For example, add your own custom node -->
-  <node name="my_custom_node" pkg="my_package" type="my_node.py" output="screen">
+  <node name="main_node" pkg="slam_pkg" type="main_node" output="screen">
     <!-- Add node parameters if needed -->
   </node>
 </launch>
