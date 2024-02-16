@@ -14,6 +14,9 @@ class RosSubscriber
         void OdomMessageCallback(const nav_msgs::Odometry::ConstPtr& msg);
         void LaserScanMessageCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 
+        nav_msgs::Odometry getOdom();
+        sensor_msgs::LaserScan getLaserScan();
+
     private:
         std::string Topic;
         ros::Subscriber subscriber;
