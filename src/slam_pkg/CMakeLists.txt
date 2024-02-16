@@ -205,5 +205,5 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(EKF_Slamer code/main.cpp code/EKF_Namespace.cpp)
-target_link_libraries(EKF_Slamer ${catkin_LIBRARIES})
+add_executable(main_node code/main.cpp code/RosSubscriber.cpp)
+target_link_libraries(main_node ${catkin_LIBRARIES})
