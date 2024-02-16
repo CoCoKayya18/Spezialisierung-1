@@ -32,23 +32,13 @@ void RosSubscriber::LaserScanMessageCallback(const sensor_msgs::LaserScan::Const
 }
 
 
-//Constructer and Destructor for the Topic_Subscriber
-// RosSubscriber::RosSubscriber(ros::NodeHandle n, std::string Topic) : Topic(Topic)
-// {
-//     if (this->Topic == "odom") {
-//         subscriber = n.subscribe<nav_msgs::Odometry>(Topic, 1000, &RosSubscriber::OdomMessageCallback, this);
-//     }
-    
-//     else if (this->Topic == "scan") {
-//         subscriber = n.subscribe<sensor_msgs::LaserScan>(Topic, 1000, &RosSubscriber::LaserScanMessageCallback, this);
-//     }
-// };
+nav_msgs::Odometry RosSubscriber::getOdom()
+{
+    return this->OdomMessage;
+}
 
-// RosSubscriber::~RosSubscriber(){};
 
-// void RosSubscriber::OdomMessageCallback(const nav_msgs::Odometry::ConstPtr& OdomMsg)
-// {
-//     this->OdomMessage = *OdomMsg;
-//     std::string OdomToString = boost::lexical_cast<std::string>(this->OdomMessage);
-//     ROS_INFO("I heard odom: [%s]", OdomToString.c_str()); 
-// }
+sensor_msgs::LaserScan RosSubscriber::getLaserScan()
+{
+    return this->LaserScanMessage;
+}
