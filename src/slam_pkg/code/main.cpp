@@ -1,4 +1,3 @@
-#include "EKF_Namespace.h"
 #include "RosSubscriber.h"
 #include "EKF_Slam_Node.h"
 

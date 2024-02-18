@@ -4,4 +4,17 @@
 EKF_Slam::EKF_Slam(){};
 EKF_Slam::~EKF_Slam(){};
 
-void EKF_Slam::initEKF(){};
+void EKF_Slam::initEKF()
+{
+
+};
+
+void EKF_Slam::PredictionStep()
+{
+
+};
+
+void EKF_Slam::CorrectionStep()
+{
+
+};
