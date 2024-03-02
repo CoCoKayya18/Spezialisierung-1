@@ -9,6 +9,7 @@ project(slam_pkg)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rospy
   nav_msgs
   sensor_msgs
 )
@@ -159,10 +160,11 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+catkin_install_python(PROGRAMS
+  script/EKF_Slam.py
+  script/Dataprocessing.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -205,5 +207,5 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(main_node code/main.cpp code/RosSubscriber.cpp)
-target_link_libraries(main_node ${catkin_LIBRARIES})
+# add_executable(main_node code/main.cpp code/RosSubscriber.cpp)
+# target_link_libraries(main_node ${catkin_LIBRARIES})

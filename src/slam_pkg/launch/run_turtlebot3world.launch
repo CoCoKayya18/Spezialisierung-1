@@ -38,4 +38,8 @@
 
   <node name="main_node" pkg="slam_pkg" type="main_node"> </node>
 
+  <node name="ekf_slam_node" pkg="slam_pkg" type="EKF_Slam.py"> </node>
+
+  <node name="Dataprocessing_Node" pkg="slam_pkg" type="Dataprocessing.py" output="screen"> </node>
+
 </launch>
