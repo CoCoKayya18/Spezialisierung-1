@@ -6,6 +6,7 @@ from tf.transformations import euler_from_quaternion
 import pandas as panda
 import os
 import datetime
+import message_filters
 
 class RosSubscriber:
 
@@ -15,6 +16,7 @@ class RosSubscriber:
         
         if self.topic == "odom":
             self.subscriber = rospy.Subscriber(topic, Odometry, self.odom_message_callback)
+
         elif self.topic == "ground_truth/state":
             self.subscriber = rospy.Subscriber(topic, Odometry, self.ground_truth_message_callback)
         
@@ -35,6 +37,9 @@ class RosSubscriber:
     
     def get_ground_truth(self):
         return self.ground_truth_message
+    
+    def get_timestamp(self):
+        return self.timestamp
 
 class Process_Input_Data:
 
@@ -45,13 +50,13 @@ class Process_Input_Data:
         
         self.deltaX = [0,0,0]
         self.prior_groundTruth = None
-        rospy.loginfo("INITIALISATION")
+        #rospy.loginfo("INITIALISATION")
 
     
     def save_as_prior(self, currentGroundTruth):
         if self.prior_groundTruth is None:
             self.prior_groundTruth = currentGroundTruth
-            rospy.loginfo("PRIOR SET")
+            #rospy.loginfo("PRIOR SET")
 
     def calculate_deltaX(self, odomData, groundTruthData):
 
@@ -60,36 +65,47 @@ class Process_Input_Data:
 
         self.save_as_prior(self.ground_Truth_Data)
 
-        self.deltaX[0] = self.ground_Truth_Data.pose.pose.position.x - self.prior_groundTruth.pose.pose.position.x
-        self.deltaX[1] = self.ground_Truth_Data.pose.pose.position.y - self.prior_groundTruth.pose.pose.position.y
+        if self.prior_groundTruth == self.ground_Truth_Data:
+            rospy.loginfo("Prior set")
+            return
+        
+        else:
+            rospy.loginfo("Prior already set, calculating data")
+            self.deltaX[0] = self.ground_Truth_Data.pose.pose.position.x - self.prior_groundTruth.pose.pose.position.x
+            self.deltaX[1] = self.ground_Truth_Data.pose.pose.position.y - self.prior_groundTruth.pose.pose.position.y
 
-        self.prior_Quaternions = [self.prior_groundTruth.pose.pose.orientation.x, self.prior_groundTruth.pose.pose.orientation.y, self.prior_groundTruth.pose.pose.orientation.z, self.prior_groundTruth.pose.pose.orientation.w]
-        self.current_Quaternions = [self.ground_Truth_Data.pose.pose.orientation.x, self.ground_Truth_Data.pose.pose.orientation.y, self.ground_Truth_Data.pose.pose.orientation.z, self.ground_Truth_Data.pose.pose.orientation.w]
+            self.prior_Quaternions = [self.prior_groundTruth.pose.pose.orientation.x, self.prior_groundTruth.pose.pose.orientation.y, self.prior_groundTruth.pose.pose.orientation.z, self.prior_groundTruth.pose.pose.orientation.w]
+            self.current_Quaternions = [self.ground_Truth_Data.pose.pose.orientation.x, self.ground_Truth_Data.pose.pose.orientation.y, self.ground_Truth_Data.pose.pose.orientation.z, self.ground_Truth_Data.pose.pose.orientation.w]
 
-        prior_roll, prior_pitch, prior_yaw = euler_from_quaternion(self.prior_Quaternions)
-        current_roll, current_pitch, current_yaw = euler_from_quaternion(self.current_Quaternions)
+            prior_roll, prior_pitch, prior_yaw = euler_from_quaternion(self.prior_Quaternions)
+            current_roll, current_pitch, current_yaw = euler_from_quaternion(self.current_Quaternions)
 
-        self.deltaX[2] = current_yaw - prior_yaw
+            self.deltaX[2] = current_yaw - prior_yaw
 
-        # rospy.loginfo("Odom timestamp: %s", datetime.datetime.fromtimestamp(self.odom_data.header.stamp.secs + self.odom_data.header.stamp.nsecs/1e9))
-        # rospy.loginfo("GroundTruth timestamp: %s", datetime.datetime.fromtimestamp(self.ground_Truth_Data.header.stamp.secs + self.ground_Truth_Data.header.stamp.nsecs/1e9))
+            rospy.loginfo("I heard deltaX: %s", str(self.deltaX))
 
-        rospy.loginfo("I heard deltaX: %s", str(self.deltaX))
+            self.writeToCSV(self.odom_data, self.deltaX)
 
-        self.writeToCSV(self.odom_data, self.deltaX)
-
-        self.prior_groundTruth = self.ground_Truth_Data
+            self.prior_groundTruth = self.ground_Truth_Data
 
     def writeToCSV(self, writeOdomData, writeDeltaX):
 
-        odomPosition = [writeOdomData.pose.pose.position.x, writeOdomData.pose.pose.position.y, writeOdomData.pose.pose.position.z]
-        odomVelocity = [writeOdomData.twist.twist.linear.x, writeOdomData.twist.twist.linear.y, writeOdomData.twist.twist.angular.z]
-        
+        odomPositionX = writeOdomData.pose.pose.position.x
+        odomPositionY = writeOdomData.pose.pose.position.y
+        odomPositionZ = writeOdomData.pose.pose.position.z
 
-        data = [odomPosition, odomVelocity, writeDeltaX]
+        odomVelocityX = writeOdomData.twist.twist.linear.x
+        odomVelocityY = writeOdomData.twist.twist.linear.y
+        odomVelocityZ = writeOdomData.twist.twist.angular.z
+
+        deltaX_X = writeDeltaX[0]
+        deltaX_Y = writeDeltaX[1]
+        deltaX_Z = writeDeltaX[2]
+
+        data = [[odomPositionX, odomPositionY, odomPositionZ, odomVelocityX, odomVelocityY, odomVelocityZ, deltaX_X, deltaX_Y, deltaX_Z]]
 
         df = panda.DataFrame(data)
-        df.columns = ['Odometry_Position', 'Odometry_Velocity', 'Delta_X']
+        df.columns = ['Odometry_Position_X', 'Odometry_Position_Y', 'Odometry_Position_Z', 'Odometry_Velocity_X', 'Odometry_Velocity_Y', 'Odometry_Velocity_Z', 'Delta_X_X', 'Delta_X_Y', 'Delta_X_Z']
 
         file_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
         
@@ -100,30 +116,53 @@ class Process_Input_Data:
             rospy.loginfo("Header created")
             df.to_csv(file_path, mode='a', index=False)
 
+
+class filterSubscriber:
+
+    def __init__(self):
+        
+        # Subscribers using message_filters
+        odom_sub = message_filters.Subscriber('odom', Odometry)
+        ground_truth_sub = message_filters.Subscriber('ground_truth/state', Odometry)
+
+        # ApproximateTime Synchronizer
+        ats = message_filters.ApproximateTimeSynchronizer([odom_sub, ground_truth_sub], queue_size=10, slop=0.05)
+        ats.registerCallback(self.filterCallback)
+
+        self.odometry_msg = None
+        self.ground_truth_msg = None
+
+    def filterCallback(self, odometry_msg, ground_truth_msg):
+
+        self.odometry_msg = odometry_msg
+        self.ground_truth_msg = ground_truth_msg
+
+    def get_odom_msg(self):
+        return self.odometry_msg
+
+    def get_ground_truth_msg(self):
+        return self.ground_truth_msg
+
 # Main Loop
 
 if __name__ == '__main__':
 
     rospy.init_node('ros_subscriber_node', anonymous=True)
-    OdomSubscriber = RosSubscriber('odom')
-    GroundTruthSubscriber = RosSubscriber('ground_truth/state')
 
-    # Wait for the first message to be published
-
-    while not rospy.is_shutdown() and (OdomSubscriber.get_odom() is None or GroundTruthSubscriber.get_ground_truth() is None):
-        rospy.sleep(0.1)
-    
-    # Set the rate to the same as odom and ground truth are beeing published
     rate = rospy.Rate(30)
 
-    Processesor = Process_Input_Data()
+    odom_msg_waiter = rospy.wait_for_message('odom', Odometry, timeout=None)
+    ground_truth_msg_waiter = rospy.wait_for_message('ground_truth/state', Odometry, timeout=None)
 
-    # Loop the Dataprocessing to receive as many data as possible
+
+    filterSub = filterSubscriber()
+
+    processor = Process_Input_Data()
+    # rospy.loginfo("Here yuzi")
+    
     while not rospy.is_shutdown():
         try:
-            Processesor.calculate_deltaX(OdomSubscriber.get_odom(), GroundTruthSubscriber.get_ground_truth())
-
+            processor.calculate_deltaX(filterSub.get_odom_msg(), filterSub.get_ground_truth_msg())
         except rospy.ROSInterruptException:
             break
-
         rate.sleep()
