@@ -66,4 +66,6 @@
 
   <node name="Dataprocessing_Node" pkg="slam_pkg" type="Dataprocessing.py" output="screen"> </node>
 
+   <node pkg="rosbag" type="record" name="rosbag_record_cmdVel_and_GroundTruth" args="record -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/rosbagData" />
+
 </launch>
