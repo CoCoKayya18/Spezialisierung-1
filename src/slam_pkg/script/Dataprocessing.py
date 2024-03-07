@@ -100,12 +100,12 @@ class Process_Input_Data:
 
         deltaX_X = writeDeltaX[0]
         deltaX_Y = writeDeltaX[1]
-        deltaX_Z = writeDeltaX[2]
+        deltaX_Theta = writeDeltaX[2]
 
-        data = [[odomPositionX, odomPositionY, odomPositionZ, odomVelocityX, odomVelocityY, odomVelocityZ, deltaX_X, deltaX_Y, deltaX_Z]]
+        data = [[odomPositionX, odomPositionY, odomPositionZ, odomVelocityX, odomVelocityY, odomVelocityZ, deltaX_X, deltaX_Y, deltaX_Theta]]
 
         df = panda.DataFrame(data)
-        df.columns = ['Odometry_Position_X', 'Odometry_Position_Y', 'Odometry_Position_Z', 'Odometry_Velocity_X', 'Odometry_Velocity_Y', 'Odometry_Velocity_Z', 'Delta_X_X', 'Delta_X_Y', 'Delta_X_Z']
+        df.columns = ['Odometry_Position_X', 'Odometry_Position_Y', 'Odometry_Position_Z', 'Odometry_Velocity_X', 'Odometry_Velocity_Y', 'Odometry_Velocity_Z', 'Delta_X_X', 'Delta_X_Y', 'delta_X_Theta']
 
         file_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
         
