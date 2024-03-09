@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import rospy
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Imu
 from sensor_msgs.msg import LaserScan
 from tf.transformations import euler_from_quaternion
 import pandas as panda
 import os
-import datetime
 import message_filters
+import math
 
 class RosSubscriber:
 
@@ -45,7 +47,7 @@ class Process_Input_Data:
 
     def __init__(self):
 
-        self.odom_data = Odometry()
+        self.odom_Data = Twist()
         self.ground_Truth_Data = Odometry()
         
         self.deltaX = [0,0,0]
@@ -56,21 +58,70 @@ class Process_Input_Data:
     def save_as_prior(self, currentGroundTruth):
         if self.prior_groundTruth is None:
             self.prior_groundTruth = currentGroundTruth
+            self.prior_timestamp = self.imu_Data.header.stamp.to_sec()
             #rospy.loginfo("PRIOR SET")
 
-    def calculate_deltaX(self, odomData, groundTruthData):
+    # def groundTruth_StateChange(self, priorGT, currentGT, tolerance):
+    #     position_changed = False
+    #     orientation_changed = False
 
-        self.odom_data = odomData
+    #     # Calculate position difference
+    #     pos_diff = math.sqrt((currentGT.pose.pose.position.x - priorGT.pose.pose.position.x) ** 2 +
+    #                     (currentGT.pose.pose.position.y - priorGT.pose.pose.position.y) ** 2 +
+    #                     (currentGT.pose.pose.position.z - priorGT.pose.pose.position.z) ** 2)
+
+    #     if pos_diff > tolerance:
+    #         position_changed = True
+
+    #     # Calculate orientation difference using quaternion distance
+    #     current_orientation = [currentGT.pose.pose.orientation.x,
+    #                         currentGT.pose.pose.orientation.y,
+    #                         currentGT.pose.pose.orientation.z,
+    #                         currentGT.pose.pose.orientation.w]
+
+    #     previous_orientation = [priorGT.pose.pose.orientation.x,
+    #                             priorGT.pose.pose.orientation.y,
+    #                             priorGT.pose.pose.orientation.z,
+    #                             priorGT.pose.pose.orientation.w]
+
+    #     # Dot product between the two quaternions
+    #     dot_product = sum(c * p for c, p in zip(current_orientation, previous_orientation))
+        
+    #     # Calculate angle difference; clamp dot product to valid range for acos
+    #     angle_diff = math.acos(max(min(dot_product, 1.0), -1.0)) * 2
+        
+    #     if angle_diff > tolerance:
+    #         orientation_changed = True
+
+    #     return position_changed or orientation_changed
+            
+    def calculate_angularAccel(self, imuData, timediff):
+        angular_acceleration_z = (imuData.angular_velocity.z - self.previous_angular_velocity.z) / timediff
+        return angular_acceleration_z
+
+    def calculate_deltaX(self, odomData, groundTruthData, imuData):
+
+        self.odom_Data = odomData
         self.ground_Truth_Data = groundTruthData
+        self.imu_Data = imuData
+        self.prior_timestamp = None
+
+        if imuData is None:
+            rospy.loginfo("IMU data is None. Skipping this cycle.")
+            return
 
         self.save_as_prior(self.ground_Truth_Data)
 
-        if self.prior_groundTruth == self.ground_Truth_Data:
-            rospy.loginfo("Prior set")
+        # change = self.groundTruth_StateChange(self, self.prior_groundTruth, self.ground_Truth_Data, 0.001)
+
+        change = True
+        
+        if self.ground_Truth_Data == None:
+            rospy.loginfo("Position didnt change")
             return
         
         else:
-            rospy.loginfo("Prior already set, calculating data")
+            rospy.loginfo("Calculating deltaX")
             self.deltaX[0] = self.ground_Truth_Data.pose.pose.position.x - self.prior_groundTruth.pose.pose.position.x
             self.deltaX[1] = self.ground_Truth_Data.pose.pose.position.y - self.prior_groundTruth.pose.pose.position.y
 
@@ -84,28 +135,46 @@ class Process_Input_Data:
 
             rospy.loginfo("I heard deltaX: %s", str(self.deltaX))
 
-            self.writeToCSV(self.odom_data, self.deltaX)
+            self.writeToCSV(self.odom_Data, self.imu_Data, self.deltaX)
 
             self.prior_groundTruth = self.ground_Truth_Data
+            self.prior_timestamp = self.imu_Data.header.stamp.to_sec()
 
-    def writeToCSV(self, writeOdomData, writeDeltaX):
+    def writeToCSV(self, writeodom, writeImu, writeDeltaX):
 
-        odomPositionX = writeOdomData.pose.pose.position.x
-        odomPositionY = writeOdomData.pose.pose.position.y
-        odomPositionZ = writeOdomData.pose.pose.position.z
+        VelLinearX = writeodom.twist.twist.linear.x
+        VelLinearY = writeodom.twist.twist.linear.y
+        VelLinearZ = writeodom.twist.twist.linear.z
 
-        odomVelocityX = writeOdomData.twist.twist.linear.x
-        odomVelocityY = writeOdomData.twist.twist.linear.y
-        odomVelocityZ = writeOdomData.twist.twist.angular.z
+        VelAngularX = writeodom.twist.twist.angular.x
+        VelAngularY = writeodom.twist.twist.angular.y
+        VelAngularZ = writeodom.twist.twist.angular.z
+
+        AccelLinearX = writeImu.linear_acceleration.x
+        AccelLinearY = writeImu.linear_acceleration.y
+
+        current_time = self.imu_Data.header.stamp.to_sec()
+        
+        if self.prior_timestamp is not None:
+            dt = current_time - self.prior_timestamp
+        
+        else:
+            dt = 0
+
+        if dt>0:
+            AccelAngularZ = self.calculate_angularAccel(self.imu_Data, dt)
+        else:
+            AccelAngularZ = 0
+
 
         deltaX_X = writeDeltaX[0]
         deltaX_Y = writeDeltaX[1]
         deltaX_Theta = writeDeltaX[2]
 
-        data = [[odomPositionX, odomPositionY, odomPositionZ, odomVelocityX, odomVelocityY, odomVelocityZ, deltaX_X, deltaX_Y, deltaX_Theta]]
+        data = [[VelLinearX, VelLinearY, VelLinearZ, VelAngularX, VelAngularY, VelAngularZ, AccelLinearX, AccelLinearY, AccelAngularZ, deltaX_X, deltaX_Y, deltaX_Theta]]
 
         df = panda.DataFrame(data)
-        df.columns = ['Odometry_Position_X', 'Odometry_Position_Y', 'Odometry_Position_Z', 'Odometry_Velocity_X', 'Odometry_Velocity_Y', 'Odometry_Velocity_Z', 'Delta_X_X', 'Delta_X_Y', 'delta_X_Theta']
+        df.columns = ['Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Linear_Z', 'Velocity_Angular_X', 'Velocity_Angular_Y', 'Velocity_Angular_Z', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Linear_Z', 'Accel_Angular_Theta' 'Delta_X_X', 'Delta_X_Y', 'delta_X_Theta']
 
         file_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
         
@@ -124,24 +193,30 @@ class filterSubscriber:
         # Subscribers using message_filters
         odom_sub = message_filters.Subscriber('odom', Odometry)
         ground_truth_sub = message_filters.Subscriber('ground_truth/state', Odometry)
+        imu = message_filters.Subscriber('imu', Imu)
 
         # ApproximateTime Synchronizer
-        ats = message_filters.ApproximateTimeSynchronizer([odom_sub, ground_truth_sub], queue_size=10, slop=0.05)
+        ats = message_filters.ApproximateTimeSynchronizer([odom_sub, ground_truth_sub, imu], queue_size=50, slop=0.011, allow_headerless=True)
         ats.registerCallback(self.filterCallback)
 
-        self.odometry_msg = None
+        self.odom_msg = None
         self.ground_truth_msg = None
+        self.imu_msg = None
 
-    def filterCallback(self, odometry_msg, ground_truth_msg):
+    def filterCallback(self, odom_msg, ground_truth_msg, imu_msg):
 
-        self.odometry_msg = odometry_msg
+        self.odom_msg = odom_msg
         self.ground_truth_msg = ground_truth_msg
+        self.imu_msg = imu_msg
 
     def get_odom_msg(self):
-        return self.odometry_msg
+        return self.odom_msg
 
     def get_ground_truth_msg(self):
         return self.ground_truth_msg
+    
+    def get_imu_msg(self):
+        return self.imu_msg
 
 # Main Loop
 
@@ -153,16 +228,15 @@ if __name__ == '__main__':
 
     odom_msg_waiter = rospy.wait_for_message('odom', Odometry, timeout=None)
     ground_truth_msg_waiter = rospy.wait_for_message('ground_truth/state', Odometry, timeout=None)
-
+    imu_msg_waiter = rospy.wait_for_message('imu', Imu, timeout=None)
 
     filterSub = filterSubscriber()
 
     processor = Process_Input_Data()
-    # rospy.loginfo("Here yuzi")
     
     while not rospy.is_shutdown():
         try:
-            processor.calculate_deltaX(filterSub.get_odom_msg(), filterSub.get_ground_truth_msg())
+            processor.calculate_deltaX(filterSub.get_odom_msg(), filterSub.get_ground_truth_msg(), filterSub.get_imu_msg())
         except rospy.ROSInterruptException:
             break
         rate.sleep()

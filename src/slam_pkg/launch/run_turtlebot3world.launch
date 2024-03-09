@@ -64,8 +64,8 @@
 
   <node name="ekf_slam_node" pkg="slam_pkg" type="EKF_Slam.py"> </node>
 
-  <node name="Dataprocessing_Node" pkg="slam_pkg" type="Dataprocessing.py" output="screen"> </node>
+  <node name="Random_Goal_Generator" pkg="slam_pkg" type="random_goal_generator.py" output="screen" > </node>
 
-   <node pkg="rosbag" type="record" name="rosbag_record_cmdVel_and_GroundTruth" args="record -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/rosbagData" />
+   <node pkg="rosbag" type="record" name="rosbag_record_cmdVel_and_GroundTruth" output="screen" args="record ground_truth/state odom imu -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" />
 
 </launch>
