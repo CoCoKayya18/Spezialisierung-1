@@ -73,7 +73,7 @@
   <gazebo>
     <plugin name="unique_p3d_base_controller" filename="libgazebo_ros_p3d.so">
       <alwaysOn>true</alwaysOn>
-      <updateRate>10.0</updateRate>
+      <updateRate>30.0</updateRate>
       <bodyName>base_link</bodyName>
       <topicName>ground_truth/state</topicName>
       <gaussianNoise>0</gaussianNoise>
@@ -91,7 +91,7 @@
       <topicName>imu</topicName>
       <serviceName>imu_service</serviceName>
       <gaussianNoise>0.0</gaussianNoise>
-      <updateRate>0</updateRate>
+      <updateRate>30.0</updateRate>
       <imu>
         <noise>
           <type>gaussian</type>
