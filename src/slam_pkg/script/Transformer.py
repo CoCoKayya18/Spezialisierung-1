@@ -110,3 +110,5 @@ class WorldFrameTransformer:
             }
             
             self.imuRows.append(new_row)
+
+            rospy.loginfo("FUCK")

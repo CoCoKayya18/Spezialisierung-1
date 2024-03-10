@@ -16,3 +16,4 @@ model = GPy.models.GPRegression(X, Y, kernel)
 model.optimize(messages=True)
 
 print(model)
+rospy.loginfo("FUCK")

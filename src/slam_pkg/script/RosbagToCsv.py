@@ -152,3 +152,5 @@ if __name__ == '__main__':
 
     # Process the data to calculate deltas, velocities, and accelerations
     processor.process_data(odom_df, imu_df, ground_truth_df)
+
+    rospy.loginfo("FUCK")
