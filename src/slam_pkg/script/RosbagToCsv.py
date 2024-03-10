@@ -11,9 +11,9 @@ class bagReader:
         self.bag = bagreader(bagfilepath)
 
     def extract_topics(self):
-        odom_csv = self.bag.message_by_topic('odom')
+        odom_csv = self.bag.message_by_topic('odom/world')
         ground_truth_csv = self.bag.message_by_topic('ground_truth/state')
-        imu_csv = self.bag.message_by_topic('imu')
+        imu_csv = self.bag.message_by_topic('imu/world')
 
     def process_data(odom_df, imu_df, ground_truth_df):
         return
@@ -79,7 +79,7 @@ class BagDataProcessor:
     def find_closes_timestamp(self, ground_truth_df, imu_df, odom_df):
         mergeGTandImuDf = pd.merge_asof(ground_truth_df, imu_df, on='Time')
         mergeGTandIMUandOdomDf = pd.merge_asof(mergeGTandImuDf, odom_df, on='Time')
-        mergeGTandIMUandOdomDf.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23/whäck.csv')
+        mergeGTandIMUandOdomDf.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/FullDatasetRosbag/mergedData.csv')
         return mergeGTandIMUandOdomDf
 
         
@@ -93,28 +93,37 @@ class BagDataProcessor:
         data = []
         
         for index, row in MergedDf.iterrows():
+
+            GT_X = row['pose.pose.position.x_x']
+            GT_Y = row['pose.pose.position.y_x']
+            GT_Quaternions = [row['pose.pose.orientation.x_x'], row['pose.pose.orientation.y_x'], row['pose.pose.orientation.z_x'], row['pose.pose.orientation.w_x']]
+            GT_Euler = R.from_quat(GT_Quaternions).as_euler('xyz', degrees=True)
+            GTYaw = GT_Euler[2]
+
             VelLinearX = row['twist.twist.linear.x_x']
             VelLinearY = row['twist.twist.linear.y_x']
             # VelLinearZ = row['twist.twist.linear.z_x']
 
             # VelAngularX = row['twist.twist.angular.x_x']
             # VelAngularY = row['twist.twist.angular.y_x']
-            VelAngularZ = row['twist.twist.angular.z_x']
+            VelAngularYaw = row['twist.twist.angular.z_x']
 
             AccelLinearX = row['linear_acceleration.x']
             AccelLinearY = row['linear_acceleration.y']
-            AccelAngularTheta = row['angular_acceleration.theta']
+            AccelAngularYaw = row['angular_acceleration.theta']
 
             deltaX_X = row['delta_x']
             deltaX_Y = row['delta_y']
-            deltaX_Z = row['delta_z']
+            #deltaX_Z = row['delta_z']
             deltaX_Yaw = row['delta_yaw']
 
-            row = [VelLinearX, VelLinearY, VelLinearZ, VelAngularX, VelAngularY, VelAngularZ, AccelLinearX, AccelLinearY, AccelAngularTheta, deltaX_X, deltaX_Y, deltaX_Yaw]
+            # row = [VelLinearX, VelLinearY, VelLinearZ, VelAngularX, VelAngularY, VelAngularZ, AccelLinearX, AccelLinearY, AccelAngularTheta, deltaX_X, deltaX_Y, deltaX_Yaw]
+            row = [GT_X, GT_Y, GTYaw, VelLinearX, VelLinearY, VelAngularYaw, AccelLinearX, AccelLinearY, AccelAngularYaw, deltaX_X, deltaX_Y, deltaX_Yaw]
             data.append(row)
 
         datapointsForGP = pd.DataFrame(data)
-        datapointsForGP.columns = ['Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Linear_Z', 'Velocity_Angular_X', 'Velocity_Angular_Y', 'Velocity_Angular_Z', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Linear_Z', 'Accel_Angular_Theta' 'Delta_X_X', 'Delta_X_Y', 'delta_X_Theta']
+        #datapointsForGP.columns = ['Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Linear_Z', 'Velocity_Angular_X', 'Velocity_Angular_Y', 'Velocity_Angular_Z', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Linear_Z', 'Accel_Angular_Theta' 'Delta_X_X', 'Delta_X_Y', 'delta_X_Theta']
+        datapointsForGP.columns = ['GroundTruth_X', 'Ground_Truth_Y', 'Ground_Truth_Yaw', 'Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Angular_Yaw', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Angular_Yaw', 'Delta_X_X', 'Delta_X_Y', 'delta_X_Yaw']
 
         file_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
 
@@ -134,11 +143,11 @@ class BagDataProcessor:
 
 if __name__ == '__main__':
 
-    filepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23.bag'
+    filepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/FullDatasetRosbag.bag'
     processor = BagDataProcessor(filepath)
 
-    odom_df = processor.read_topic('odom')
-    imu_df = processor.read_topic('imu')
+    odom_df = processor.read_topic('odom/world')
+    imu_df = processor.read_topic('imu/world')
     ground_truth_df = processor.read_topic('ground_truth/state')
 
     # Process the data to calculate deltas, velocities, and accelerations
