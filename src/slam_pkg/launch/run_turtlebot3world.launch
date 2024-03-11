@@ -15,7 +15,7 @@
   <arg name="move_forward_only" default="false"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
+    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_stage_4.world"/>
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="false"/>
@@ -64,7 +64,7 @@
 
   <node name="ekf_slam_node" pkg="slam_pkg" type="EKF_Slam.py"> </node>
 
-  <node name="Random_Goal_Generator" pkg="slam_pkg" type="random_goal_generator.py" output="screen"> </node>
+  <!-- <node name="Random_Goal_Generator" pkg="slam_pkg" type="random_goal_generator.py" output="screen"> </node> -->
 
   <node name="Transformer" pkg="slam_pkg" type="Transformer.py" output="screen"> </node>
 

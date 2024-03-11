@@ -55,7 +55,7 @@ class WorldFrameTransformer:
         
         data = self.odomRows
         self.odom_df = pd.DataFrame(data)
-        self.odom_df.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23/odomTransformed.csv', index=False)
+        #self.odom_df.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23/odomTransformed.csv', index=False)
 
     def imu_callback(self, msg):
         self.writeToCsv("imu", msg, "noTransform")
@@ -67,7 +67,7 @@ class WorldFrameTransformer:
         
         data = self.imuRows
         self.imu_df = pd.DataFrame(data)
-        self.imu_df.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23/imuTransformed.csv', index=False)
+        #self.imu_df.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23/imuTransformed.csv', index=False)
     
     def writeToCsv(self, datatype, data, transformed):
         if datatype == "odom":
@@ -110,3 +110,7 @@ class WorldFrameTransformer:
             }
             
             self.imuRows.append(new_row)
+
+if __name__ == '__main__':
+    transformer = WorldFrameTransformer()
+    rospy.spin()
