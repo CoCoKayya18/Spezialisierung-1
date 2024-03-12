@@ -11,7 +11,7 @@ class bagReader:
         self.bag = bagreader(bagfilepath)
 
     def extract_topics(self):
-        odom_csv = self.bag.message_by_topic('odom/world')
+        odom_csv = self.bag.message_by_topic('odom')
         ground_truth_csv = self.bag.message_by_topic('ground_truth/state')
         imu_csv = self.bag.message_by_topic('imu/world')
 
@@ -123,7 +123,7 @@ class BagDataProcessor:
 
         datapointsForGP = pd.DataFrame(data)
         #datapointsForGP.columns = ['Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Linear_Z', 'Velocity_Angular_X', 'Velocity_Angular_Y', 'Velocity_Angular_Z', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Linear_Z', 'Accel_Angular_Theta' 'Delta_X_X', 'Delta_X_Y', 'delta_X_Theta']
-        datapointsForGP.columns = ['GroundTruth_X', 'Ground_Truth_Y', 'Ground_Truth_Yaw', 'Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Angular_Yaw', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Angular_Yaw', 'Delta_X_X', 'Delta_X_Y', 'delta_X_Yaw']
+        datapointsForGP.columns = ['Ground_Truth_X', 'Ground_Truth_Y', 'Ground_Truth_Yaw', 'Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Angular_Yaw', 'Accel_Linear_X', 'Accel_Linear_Y', 'Accel_Angular_Yaw', 'Delta_X_X', 'Delta_X_Y', 'delta_X_Yaw']
 
         file_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
 
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     filepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/FullDatasetRosbag.bag'
     processor = BagDataProcessor(filepath)
 
-    odom_df = processor.read_topic('odom/world')
+    odom_df = processor.read_topic('odom')
     imu_df = processor.read_topic('imu/world')
     ground_truth_df = processor.read_topic('ground_truth/state')
 
