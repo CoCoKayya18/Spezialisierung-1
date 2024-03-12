@@ -18,7 +18,7 @@ class WorldFrameTransformer:
         self.imu_sub = rospy.Subscriber('/imu', Imu, self.imu_callback)
 
         self.odom_pub = rospy.Publisher('/odom/world', Odometry, queue_size=10)
-        self.imu_pub = rospy.Publisher('/imu/world', Imu, queue_size=10)
+        self.imu_pub = rospy.Publisher('/imu/world', Imu, queue_size=1000)
 
         # Initialize Pandas DataFrames
         self.odom_df = pd.DataFrame(columns=['transformation', 'time', 'x', 'y', 'z', 'orientation_x', 'orientation_y', 'orientation_z', 'orientation_w', 'linearVelocity_x', 'linearVelocity_y', 'linearVelocity_z', 'angularVelocity_x', 'angularVelocity_y', 'angularVelocity_z'])
@@ -43,18 +43,18 @@ class WorldFrameTransformer:
         return self.transform_pose(pose_msg)
 
     def odom_callback(self, msg):
-        self.writeToCsv("odom", msg, "noTransform")
-        transformed_pose_msg = PoseStamped()
-        transformed_pose_msg.header = msg.header
-        transformed_pose_msg.pose = msg.pose.pose
-        transformed_pose = self.transform_pose(transformed_pose_msg)
-        if transformed_pose is not None:
-            msg.pose.pose = transformed_pose.pose
-            self.writeToCsv("odom", msg, "Transform")
-            self.odom_pub.publish(msg)
-        
-        data = self.odomRows
-        self.odom_df = pd.DataFrame(data)
+        # self.writeToCsv("odom", msg, "noTransform")
+        # transformed_pose_msg = PoseStamped()
+        # transformed_pose_msg.header = msg.header
+        # transformed_pose_msg.pose = msg.pose.pose
+        # transformed_pose = self.transform_pose(transformed_pose_msg)
+        # if transformed_pose is not None:
+        #     msg.pose.pose = transformed_pose.pose
+        #     self.writeToCsv("odom", msg, "Transform")
+        #     self.odom_pub.publish(msg)
+        return
+        # data = self.odomRows
+        # self.odom_df = pd.DataFrame(data)
         #self.odom_df.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-09-15-26-23/odomTransformed.csv', index=False)
 
     def imu_callback(self, msg):
