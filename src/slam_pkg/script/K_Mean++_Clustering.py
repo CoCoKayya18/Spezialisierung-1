@@ -5,6 +5,36 @@ from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import StandardScaler
 from scipy.spatial import cKDTree
 import pandas 
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# PCA Plot Function
+
+def plot_pca_clusters(X, cluster_labels, centers, silhouette_avg, title):
+    pca = PCA(n_components=2)
+    principalComponents = pca.fit_transform(X)
+
+    plt.figure(figsize=(10, 7))
+    plt.title(title)
+
+    # Plotting the PCA reduced data points
+    plt.scatter(principalComponents[:, 0], principalComponents[:, 1],
+                c=cluster_labels, s=20, cmap='viridis')
+
+    # Plotting the silhouette average line
+    plt.axhline(y=silhouette_avg, color="red", linestyle="--")
+
+    # Plotting the cluster centers
+    principal_centers = pca.transform(centers)
+    plt.scatter(principal_centers[:, 0], principal_centers[:, 1],
+                c='red', s=50, marker='x')  # center points
+
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.colorbar()
+    plt.show()
+
+
 
 
 #Data extraction from file
@@ -33,7 +63,8 @@ csv_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/StandardizedDa
 standardizedDataFrame.to_csv(csv_path, index=False)
 
 
-range_n_clusters = list(range(2, 40))
+range_n_clusters = list(range(2, 10))
+range_n_clusters_standardized = list(range(2,100))
 silhouette_scores = []
 silhouette_scores_standardized = []
 
@@ -46,7 +77,7 @@ for n_clusters in range_n_clusters:
     silhouette_scores.append(silhouette_avg)
     print(f'In normal X: For n_clusters = {n_clusters} the average silhouette_score is: {silhouette_avg}')
 
-for n_clusters_standardized in range_n_clusters:
+for n_clusters_standardized in range_n_clusters_standardized:
     clusterer = KMeans(n_clusters=n_clusters_standardized, init='k-means++', random_state=10)
     cluster_labels_standardized = clusterer.fit_predict(X_standardized)
     silhouette_avg_standardized = silhouette_score(X_standardized, cluster_labels_standardized)
@@ -57,7 +88,7 @@ for n_clusters_standardized in range_n_clusters:
 best_n_clusters = range_n_clusters[np.argmax(silhouette_scores)]
 print(f'Best number of clusters: {best_n_clusters}')
 
-best_n_clusters_standardized = range_n_clusters[np.argmax(silhouette_scores_standardized)]
+best_n_clusters_standardized = range_n_clusters_standardized[np.argmax(silhouette_scores_standardized)]
 print(f'Best number of clusters (standardized): {best_n_clusters_standardized}')
 
 clusters = best_n_clusters
@@ -88,3 +119,5 @@ samples = np.array(samples).reshape(-1, X.shape[1])
 print("Selected samples from each cluster:\n", samples)
 
 print(kmeans.cluster_centers_)
+
+plot_pca_clusters(X_standardized, cluster_labels, centers, silhouette_avg_standardized, title="PCA Plot of silhouettes")
