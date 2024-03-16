@@ -68,8 +68,8 @@ X_val, X_test, Y_val, Y_test = train_test_split(X_temp, Y_temp, test_size=0.5, r
 y_predict_mean, y_predict_variance = loaded_model.predict(X_train)
 
 # Print the predictions
-print("Predicted Mean:", y_predict_mean)
-print("Predicted Variance:", y_predict_variance)
+# print("Predicted Mean:", y_predict_mean)
+# print("Predicted Variance:", y_predict_variance)
 
 # Print the model parameters
 print(loaded_model)
@@ -83,3 +83,42 @@ filename = f'{ith_datapoint}_DP_predictions_vs_real.csv'
 file_path = os.path.join(datafilepath, filename)
 
 save_predictions_to_csv(predicted_means_rescaled, real_values, predicted_variances, file_path)
+
+# Plot Model
+
+variance_scaling_factors = scaler_Y.scale_ ** 2  # Assuming all targets share the same scale factor
+scaled_variances = y_predict_variance.flatten() * variance_scaling_factors[0]  # Use the first scale factor as an example
+
+# Calculate confidence intervals for the predictions
+confidence_upper = predicted_means_rescaled + 1.96 * np.sqrt(scaled_variances)[:, None]  # Add new axis for broadcasting
+confidence_lower = predicted_means_rescaled - 1.96 * np.sqrt(scaled_variances)[:, None]
+
+# For plotting, let's take one feature (feature_index) from X_train to plot against
+# feature_index = 0  # Index for the first feature
+n_features = Y_train.shape[1]
+
+for feature_index in range(n_features):
+
+    x_values_for_plotting = X_train[:, feature_index]  # Get the values of the feature for all samples
+
+    # Sort the X values for plotting (and sort everything else accordingly)
+    sorted_indices = np.argsort(x_values_for_plotting)  # Get sorted indices of X
+    x_values_sorted = x_values_for_plotting[sorted_indices]
+    predicted_means_sorted = predicted_means_rescaled[sorted_indices]
+    confidence_upper_sorted = confidence_upper[sorted_indices]
+    confidence_lower_sorted = confidence_lower[sorted_indices]
+
+    plt.figure(figsize=(12, 6))
+
+    # Plot the mean prediction and actual values
+    plt.plot(x_values_sorted, predicted_means_sorted[:, feature_index], 'b-', label='Mean Prediction')
+    plt.plot(x_values_sorted, real_values[sorted_indices, feature_index], 'rx', label='Actual Values')
+
+    # Plot the confidence interval
+    plt.fill_between(x_values_sorted, confidence_lower_sorted[:, feature_index], confidence_upper_sorted[:, feature_index], alpha=0.3, label='95% Confidence Interval')
+
+    plt.xlabel('Real Feature Value')
+    plt.ylabel('Predicted/Real Target Variable')
+    plt.title('Gaussian Process Regression Model Predictions')
+    plt.legend()
+    plt.show()
