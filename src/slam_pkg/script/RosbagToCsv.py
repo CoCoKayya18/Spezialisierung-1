@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 import os
+import math
 
 
 class bagReader:
@@ -67,7 +68,7 @@ class BagDataProcessor:
             previous_euler = R.from_quat(previous_orientation).as_euler('xyz', degrees=True)
             
             # Append the change in yaw (z-axis rotation)
-            delta_yaw.append(current_euler[2] - previous_euler[2])
+            delta_yaw.append(math.radians(current_euler[2] - previous_euler[2]))
 
         # Add the calculated delta positions back to the dataframe
         ground_truth_df['delta_x'] = delta_x
@@ -98,7 +99,7 @@ class BagDataProcessor:
             GT_Y = row['pose.pose.position.y_x']
             GT_Quaternions = [row['pose.pose.orientation.x_x'], row['pose.pose.orientation.y_x'], row['pose.pose.orientation.z_x'], row['pose.pose.orientation.w_x']]
             GT_Euler = R.from_quat(GT_Quaternions).as_euler('xyz', degrees=True)
-            GTYaw = GT_Euler[2]
+            GTYaw = math.radians(GT_Euler[2])
 
             VelLinearX = row['twist.twist.linear.x_x']
             VelLinearY = row['twist.twist.linear.y_x']
