@@ -57,7 +57,7 @@ file_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
 data = pd.read_csv(file_path)
 
 # Standardize the data
-features = ['GroundTruth_X', 'Ground_Truth_Y', 'Ground_Truth_Yaw', 'Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Angular_Yaw']
+features = ['Ground_Truth_X', 'Ground_Truth_Y', 'Ground_Truth_Yaw', 'Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Angular_Yaw']
 target = ['Delta_X_X', 'Delta_X_Y', 'delta_X_Yaw']
 scaler = StandardScaler()
 
@@ -79,7 +79,7 @@ def plot_data(original_data, standardized_data, feature, target, axs, row, col):
 # Plotting
 fig, axs = plt.subplots(3, 4, figsize=(18, 9))  # Adjusted for double the number of columns
 
-plot_data(data, data_standardized, "GroundTruth_X", "Delta_X_X", axs, 0, 0)
+plot_data(data, data_standardized, "Ground_Truth_X", "Delta_X_X", axs, 0, 0)
 plot_data(data, data_standardized, "Velocity_Linear_X", "Delta_X_X", axs, 0, 1)
 plot_data(data, data_standardized, "Ground_Truth_Y", "Delta_X_Y", axs, 1, 0)
 plot_data(data, data_standardized, "Velocity_Linear_Y", "Delta_X_Y", axs, 1, 1)
