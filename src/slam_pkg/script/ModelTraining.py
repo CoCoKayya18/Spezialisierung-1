@@ -12,7 +12,7 @@ datafilepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
 modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
-ith_datapoint = 10000
+ith_datapoint = 25
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, 'Data.csv'))
