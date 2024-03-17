@@ -12,7 +12,9 @@ datafilepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
 modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
-ith_datapoint = 25
+ith_datapoint = 1
+isSparse = 'sparse0_'
+# isSparse = ''
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, 'Data.csv'))
@@ -43,16 +45,22 @@ df_Y_Test = pandas.DataFrame(Y_test, columns=target)
 train_data = pandas.concat([df_X_Train, df_Y_Train], axis=1)
 val_data = pandas.concat([df_X_Val, df_Y_Val], axis=1)
 test_data = pandas.concat([df_X_Test, df_Y_Test], axis=1)
-train_data.to_csv(os.path.join(datafilepath, 'train_data.csv'), index=False)
-val_data.to_csv(os.path.join(datafilepath, 'val_data.csv'), index=False)
-test_data.to_csv(os.path.join(datafilepath, 'test_data.csv'), index=False)
+train_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data.csv'), index=False)
+val_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data.csv'), index=False)
+test_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_test_data.csv'), index=False)
 
 
 # Define the kernel with RBF for the function and WhiteKernel for noise level
 kernel = GPy.kern.RBF(input_dim=X_train.shape[1], variance=1.0, lengthscale=1.0) + GPy.kern.White(X_train.shape[1], variance=1.0)
 
-# Create the model
-model = GPy.models.GPRegression(X_train, Y_train, kernel)
+if isSparse == '':
+    # Create the not sparse model
+    model = GPy.models.GPRegression(X_train, Y_train, kernel)
+
+if isSparse != '':
+    # Create the sparse model
+    model = GPy.models.SparseGPRegression(X_train, Y_train, kernel)
+
 
 # Optimize Hyperparameters
 model.optimize()
@@ -60,10 +68,10 @@ model.optimize_restarts(num_restarts = 10, verbose=True)
 
 print(model)
 
-# Save the model and Scalers
-model_filename = f'gpy_model_{ith_datapoint}DP.pkl'
-scaler_filenameX = f'scaler_X_{ith_datapoint}.pkl'
-scaler_filenameY = f'scaler_Y_{ith_datapoint}.pkl'
+# Save the model and scalers
+model_filename = f'{isSparse}gpy_model_{ith_datapoint}DP.pkl'
+scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}.pkl'
+scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}.pkl'
 
 with open(os.path.join(modelFilePath, model_filename), 'wb') as file:
     pickle.dump(model, file)

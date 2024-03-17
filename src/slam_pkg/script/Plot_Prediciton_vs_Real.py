@@ -2,10 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-ith_datapoint = 50
+ith_datapoint = 100
+# isSparse = 'sparse_'
+isSparse = ''
 
 # Load the standardized predictions and real values
-filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{ith_datapoint}_DP_predictions_vs_real.csv'
+filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'
 data = pd.read_csv(filepath)
 
 # Plotting
