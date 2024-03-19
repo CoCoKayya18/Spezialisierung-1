@@ -29,11 +29,11 @@ scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodelTuned'
 
 
-ith_datapoint = 1000
-isSparse = ''
-# isSparse = 'sparse0_'
-isTuned = 'GridSearchTuned_'
-# isTuned = ''
+ith_datapoint = 1
+# isSparse = ''
+isSparse = 'sparse0_'
+# isTuned = 'GridSearchTuned_'
+isTuned = ''
 
 train_datafile = f'{isSparse}{ith_datapoint}_DP_train_data.csv'
 val_datafile = f'{isSparse}{ith_datapoint}_DP_val_data.csv'
@@ -76,7 +76,7 @@ optimizer = GPyOpt.methods.BayesianOptimization(f=objective_function,     # Obje
                                                 acquisition_jitter=0.01)  # Jitter to add to the acquisition function
 
 # Running the optimization
-optimizer.run_optimization(max_iter=20)
+optimizer.run_optimization(max_iter=50)
 
 # Best found hyperparameters
 print("Best hyperparameters: ", optimizer.x_opt)
@@ -89,8 +89,6 @@ model.kern.lengthscale = optimizer.x_opt[1]
 model.optimize(messages=True)
 
 # Save the tuned model
-tuned_model_filename = 'BayesianOptimizationTuned_{isSparse}gpy_model_{ith_datapoint}DP.pkl'
+tuned_model_filename = f'BayesianOptimizationTuned_{isTuned}{isSparse}gpy_model_{ith_datapoint}DP.pkl'
 with open(os.path.join(tunedModelFilePath, tuned_model_filename), 'wb') as file:
     pickle.dump(model, file)
-
-print("Tuned model saved successfully with GPyOpt.")

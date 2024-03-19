@@ -24,9 +24,9 @@ scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodelTuned'
 
 #Needs rerun
-ith_datapoint = 20
-isSparse = ''
-# isSparse = 'sparse_1_'
+ith_datapoint = 1
+# isSparse = ''
+isSparse = 'sparse0_'
 
 train_datafile = f'{isSparse}{ith_datapoint}_DP_train_data.csv'
 val_datafile = f'{isSparse}{ith_datapoint}_DP_val_data.csv'
