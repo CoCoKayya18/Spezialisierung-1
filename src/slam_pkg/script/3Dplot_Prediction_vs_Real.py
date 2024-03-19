@@ -6,8 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 ith_datapoint = 100
-# isSparse = 'sparse_'
+# isSparse = 'sparse0_'
 isSparse = ''
+# isTuned = 'GridSearchTuned_'
+isTuned = ''
 
 # Load the standardized predictions and real values
 filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'

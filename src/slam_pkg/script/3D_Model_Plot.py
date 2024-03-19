@@ -61,19 +61,30 @@ def plot_feature_target(feature_x_index, feature_y_index, target_index, plot_pos
                         prediction_data[['Real_X', 'Real_Y', 'Real_Yaw']].values) ** 2)
 
     plt.figtext(0.5, 0.01, f'Overall MSE: {mse_overall:.4f} | MSE in X: {mse_X:.4f} | MSE in Y: {mse_Y:.4f} | MSE in Yaw: {mse_Yaw:.4f}', 
-            ha='center', fontsize=12, bbox={"facecolor":"orange", "alpha":0.5, "pad":5})
+            ha='right', fontsize=12, bbox={"facecolor":"orange", "alpha":0.5, "pad":5})
+    plt.figtext(0.65, 0.01, f'Current Model: {model_filename}', 
+        ha='left', fontsize=12, bbox={"facecolor":"blue", "alpha":0.5, "pad":5})
 
 
 
 ith_datapoint = 1000
 # isSparse = 'sparse0_'
 isSparse = ''
+# isTuned = 'GridSearchTuned_'
+isTuned = ''
+
 
 modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
-model_filename = f'{isSparse}gpy_model_{ith_datapoint}DP.pkl'
+tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodelTuned'
+model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP.pkl'
 
-with open(os.path.join(modelFilePath, model_filename), 'rb') as file:
-    loaded_model = pickle.load(file)
+if isTuned == '':
+    with open(os.path.join(modelFilePath, model_filename), 'rb') as file:
+        loaded_model = pickle.load(file)
+    
+if isTuned != '':
+    with open(os.path.join(tunedModelFilePath, model_filename), 'rb') as file:
+        loaded_model = pickle.load(file)
 
 # Load the standardized predictions and real values
 filepath_prediction = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'
@@ -104,6 +115,5 @@ for t_idx, target_name in enumerate(target):
     
     # Plot the mean for the current target and feature pair
     plot_feature_target(feature_pairs[t_idx][0], feature_pairs[t_idx][1], t_idx, plot_idx)
-
 
 plt.show()
