@@ -29,19 +29,28 @@ def save_predictions_to_csv(predicted_means, real_values, predicted_variances, f
 
 datafilepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
 modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
+tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodelTuned'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
-ith_datapoint = 1
-isSparse = 'sparse0_'
-# isSparse = ''
+ith_datapoint = 1000
+# isSparse = 'sparse0_'
+isSparse = ''
+isTuned = 'GridSearchTuned_'
+# isTuned = ''
 
-model_filename = f'{isSparse}gpy_model_{ith_datapoint}DP.pkl'
+model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP.pkl'
 scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}.pkl'
 scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}.pkl'
 
 # Load the model
-with open(os.path.join(modelFilePath, model_filename), 'rb') as file:
-    loaded_model = pickle.load(file)
+
+if isTuned == '':
+    with open(os.path.join(modelFilePath, model_filename), 'rb') as file:
+        loaded_model = pickle.load(file)
+
+if isTuned != '':
+    with open(os.path.join(tunedModelFilePath, model_filename), 'rb') as file:
+        loaded_model = pickle.load(file)
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data.csv'))
@@ -80,7 +89,7 @@ predicted_means_rescaled = scaler_Y.inverse_transform(y_predict_mean)
 real_values = scaler_Y.inverse_transform(Y_train)
 predicted_variances = y_predict_variance
 
-filename = f'{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'
+filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'
 
 file_path = os.path.join(datafilepath, filename)
 
