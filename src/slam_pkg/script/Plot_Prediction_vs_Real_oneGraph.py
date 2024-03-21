@@ -36,5 +36,3 @@ for i, feature in enumerate(features):
 
 plt.tight_layout()
 plt.show()
-
-# Plot error, plot mean of error for every datapoint, plot every error in one plot
