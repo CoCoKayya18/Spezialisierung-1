@@ -32,7 +32,7 @@ modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodelTuned'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
-ith_datapoint = 20
+ith_datapoint = 10
 # isSparse = 'sparse0_'
 isSparse = ''
 isTuned = 'GridSearchTuned_'
