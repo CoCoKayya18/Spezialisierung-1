@@ -89,7 +89,7 @@ predicted_means_rescaled = scaler_Y.inverse_transform(y_predict_mean)
 real_values = scaler_Y.inverse_transform(Y_train)
 predicted_variances = y_predict_variance
 
-filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'
+filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real_train.csv'
 
 file_path = os.path.join(datafilepath, filename)
 
