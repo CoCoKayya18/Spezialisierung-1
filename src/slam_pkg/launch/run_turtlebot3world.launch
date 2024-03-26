@@ -60,7 +60,7 @@
     <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)"/>
   </node>
 
-  <!-- <include file="$(find explore_lite)/launch/explore.launch" /> -->
+  <include file="$(find explore_lite)/launch/explore.launch" />
 
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find turtlebot3_gazebo)/rviz/turtlebot3_gazebo_model.rviz"/>
 
@@ -68,8 +68,8 @@
 
   <!-- <node name="ekf_slam_node" pkg="slam_pkg" type="EKF_Slam.py"> </node> -->
 
-  <node name="Transformer" pkg="slam_pkg" type="Transformer.py"> </node>
+  <!-- <node name="Transformer" pkg="slam_pkg" type="Transformer.py"> </node> -->
 
-  <!-- <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_state -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" /> -->
+  <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_states -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" />
 
 </launch>
