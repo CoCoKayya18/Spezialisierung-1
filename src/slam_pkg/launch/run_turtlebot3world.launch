@@ -70,6 +70,6 @@
 
   <node name="Transformer" pkg="slam_pkg" type="Transformer.py"> </node>
 
-  <!-- <node pkg="rosbag" type="record" name="rosbag_record_cmdVel_and_GroundTruth" output="screen" args="record ground_truth/state odom imu/world -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" /> -->
+  <!-- <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_state -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" /> -->
 
 </launch>
