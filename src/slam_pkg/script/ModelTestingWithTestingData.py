@@ -61,8 +61,8 @@ if isTuned == '':
     validationDataFrame = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data.csv'))
     dataframe = pandas.concat([dataframe, validationDataFrame], ignore_index=True)
 
-features = ['Ground_Truth_X', 'Ground_Truth_Y', 'Ground_Truth_Yaw', 'Velocity_Linear_X', 'Velocity_Linear_Y', 'Velocity_Angular_Yaw']
-target = ['Delta_X_X', 'Delta_X_Y', 'delta_X_Yaw']
+features = ['linear_velocity_x', 'angular_velocity_yaw']
+target = ['delta_position_x', 'delta_position_y', 'delta_yaw']
 
 #get every i-th datapoint out of the csv
 # ithDataframe = dataframe[::ith_datapoint]

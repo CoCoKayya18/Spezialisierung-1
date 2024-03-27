@@ -60,7 +60,7 @@
     <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)"/>
   </node>
 
-  <include file="$(find explore_lite)/launch/explore.launch" />
+  <!-- <include file="$(find explore_lite)/launch/explore.launch" /> -->
 
   <node type="rviz" name="rviz" pkg="rviz" args="-d $(find turtlebot3_gazebo)/rviz/turtlebot3_gazebo_model.rviz"/>
 
