@@ -13,8 +13,8 @@ modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-# isSparse = 'sparse0_'
-isSparse = ''
+isSparse = 'sparse0_'
+# isSparse = ''
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, 'Data.csv'))
