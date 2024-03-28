@@ -40,9 +40,11 @@ class BagDataProcessor:
         # time_diffs = df['Time'].diff().replace(0, np.nan)
         time_diffs = 0.0333
 
+        # print(df['position_0'].diff() + df['position_1'].diff())
+
         # Calculate linear and angular velocities
-        df['linear_velocity_x'] = ((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs * wheel_radius
-        df['angular_velocity_yaw'] = ((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs * wheel_radius
+        df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
+        df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs) * wheel_radius
         
         # Calculate accelerations
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
@@ -102,7 +104,7 @@ class BagDataProcessor:
 
         dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas.csv'
         dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels.csv'
-        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_Testing.csv'
+        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
