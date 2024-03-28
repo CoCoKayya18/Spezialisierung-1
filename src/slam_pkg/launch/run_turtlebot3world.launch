@@ -33,9 +33,10 @@
     <param name="publish_frequency" type="double" value="50.0" />
   </node>
 
-  <!-- <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" >
-    <param name="publish_frequency" type="double" value="50.0"/>
-  </node> -->
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" >
+    <param name="publish_frequency" type="double" value="30.0"/>
+    <param name="use_gui" value="false"/>
+  </node>
 
   <!-- Gmapping -->
   <node pkg="gmapping" type="slam_gmapping" name="turtlebot3_slam_gmapping">  <!-- output="screen" -->
@@ -70,6 +71,6 @@
 
   <!-- <node name="Transformer" pkg="slam_pkg" type="Transformer.py"> </node> -->
 
-  <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_states -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" />
+  <!-- <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_states -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" /> -->
 
 </launch>
