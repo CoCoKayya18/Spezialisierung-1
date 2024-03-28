@@ -8,47 +8,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 
-def calculate_kinematic_deltas(df):
-    # Assuming your df has columns 'linear_velocity_x' and 'angular_velocity_yaw'
-    df['kinematic_delta_x'] = np.zeros(df.shape[0])
-    df['kinematic_delta_y'] = np.zeros(df.shape[0])
-    df['kinematic_delta_yaw'] = np.zeros(df.shape[0])
-    
-    # Initial pose
-    x, y, theta = 0.0, 0.0, 0.0
-    
-    for i in range(1, len(df)):
-        vc = df.loc[i, 'linear_velocity_x']
-        wc = df.loc[i, 'angular_velocity_yaw']
-        dt = 0.0333
-        
-        delta_x, delta_y, delta_theta = calculate_robot_pose_change(vc, wc, theta, dt)
-        
-        df.loc[i, 'kinematic_delta_x'] = delta_x
-        df.loc[i, 'kinematic_delta_y'] = delta_y
-        df.loc[i, 'kinematic_delta_yaw'] = delta_theta
-        
-        # Update the pose
-        x += delta_x
-        y += delta_y
-        theta += delta_theta
-
-    return df[['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']]
-
-def calculate_robot_pose_change(vc, wc, theta, dt):
-    # Kinematic model for differential drive robot
-    if wc == 0:
-        # Straight line movement
-        calculated_delta_x = vc * dt
-        calculated_delta_y = 0.0
-    else:
-        # Arc movement
-        calculated_delta_x = (vc / wc) * (np.sin(theta + wc * dt) - np.sin(theta))
-        calculated_delta_y = (vc / wc) * (-np.cos(theta + wc * dt) + np.cos(theta))
-    calculated_delta_theta = wc * dt
-
-    return calculated_delta_x, calculated_delta_y, calculated_delta_theta
-
 def save_predictions_to_csv(predicted_means, real_values, kinematic_deltas, file_path):
     predicted_means = np.array(predicted_means)
     real_values = np.array(real_values)
@@ -112,11 +71,13 @@ if isTuned == '':
 
 features = ['linear_velocity_x', 'angular_velocity_yaw']
 target = ['delta_position_x', 'delta_position_y', 'delta_yaw']
+kinematicDeltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
 #get every i-th datapoint out of the csv
 # ithDataframe = dataframe[::ith_datapoint]
 X_train = dataframe[features].values
 Y_train = dataframe[target].values
+kinematic_values = dataframe[kinematicDeltas].values
 
 with open(os.path.join(scalerFilePath, scaler_filenameX), 'rb') as file:
     scaler_X = pickle.load(file)
@@ -134,14 +95,14 @@ predicted_means_rescaled = scaler_Y.inverse_transform(y_predict_mean)
 real_values = scaler_Y.inverse_transform(Y_train)
 predicted_variances = y_predict_variance
 
-filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real_test_TESTING.csv'
+filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real_test.csv'
 
 file_path = os.path.join(datafilepath, filename)
 
-kinematic_deltas_df = calculate_kinematic_deltas(dataframe)
-save_predictions_to_csv(predicted_means_rescaled, real_values, kinematic_deltas_df.values, file_path)
 
-save_predictions_to_csv(predicted_means_rescaled, real_values, predicted_variances, file_path)
+save_predictions_to_csv(predicted_means_rescaled, real_values, kinematic_values, file_path)
+
+# save_predictions_to_csv(predicted_means_rescaled, real_values, predicted_variances, file_path)
 
 # Plot Model
 
