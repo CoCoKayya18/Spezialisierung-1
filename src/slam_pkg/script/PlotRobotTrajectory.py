@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 TestOrTrain = '_train'
 
 # Load your DataFrame
-# DataFilePath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparse0_1_DP_predictions_vs_real{TestOrTrain}.csv'
+DataFilePath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparse0_1_DP_predictions_vs_real{TestOrTrain}.csv'
 
-DataFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparseOnlyX_1_DP_predictions_vs_real_test_OnlyX.csv'
+# DataFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparseOnlyX_1_DP_predictions_vs_real_test_OnlyX.csv'
 
 df = pd.read_csv(DataFilePath)
 

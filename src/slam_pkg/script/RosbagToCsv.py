@@ -44,6 +44,8 @@ class BagDataProcessor:
 
         # Calculate linear and angular velocities
         df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
+        df['wheelRight_velocity'] = (df['position_0'].diff()/ time_diffs) * wheel_radius
+        df['wheelLeft_velocity'] = (df['position_1'].diff()/ time_diffs) * wheel_radius
         # df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / (wheel_base * time_diffs))) * wheel_radius
         df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs) * wheel_radius
         
@@ -51,7 +53,7 @@ class BagDataProcessor:
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
         df['angular_acceleration_yaw'] = df['angular_velocity_yaw'].diff() / time_diffs
         
-        return df[['Time', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
+        return df[['Time', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'wheelRight_velocity', 'wheelLeft_velocity']]
     
     def calculate_kinematic_deltas(self, df):
         df['kinematic_delta_x'] = 0.0
