@@ -5,7 +5,7 @@ from sklearn.metrics import r2_score
 from sklearn.preprocessing import MinMaxScaler
 
 ith_datapoint = 1
-isSparse = 'sparse1'
+isSparse = 'sparse40k_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
@@ -15,9 +15,13 @@ trainOrTest = '_test'
 # trainOrTest = '_train'
 
 # Load the standardized predictions and real values
-# filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real{trainOrTest}.csv'
-filepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparseOnlyX_1_DP_predictions_vs_real_test.csv'
+filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real{trainOrTest}.csv'
+
 data = pd.read_csv(filepath)
+
+if data.isna().any().any():
+    print("NaN values found in the DataFrame. They will be dropped for model training.")
+    data = data.dropna()
 
 features = ['X', 'Y', 'Yaw']
 
