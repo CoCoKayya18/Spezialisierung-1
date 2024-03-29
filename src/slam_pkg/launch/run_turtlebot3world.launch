@@ -15,7 +15,7 @@
   <arg name="move_forward_only" default="false"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/empty_world.world"/>
+    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="gui" value="false"/>
@@ -70,6 +70,6 @@
 
   <!-- <node name="Transformer" pkg="slam_pkg" type="Transformer.py"> </node> -->
 
-  <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth_Only_X" output="screen" args="record ground_truth/state joint_states -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_only_X" />
+  <!-- <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_states -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data" /> -->
 
 </launch>
