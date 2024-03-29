@@ -1,8 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-TestOrTrain = '_test'
-# TestOrTrain = '_train'
+# TestOrTrain = '_test'
+TestOrTrain = '_train'
 
 # Load your DataFrame
 DataFilePath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparse40k_1_DP_predictions_vs_real{TestOrTrain}.csv'
