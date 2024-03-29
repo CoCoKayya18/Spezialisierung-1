@@ -130,6 +130,11 @@ class BagDataProcessor:
         # Remove first two lines
         combined_df = combined_df.iloc[2:].reset_index(drop=True)
 
+        if os.path.exists(mergedPath):
+            # If it does, read the existing data and append the new data
+            existing_data = pd.read_csv(mergedPath)
+            combined_df = pd.concat([existing_data, combined_df], ignore_index=True)
+
         # Save the combined DataFrame to a CSV file
         combined_df.to_csv(mergedPath, index=False)
 
