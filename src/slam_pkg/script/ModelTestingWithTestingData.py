@@ -41,16 +41,16 @@ tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparse0_'
+isSparse = 'sparseOnlyX_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
 
-model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP.pkl'
-scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}.pkl'
-scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}.pkl'
+model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP_OnlyX.pkl'
+scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}_OnlyX.pkl'
+scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}_OnlyX.pkl'
 
 # Load the model
 
@@ -63,10 +63,10 @@ if isTuned != '':
         loaded_model = pickle.load(file)
 
 # Get the data out of the csv
-dataframe = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data.csv'))
+dataframe = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_test_data_OnlyX.csv'))
 
 if isTuned == '':
-    validationDataFrame = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data.csv'))
+    validationDataFrame = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data_OnlyX.csv'))
     dataframe = pandas.concat([dataframe, validationDataFrame], ignore_index=True)
 
 features = ['linear_velocity_x', 'angular_velocity_yaw']
@@ -95,7 +95,7 @@ predicted_means_rescaled = scaler_Y.inverse_transform(y_predict_mean)
 real_values = scaler_Y.inverse_transform(Y_train)
 predicted_variances = y_predict_variance
 
-filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real_test.csv'
+filename = f'{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real_test_OnlyX.csv'
 
 file_path = os.path.join(datafilepath, filename)
 

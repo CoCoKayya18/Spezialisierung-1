@@ -44,6 +44,7 @@ class BagDataProcessor:
 
         # Calculate linear and angular velocities
         df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
+        # df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / (wheel_base * time_diffs))) * wheel_radius
         df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs) * wheel_radius
         
         # Calculate accelerations
@@ -58,7 +59,7 @@ class BagDataProcessor:
         df['kinematic_delta_yaw'] = 0.0
         
         # Initial pose
-        x, y, theta = 0.0, 1.0, 0.0
+        x, y, theta = 0.5, 0.5, 0.0
         
         for index, row in df.iterrows():
             if index == 0:
@@ -102,9 +103,9 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas.csv'
-        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels.csv'
-        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data.csv'
+        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_OnlyX.csv'
+        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_OnlyX.csv'
+        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_OnlyX.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -144,6 +145,6 @@ def process_bag_file(bag_file_path):
     processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df)
 
 if __name__ == '__main__':
-    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-26-21-09-55.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-27-12-30-11.bag']
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_only_X_2024-03-29-03-09-04.bag']
     for bag_file in bag_files:
         process_bag_file(bag_file)
