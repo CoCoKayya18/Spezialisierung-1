@@ -44,8 +44,8 @@ class BagDataProcessor:
 
         # Calculate linear and angular velocities
         df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
-        df['wheelRight_velocity'] = (df['position_0'].diff()/ time_diffs) * wheel_radius
-        df['wheelLeft_velocity'] = (df['position_1'].diff()/ time_diffs) * wheel_radius
+        # df['wheelRight_velocity'] = (df['position_0'].diff()/ time_diffs) * wheel_radius
+        # df['wheelLeft_velocity'] = (df['position_1'].diff()/ time_diffs) * wheel_radius
         # df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / (wheel_base * time_diffs))) * wheel_radius
         df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs) * wheel_radius
         
@@ -53,7 +53,7 @@ class BagDataProcessor:
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
         df['angular_acceleration_yaw'] = df['angular_velocity_yaw'].diff() / time_diffs
         
-        return df[['Time', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'wheelRight_velocity', 'wheelLeft_velocity']]
+        return df[['Time', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
     
     def calculate_kinematic_deltas(self, df):
         df['kinematic_delta_x'] = 0.0
@@ -84,6 +84,9 @@ class BagDataProcessor:
             x += delta_x
             y += delta_y
             theta += delta_theta
+            print(f'Theta unnormalized: {theta}')
+            theta = np.arctan2(np.sin(theta), np.cos(theta)) # Normalize Theta
+            print(f'Theta normalized: {theta}')
         
         return df
 
@@ -105,9 +108,9 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_0Degree.csv'
-        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_0Degree.csv'
-        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_0Degree.csv'
+        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_Normalized.csv'
+        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_Normalized.csv'
+        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_Normalized.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -152,6 +155,6 @@ def process_bag_file(bag_file_path):
     processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df)
 
 if __name__ == '__main__':
-    bag_files = ['']
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-26-21-09-55.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-27-12-30-11.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-24-16.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-28-12.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-36-43.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-36-43.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-41-58.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-43-07.bag']
     for bag_file in bag_files:
         process_bag_file(bag_file)
