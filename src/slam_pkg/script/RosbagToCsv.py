@@ -35,18 +35,12 @@ class BagDataProcessor:
         
         wheel_radius = 0.066/2  # meter
         wheel_base = 0.160  # distance between wheels in meters
-
-        # Calculate time differences and replace any zeros with NaN to avoid division by zero
-        # time_diffs = df['Time'].diff().replace(0, np.nan)
         time_diffs = 0.0333
 
         # print(df['position_0'].diff() + df['position_1'].diff())
 
         # Calculate linear and angular velocities
         df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
-        # df['wheelRight_velocity'] = (df['position_0'].diff()/ time_diffs) * wheel_radius
-        # df['wheelLeft_velocity'] = (df['position_1'].diff()/ time_diffs) * wheel_radius
-        # df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / (wheel_base * time_diffs))) * wheel_radius
         df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs) * wheel_radius
         
         # Calculate accelerations
@@ -84,9 +78,9 @@ class BagDataProcessor:
             x += delta_x
             y += delta_y
             theta += delta_theta
-            print(f'Theta unnormalized: {theta}')
+            # print(f'Theta unnormalized: {theta}')
             theta = np.arctan2(np.sin(theta), np.cos(theta)) # Normalize Theta
-            print(f'Theta normalized: {theta}')
+            # print(f'Theta normalized: {theta}')
         
         return df
 
@@ -104,13 +98,13 @@ class BagDataProcessor:
 
         return calculated_delta_x, calculated_delta_y, calculated_delta_theta
 
-    def process_and_save_data(self, ground_truth_df, joint_state_df):
+    def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df):
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_Normalized.csv'
-        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_Normalized.csv'
-        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_Normalized.csv'
+        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/dataTesting/GT_Deltas_Normalized.csv'
+        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/dataTesting/Vels_And_Accels_Normalized.csv'
+        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/dataTesting/Data.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -129,6 +123,9 @@ class BagDataProcessor:
 
         # Use merge_asof to align the data based on the 'Time' column
         combined_df = pd.merge_asof(processed_gt_df, processed_joint_df, on='Time')
+        combined_df = pd.merge_asof(combined_df, odom_df, on='Time')
+        combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
+        combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
 
         # Remove first two lines
         combined_df = combined_df.iloc[2:].reset_index(drop=True)
@@ -147,14 +144,17 @@ def process_bag_file(bag_file_path):
     processor = BagDataProcessor(bag_file_path)
     ground_truth_df = processor.read_topic_to_dataframe('ground_truth/state')
     joint_state_df = processor.read_topic_to_dataframe('joint_states')
+    odom_df = processor.read_topic_to_dataframe('odom')
+    cmdVel_df = processor.read_topic_to_dataframe('cmd_vel')
+    imu_df = processor.read_topic_to_dataframe('imu')
 
-    if ground_truth_df.empty or joint_state_df.empty:
+    if ground_truth_df.empty or joint_state_df.empty or odom_df.empty or cmdVel_df.empty or imu_df.empty:
         print("One or more of the topics do not exist in the bag file or are empty.")
         return
 
-    processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df)
+    processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df)
 
 if __name__ == '__main__':
-    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-26-21-09-55.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-27-12-30-11.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-24-16.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-28-12.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-36-43.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-36-43.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-41-58.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/rosbag_data_2024-03-29-04-43-07.bag']
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/VelocityTesting_data_2024-04-09-20-51-36.bag']
     for bag_file in bag_files:
         process_bag_file(bag_file)

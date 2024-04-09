@@ -85,8 +85,10 @@ with open(os.path.join(scalerFilePath, scaler_filenameX), 'rb') as file:
 with open(os.path.join(scalerFilePath, scaler_filenameY), 'rb') as file:
     scaler_Y = pickle.load(file)
 
-# Predict using the loaded model
-y_predict_mean, y_predict_variance = loaded_model.predict(X_train)
+X_train_standardized = scaler_X.transform(X_train)
+
+# Predict using the loaded model and standardized data
+y_predict_mean, y_predict_variance = loaded_model.predict(X_train_standardized)
 
 # Print the model parameters
 print(loaded_model)
