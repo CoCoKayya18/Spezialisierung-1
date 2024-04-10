@@ -102,9 +102,9 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/dataTesting/GT_Deltas_Normalized.csv'
-        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/dataTesting/Vels_And_Accels_Normalized.csv'
-        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/dataTesting/Data.csv'
+        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_ALLSet.csv'
+        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_ALLSet.csv'
+        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -155,6 +155,6 @@ def process_bag_file(bag_file_path):
     processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df)
 
 if __name__ == '__main__':
-    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/VelocityTesting_data_2024-04-09-20-51-36.bag']
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag']
     for bag_file in bag_files:
         process_bag_file(bag_file)
