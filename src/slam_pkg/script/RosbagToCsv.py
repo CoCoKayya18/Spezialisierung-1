@@ -98,13 +98,13 @@ class BagDataProcessor:
 
         return calculated_delta_x, calculated_delta_y, calculated_delta_theta
 
-    def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df):
+    def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, counter):
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        dataFilePathDeltas = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_ALLSet.csv'
-        dataFilePathVelsAndAccs = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_ALLSet.csv'
-        mergedPath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet.csv'
+        dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_ALLSet{counter}.csv'
+        dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_ALLSet{counter}.csv'
+        mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet{counter}.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -140,7 +140,8 @@ class BagDataProcessor:
 
         return processed_gt_df, processed_joint_df
 
-def process_bag_file(bag_file_path):
+def process_bag_file(bag_file_path, counter):
+    Incounter = counter
     processor = BagDataProcessor(bag_file_path)
     ground_truth_df = processor.read_topic_to_dataframe('ground_truth/state')
     joint_state_df = processor.read_topic_to_dataframe('joint_states')
@@ -152,9 +153,13 @@ def process_bag_file(bag_file_path):
         print("One or more of the topics do not exist in the bag file or are empty.")
         return
 
-    processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df)
+    processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, Incounter)
 
 if __name__ == '__main__':
-    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag']
+    counter = 1
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag']
     for bag_file in bag_files:
-        process_bag_file(bag_file)
+        process_bag_file(bag_file, counter)
+        counter = counter + 1
+
+# '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag'
