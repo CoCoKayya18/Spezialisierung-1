@@ -3,27 +3,41 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 ith_datapoint = 1
-isSparse = 'sparse40k_'
-# isSparse = ''
+# isSparse = 'sparse40k_'
+isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
 trainOrTest = '_test'
 # trainOrTest = '_train'
+SpecialCase = '_OneDirection'
+# SpecialCase = ''
 
-featurePathTest = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP{trainOrTest}_data.csv'
-featurePathVal = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP{trainOrTest}_data.csv'
-targetPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP_predictions_vs_real{trainOrTest}.csv'
+featurePathTest = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP{trainOrTest}_data{SpecialCase}.csv'
+featurePathVal = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP{trainOrTest}_data{SpecialCase}.csv'
+targetPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'
 
 # Load the data
-featuresTest_df = pd.read_csv(featurePathTest)
-featureVal_df = pd.read_csv(featurePathVal)
-features_df =  pd.concat([featuresTest_df, featureVal_df], ignore_index=True)
+if trainOrTest == '_test':
+    featuresTest_df = pd.read_csv(featurePathTest)
+    featureVal_df = pd.read_csv(featurePathVal)
+    
+    features_df = pd.concat([featuresTest_df, featureVal_df], ignore_index=True)
+
+if trainOrTest == '_train':
+    features_df = pd.read_csv(featurePathTest)
+
 predictions_df = pd.read_csv(targetPath)
+
+min_length = min(len(features_df), len(predictions_df))
+predictions_df = predictions_df.head(min_length)
+features_df = features_df.head(min_length)
 
 # Check if the features and targets have the same number of rows
 if len(features_df) != len(predictions_df):
+    print(len(features_df)) 
+    print(len(predictions_df))
     raise ValueError("The number of rows in features and predictions does not match.")
 
 # Extract the features and predictions

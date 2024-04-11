@@ -14,11 +14,15 @@ modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparse40k_'
-# isSparse = ''
+# isSparse = 'sparse40k_'
+isSparse = ''
+SpecialCase = '_OneDirection'
+# SpecialCase = ''
+# dataName = 'Data.csv'
+dataName = 'Data_OnlyOneDirection.csv'
 
 # Get the data out of the csv
-dataframe = pandas.read_csv(os.path.join(datafilepath, 'Data.csv'))
+dataframe = pandas.read_csv(os.path.join(datafilepath, dataName))
 features = ['linear_velocity_x', 'angular_velocity_yaw']
 target = ['delta_position_x', 'delta_position_y', 'delta_yaw']
 kinematic_deltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
@@ -63,9 +67,9 @@ df_Kinematic_Test = pandas.DataFrame(kinematic_test, columns=kinematic_deltas)
 train_data = pandas.concat([df_X_Train, df_Y_Train, df_Kinematic_Train], axis=1)
 val_data = pandas.concat([df_X_Val, df_Y_Val, df_Kinematic_Val], axis=1)
 test_data = pandas.concat([df_X_Test, df_Y_Test, df_Kinematic_Test], axis=1)
-train_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data.csv'), index=False)
-val_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data.csv'), index=False)
-test_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_test_data.csv'), index=False)
+train_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data{SpecialCase}.csv'), index=False)
+val_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data{SpecialCase}.csv'), index=False)
+test_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_test_data{SpecialCase}.csv'), index=False)
 
 
 # Define the kernel with RBF for the function and WhiteKernel for noise level
@@ -87,9 +91,9 @@ model.optimize_restarts(num_restarts = 10, verbose=True)
 print(model)
 
 # Save the model and scalers
-model_filename = f'{isSparse}gpy_model_{ith_datapoint}DP.pkl'
-scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}.pkl'
-scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}.pkl'
+model_filename = f'{isSparse}gpy_model_{ith_datapoint}DP{SpecialCase}.pkl'
+scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}{SpecialCase}.pkl'
+scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}{SpecialCase}.pkl'
 
 with open(os.path.join(modelFilePath, model_filename), 'wb') as file:
     pickle.dump(model, file)
