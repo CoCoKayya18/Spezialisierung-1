@@ -12,7 +12,7 @@
   <arg name="set_map_frame"  default="map"/>
   <arg name="cmd_vel_topic" default="/cmd_vel" />
   <arg name="odom_topic" default="odom" />
-  <arg name="move_forward_only" default="false"/>
+  <arg name="move_forward_only" default="true"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_house.world"/>
