@@ -16,116 +16,6 @@ columns_of_interest = [
 # Filter out the filtered_dfframe to only include the columns of interest
 filtered_df = filtered_dfframe[columns_of_interest]
 
-# # Drop any rows that may have NaN values in these columns if necessary
-# filtered_df = filtered_df.dropna()
-
-# # Save the filtered filtered_df to a new CSV file
-# # filtered_df.to_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/filtered_dfTesting/Filtered_Velocity_filtered_df.csv', index=False)
-
-# print("Filtered velocity filtered_df saved successfully.")
-
-# # Plotting
-# plt.figure(figsize=(12, 8))
-
-# # Linear velocities
-# plt.subplot(3, 2, 1)  # 2 rows, 2 column, 1st subplot
-# plt.plot(filtered_df['Time'].values, filtered_df['linear_velocity_x'].values, label='Calculated Linear Velocity', marker='o')
-# plt.plot(filtered_df['Time'].values, filtered_df['twist.twist.linear.x'].values, label='Odometry Linear Velocity', marker='x')
-# # plt.plot(filtered_df['Time'].values, filtered_df['linear.x'].values, label='Commanded Linear Velocity', marker='^')
-# plt.title('Comparison of Linear Velocities')
-# plt.xlabel('Time (s)')
-# plt.ylabel('Linear Velocity (m/s)')
-# plt.legend()
-# plt.grid(True)
-
-# # Angular velocities
-# plt.subplot(3, 2, 2)  # 2 rows, 2 column, 2nd subplot
-# plt.plot(filtered_df['Time'].values, filtered_df['angular_velocity_yaw'].values, label='Calculated Angular Velocity', marker='o')
-# plt.plot(filtered_df['Time'].values, filtered_df['twist.twist.angular.z'].values, label='Odometry Angular Velocity', marker='x')
-# # plt.plot(filtered_df['Time'].values, filtered_df['angular.z'].values, label='Commanded Angular Velocity', marker='^')
-# plt.title('Comparison of Angular Velocities')
-# plt.xlabel('Time (s)')
-# plt.ylabel('Angular Velocity (rad/s)')
-# plt.legend()
-# plt.grid(True)
-
-# plt.subplot(3, 2, 3)  # 2 rows, 2 column, 3nd subplot
-# data1_mean = np.mean(filtered_df['linear_velocity_x'].values)
-# data2_mean = np.mean(filtered_df['twist.twist.linear.x'].values)
-# mean = np.mean([filtered_df['linear_velocity_x'], filtered_df['twist.twist.linear.x'].values], axis=0)
-# diff = filtered_df['linear_velocity_x'] - filtered_df['twist.twist.linear.x'].values                   # Difference between data1 and data2
-# md = np.mean(diff)                     # Mean of the difference
-# sd = np.std(diff, axis=0)              # Standard deviation of the difference
-
-# plt.scatter(mean, diff)
-# plt.axhline(md, color='gray', linestyle='--')
-# plt.axhline(md + 1.96*sd, color='gray', linestyle='--')
-# plt.axhline(md - 1.96*sd, color='gray', linestyle='--')
-# plt.title('Bland-Altman Plot X_Vel')
-# plt.xlabel('Mean Value')
-# plt.ylabel('Difference')
-# plt.legend()
-# plt.grid(True)
-
-# plt.subplot(3, 2, 4)  # 2 rows, 2 column, 4nd subplot
-# data1_mean = np.mean(filtered_df['angular_velocity_yaw'].values)
-# data2_mean = np.mean(filtered_df['twist.twist.angular.z'].values)
-# mean = np.mean([filtered_df['linear_velocity_x'], filtered_df['twist.twist.angular.z'].values], axis=0)
-# diff = filtered_df['angular_velocity_yaw'].values - filtered_df['twist.twist.angular.z'].values                  # Difference between data1 and data2
-# md = np.mean(diff)                     # Mean of the difference
-# sd = np.std(diff, axis=0)              # Standard deviation of the difference
-
-# plt.scatter(mean, diff)
-# plt.axhline(md, color='gray', linestyle='--')
-# plt.axhline(md + 1.96*sd, color='gray', linestyle='--')
-# plt.axhline(md - 1.96*sd, color='gray', linestyle='--')
-# plt.title('Bland-Altman Plot Yaw_Vel')
-# plt.xlabel('Mean Value')
-# plt.ylabel('Difference')
-# plt.legend()
-# plt.grid(True)
-
-# plt.subplot(3, 2, 5)  # 2 rows, 2 column, 5th subplot
-# errors = filtered_df['twist.twist.linear.x'].values - filtered_df['linear_velocity_x'].values
-# mse = np.mean(np.square(errors))
-# rmse = np.sqrt(mse)
-# mae = np.mean(np.abs(errors))
-
-# # Plot the errors
-# plt.hist(errors, bins=50)
-# plt.title('Error Distribution')
-# plt.xlabel('Errors')
-# plt.ylabel('Frequency')
-
-# plt.scatter(filtered_df['linear_velocity_x'].values, errors)
-# plt.title('Predicted vs Errors X_Vel')
-# plt.xlabel('Predicted Values')
-# plt.ylabel('Errors')
-# plt.axhline(0, color='gray', linestyle='--')
-# plt.show()
-
-# plt.subplot(3, 2, 6)  # 2 rows, 2 column, 6th subplot
-# errors = filtered_df['twist.twist.angular.z'].values - filtered_df['angular_velocity_yaw'].values
-# mse = np.mean(np.square(errors))
-# rmse = np.sqrt(mse)
-# mae = np.mean(np.abs(errors))
-
-# plt.hist(errors, bins=50)
-# plt.title('Error Distribution')
-# plt.xlabel('Errors')
-# plt.ylabel('Frequency')
-
-# plt.scatter(filtered_df['angular_velocity_yaw'].values, errors)
-# plt.title('Predicted vs Errors')
-# plt.xlabel('Predicted Values')
-# plt.ylabel('Errors')
-# plt.axhline(0, color='gray', linestyle='--')
-# plt.show()
-
-# # Show plot
-# plt.tight_layout()
-# plt.show()
-
 calculated_linear = filtered_df['linear_velocity_x'].values
 odometry_linear = filtered_df['twist.twist.linear.x'].values
 calculated_angular = filtered_df['angular_velocity_yaw'].values
@@ -135,17 +25,17 @@ odometry_angular = filtered_df['twist.twist.angular.z'].values
 def bland_altman_stats(data1, data2):
     mean = np.mean([data1, data2], axis=0)
     diff = data1 - data2
-    md = np.mean(diff)
+    md = np.mean(diff, axis=0)
     sd = np.std(diff, axis=0)
     return mean, diff, md, sd
 
 # Create a Bland-Altman plot
 def bland_altman_plot(mean, diff, md, sd, title, subplot_index):
     plt.subplot(3, 2, subplot_index)
-    plt.scatter(mean, diff, alpha=0.5)
+    plt.scatter(mean, diff, alpha=0.5, s=1)
     plt.axhline(md, color='gray', linestyle='--')
-    plt.axhline(md + 1.96 * sd, color='gray', linestyle='--')
-    plt.axhline(md - 1.96 * sd, color='gray', linestyle='--')
+    plt.axhline(md + 1.96 * sd, color='gray', linestyle='--', linewidth=2)
+    plt.axhline(md - 1.96 * sd, color='gray', linestyle='--', linewidth=2)
     plt.title(title)
     plt.xlabel('Mean Value (m/s or rad/s)')
     plt.ylabel('Difference (m/s or rad/s)')
@@ -163,13 +53,17 @@ def error_analysis_and_plot(errors, title, subplot_index):
     plt.xlabel('Errors')
     plt.ylabel('Frequency')
 
+    # Display MSE, RMSE, and MAE on the plot
+    error_text = f'MSE: {mse:.4f}\nRMSE: {rmse:.4f}\nMAE: {mae:.4f}'
+    plt.text(0.05, 0.95, error_text, transform=plt.gca().transAxes, fontsize=9, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
+
 # Create figure for plotting
 plt.figure(figsize=(15, 15))
 
 # Plot linear velocities
 plt.subplot(3, 2, 1)
-plt.plot(filtered_df['Time'].values, calculated_linear, label='Calculated Linear Velocity', marker='o')
-plt.plot(filtered_df['Time'].values, odometry_linear, label='Odometry Linear Velocity', marker='x')
+plt.plot(filtered_df['Time'].values, calculated_linear, label='Calculated Linear Velocity', marker='.')
+plt.plot(filtered_df['Time'].values, odometry_linear, label='Odometry Linear Velocity', marker='.')
 plt.title('Comparison of Linear Velocities')
 plt.xlabel('Time (s)')
 plt.ylabel('Linear Velocity (m/s)')
@@ -178,8 +72,8 @@ plt.grid(True)
 
 # Plot angular velocities
 plt.subplot(3, 2, 2)
-plt.plot(filtered_df['Time'].values, calculated_angular, label='Calculated Angular Velocity', marker='o')
-plt.plot(filtered_df['Time'].values, odometry_angular, label='Odometry Angular Velocity', marker='x')
+plt.plot(filtered_df['Time'].values, calculated_angular, label='Calculated Angular Velocity', marker='.')
+plt.plot(filtered_df['Time'].values, odometry_angular, label='Odometry Angular Velocity', marker='.')
 plt.title('Comparison of Angular Velocities')
 plt.xlabel('Time (s)')
 plt.ylabel('Angular Velocity (rad/s)')

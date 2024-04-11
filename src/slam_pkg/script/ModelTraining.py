@@ -6,6 +6,7 @@ import GPy
 import pandas
 import os
 import pickle
+import numpy as np
 
 
 datafilepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
@@ -33,7 +34,17 @@ kinematic_delta_values = ithDataframe[kinematic_deltas].values
 scaler_X = StandardScaler()
 scaler_Y = StandardScaler()
 X_standardized = scaler_X.fit_transform(X)
-Y_standardized = scaler_Y.fit_transform(Y) 
+Y_standardized = scaler_Y.fit_transform(Y)
+
+# Check if the data is standardized correctly
+mean_X = np.mean(X_standardized, axis=0)
+std_X = np.std(X_standardized, axis=0)
+mean_Y = np.mean(Y_standardized, axis=0)
+std_Y = np.std(Y_standardized, axis=0)
+print("Mean of standardized features (X):", mean_X)
+print("Standard deviation of standardized features (X):", std_X)
+print("\nMean of standardized target variable (Y):", mean_Y)
+print("Standard deviation of standardized target variable (Y):", std_Y)
 
 # Split the data into training, validation and testing sets and save
 X_train, X_temp, Y_train, Y_temp = train_test_split(X_standardized, Y_standardized, test_size=0.3, random_state=42)

@@ -46,13 +46,13 @@ def plot_trajectories(ground_truth, calculated):
     ground_truth_x, ground_truth_y = zip(*ground_truth)
     calculated_x, calculated_y = zip(*calculated)  # Unzip calculated if it's a list of tuples
 
-    axes[0, 0].plot(ground_truth_x, ground_truth_y, 'b-', marker='.', label='Ground Truth')
-    axes[0, 0].scatter(start_x, start_y, color='green', label='Start')
+    axes[0, 0].plot(ground_truth_x, ground_truth_y, 'b-', marker='.', markersize=1, label='Ground Truth')
+    axes[0, 0].scatter(start_x, start_y, color='green', s=10, label='Start')
     axes[0, 0].set_title('Ground Truth Trajectory')
     axes[0, 0].legend()
 
-    axes[0, 1].plot(calculated_x, calculated_y, 'r--', marker='x', label='Calculated')
-    axes[0, 1].scatter(start_x, start_y, color='green')
+    axes[0, 1].plot(calculated_x, calculated_y, 'r--', marker='.', markersize=1, label='Calculated')
+    axes[0, 1].scatter(start_x, start_y, color='green', s=10)
     axes[0, 1].set_title('Calculated Trajectory')
     axes[0, 1].legend()
 

@@ -102,9 +102,13 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_ALLSet{counter}.csv'
-        dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_ALLSet{counter}.csv'
-        mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet{counter}.csv'
+        dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_ALLSet.csv'
+        dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_ALLSet.csv'
+        mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet.csv'
+
+        # dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_ALLSet{counter}.csv'
+        # dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels_ALLSet{counter}.csv'
+        # mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet{counter}.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -126,6 +130,17 @@ class BagDataProcessor:
         combined_df = pd.merge_asof(combined_df, odom_df, on='Time')
         combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
         combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
+
+        columns_of_interest = ['linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x', 'delta_position_y', 'delta_yaw']
+
+        missing_values = combined_df[columns_of_interest].isnull().sum()
+        if missing_values.any():
+            print("Missing values detected in columns of interest:")
+            print(missing_values)
+            # Drop rows where columns of interest have missing values
+            combined_df = combined_df.dropna(subset=columns_of_interest)
+        else:
+            print("No missing values detected in columns of interest.")
 
         # Remove first two lines
         combined_df = combined_df.iloc[2:].reset_index(drop=True)
@@ -156,10 +171,8 @@ def process_bag_file(bag_file_path, counter):
     processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, Incounter)
 
 if __name__ == '__main__':
-    counter = 1
     bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag']
+    counter = 1
     for bag_file in bag_files:
         process_bag_file(bag_file, counter)
         counter = counter + 1
-
-# '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag'
