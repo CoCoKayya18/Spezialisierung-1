@@ -55,7 +55,7 @@ class BagDataProcessor:
         df['kinematic_delta_yaw'] = 0.0
         
         # Initial pose
-        x, y, theta = 0.0, 5.0, 0.0
+        x, y, theta = 0.5, 0.5, 0.0
         
         for index, row in df.iterrows():
             if index == 0:
