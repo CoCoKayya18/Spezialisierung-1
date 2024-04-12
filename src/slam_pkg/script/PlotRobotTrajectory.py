@@ -1,17 +1,27 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
-# TestOrTrain = '_test'
+ith_datapoint = 1
+# isSparse = 'sparse40k_'
+isSparse = ''
+SpecialCase = '_OneDirection'
+# SpecialCase = ''
+# dataName = 'Data.csv'
 TestOrTrain = '_train'
+TestOrTrain = '_test'
+isTuned = ''
 
 # Load your DataFrame
-DataFilePath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparse40k_1_DP_predictions_vs_real{TestOrTrain}.csv'
+filename = f'{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real_train.csv'
+DataFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
 
 # DataFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparseOnlyX_1_DP_predictions_vs_real_test_OnlyX.csv'
 
-df = pd.read_csv(DataFilePath)
+print(os.path.join(DataFilePath, filename))
+df = pd.read_csv(os.path.join(DataFilePath, filename))
 
-getKinematic = True
+getKinematic = False
 getGT = True
 getPredicted = True
 
@@ -31,11 +41,11 @@ if getKinematic:
     cumulative_kinematic_y = df['cumulative_kinematic_y'].to_numpy()
     plt.plot(cumulative_kinematic_x, cumulative_kinematic_y, label='Kinematic Path', marker='o', linestyle='-', markersize=2)
 
-# if getGT: 
+if getGT: 
     df['cumulative_ground_truth_x'] = df['Real_X'].cumsum()
+    print(df['Real_X'].cumsum())
     df['cumulative_ground_truth_y'] = df['Real_Y'].cumsum()
-    # df['cumulative_ground_truth_x'] = df['delta_position_x'].cumsum()
-    # df['cumulative_ground_truth_y'] = df['delta_position_y'].cumsum()
+    print(df['Real_Y'].cumsum())
     cumulative_ground_truth_x = df['cumulative_ground_truth_x'].to_numpy()
     cumulative_ground_truth_y = df['cumulative_ground_truth_y'].to_numpy()
     plt.plot(cumulative_ground_truth_x, cumulative_ground_truth_y, label='Ground Truth Path', marker='x', linestyle='--', markersize=2)

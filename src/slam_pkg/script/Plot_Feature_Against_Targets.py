@@ -46,27 +46,36 @@ angular_velocity = features_df['angular_velocity_yaw'].values
 delta_x = predictions_df['Predicted_X'].values
 delta_y = predictions_df['Predicted_Y'].values
 delta_yaw = predictions_df['Predicted_Yaw'].values  # Assuming Predicted_Yaw is delta_z
+real_x = predictions_df['Real_X'].values
+real_y = predictions_df['Real_Y'].values
+real_yaw = predictions_df['Real_Yaw'].values
 
 # Create a figure for 3 subplots (3 rows, 1 column)
 fig, axs = plt.subplots(3, 1, figsize=(10, 15))
 
-# Plot for linear velocity vs delta x
-axs[0].scatter(linear_velocity, delta_x, alpha=0.5)
+# Plot for linear velocity vs delta x and real x
+axs[0].scatter(linear_velocity, delta_x, alpha=0.5, color='blue', label='Predicted X')
+axs[0].scatter(linear_velocity, real_x, alpha=0.5, color='orange', label='Real X')  # Add real X values in orange
 axs[0].set_title('Linear Velocity vs Delta X')
 axs[0].set_xlabel('Linear Velocity (m/s)')
 axs[0].set_ylabel('Delta X (m)')
+axs[0].legend()
 
-# Plot for linear velocity vs delta y
-axs[1].scatter(linear_velocity, delta_y, alpha=0.5)
+# Plot for linear velocity vs delta y and real y
+axs[1].scatter(linear_velocity, delta_y, alpha=0.5, color='blue', label='Predicted Y')
+axs[1].scatter(linear_velocity, real_y, alpha=0.5, color='orange', label='Real Y')  # Add real Y values in orange
 axs[1].set_title('Linear Velocity vs Delta Y')
 axs[1].set_xlabel('Linear Velocity (m/s)')
 axs[1].set_ylabel('Delta Y (m)')
+axs[1].legend()
 
-# Plot for angular velocity vs delta z
-axs[2].scatter(angular_velocity, delta_yaw, alpha=0.5)
-axs[2].set_title('Angular Velocity vs Delta Z')
+# Plot for angular velocity vs delta yaw and real yaw
+axs[2].scatter(angular_velocity, delta_yaw, alpha=0.5, color='blue', label='Predicted Yaw')
+axs[2].scatter(angular_velocity, real_yaw, alpha=0.5, color='orange', label='Real Yaw')  # Add real Yaw values in orange
+axs[2].set_title('Angular Velocity vs Delta Yaw')
 axs[2].set_xlabel('Angular Velocity (rad/s)')
-axs[2].set_ylabel('Delta Z (rad)')
+axs[2].set_ylabel('Delta Yaw (rad)')
+axs[2].legend()
 
 # Adjust layout to make room for titles and labels
 plt.tight_layout()
