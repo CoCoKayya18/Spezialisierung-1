@@ -5,8 +5,12 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 # Load the data
-data_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet.csv'
+data_path = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_OnlyOneDirection.csv'
 data_df = pd.read_csv(data_path)
+
+columns_of_interest = ['linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x', 'delta_position_y', 'delta_yaw']
+
+data_df = data_df[columns_of_interest]
 
 # Display basic information about the dataset
 print(data_df.info())

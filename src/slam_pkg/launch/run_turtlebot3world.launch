@@ -15,7 +15,7 @@
   <arg name="move_forward_only" default="true"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
+    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/empty_world.world"/>
     <!-- <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/empty_world.world"/> -->
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
@@ -71,6 +71,8 @@
 
   <!-- <node name="Transformer" pkg="slam_pkg" type="Transformer.py"> </node> -->
 
-  <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_states cmd_vel odom imu -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/10mY_Direction_data" />
+  <node name="SendGoal" pkg="slam_pkg" type="SendGoal.py"> </node>
+
+  <node pkg="rosbag" type="record" name="rosbag_record_JointState_and_GroundTruth" output="screen" args="record ground_truth/state joint_states cmd_vel odom imu -o /home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/10mX_Direction_data" />
 
 </launch>

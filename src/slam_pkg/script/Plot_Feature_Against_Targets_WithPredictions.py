@@ -4,7 +4,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 ith_datapoint = 1
-isSparse = 'sparse40k_'
+isSparse = 'sparseKFold1_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
@@ -20,14 +20,15 @@ featurePathVal = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTune
 targetPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'
 
 # Load the data
-if trainOrTest == '_test':
-    featuresTest_df = pd.read_csv(featurePathTest)
-    featureVal_df = pd.read_csv(featurePathVal)
+# if trainOrTest == '_test':
+#     featuresTest_df = pd.read_csv(featurePathTest)
+#     featureVal_df = pd.read_csv(featurePathVal)
     
-    features_df = pd.concat([featuresTest_df, featureVal_df], ignore_index=True)
+#     features_df = pd.concat([featuresTest_df, featureVal_df], ignore_index=True)
 
-if trainOrTest == '_train':
-    features_df = pd.read_csv(featurePathTest)
+# if trainOrTest == '_train':
+
+features_df = pd.read_csv(featurePathTest)
 
 predictions_df = pd.read_csv(targetPath)
 
@@ -81,7 +82,7 @@ fig, axs = plt.subplots(3, 1, figsize=(10, 15))
 # axs[1].legend()
 
 # Plot for linear velocity x-component vs delta x and real x
-# axs[0].scatter(linear_velocity_x_comp, delta_x, alpha=0.5, color='blue', label='Predicted Delta X')
+axs[0].scatter(linear_velocity_x_comp, delta_x, alpha=0.5, color='blue', label='Predicted Delta X')
 axs[0].scatter(linear_velocity_x_comp, real_x, alpha=0.5, color='orange', label='Real Delta X')  # Add real Delta X values in orange
 axs[0].set_title('Linear Velocity X-Component vs Delta X')
 axs[0].set_xlabel('Linear Velocity X-Component (m/s)')
@@ -89,7 +90,7 @@ axs[0].set_ylabel('Delta X (m)')
 axs[0].legend()
 
 # Plot for linear velocity y-component vs delta y and real y
-# axs[1].scatter(linear_velocity_y_comp, delta_y, alpha=0.5, color='blue', label='Predicted Delta Y')
+axs[1].scatter(linear_velocity_y_comp, delta_y, alpha=0.5, color='blue', label='Predicted Delta Y')
 axs[1].scatter(linear_velocity_y_comp, real_y, alpha=0.5, color='orange', label='Real Delta Y')  # Add real Delta Y values in orange
 axs[1].set_title('Linear Velocity Y-Component vs Delta Y')
 axs[1].set_xlabel('Linear Velocity Y-Component (m/s)')
@@ -97,7 +98,7 @@ axs[1].set_ylabel('Delta Y (m)')
 axs[1].legend()
 
 # Plot for angular velocity vs delta yaw and real yaw
-# axs[2].scatter(angular_velocity, delta_yaw, alpha=0.5, color='blue', label='Predicted Yaw')
+axs[2].scatter(angular_velocity, delta_yaw, alpha=0.5, color='blue', label='Predicted Yaw')
 axs[2].scatter(angular_velocity, real_yaw, alpha=0.5, color='orange', label='Real Yaw')  # Add real Yaw values in orange
 axs[2].set_title('Angular Velocity vs Delta Yaw')
 axs[2].set_xlabel('Angular Velocity (rad/s)')

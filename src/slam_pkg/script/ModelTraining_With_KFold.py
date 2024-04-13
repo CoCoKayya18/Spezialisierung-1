@@ -13,12 +13,12 @@ modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparseKFold_'
+isSparse = 'sparseKFold1_'
 # isSparse = ''
 # SpecialCase = '_OneDirection'
 SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_ALLSet.csv'
+dataName = 'Data_Only_X_Direction.csv'
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, dataName))
@@ -30,30 +30,60 @@ kinematic_deltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_y
 ithDataframe = dataframe[::ith_datapoint]
 X = ithDataframe[features].values
 Y = ithDataframe[target].values
-kinematic_delta_values = ithDataframe[kinematic_deltas].values
+kinematic_data = dataframe[kinematic_deltas].values
 
 
-# Standardize the data
-scaler_X = StandardScaler()
-scaler_Y = StandardScaler()
-X_standardized = scaler_X.fit_transform(X)
-Y_standardized = scaler_Y.fit_transform(Y)
+# # Standardize the data
+# scaler_X = StandardScaler()
+# scaler_Y = StandardScaler()
+# X_standardized = scaler_X.fit_transform(X)
+# Y_standardized = scaler_Y.fit_transform(Y)
 
 # Check if the data is standardized correctly
-mean_X = np.mean(X_standardized, axis=0)
-std_X = np.std(X_standardized, axis=0)
-mean_Y = np.mean(Y_standardized, axis=0)
-std_Y = np.std(Y_standardized, axis=0)
+
+X_train_full, X_test, Y_train_full, Y_test, kinematic_train_full, kinematic_test = train_test_split(X, Y, kinematic_data, test_size=0.3, random_state=42)
+
+# Then fit and transform with standardization
+scaler_X = StandardScaler()
+scaler_Y = StandardScaler()
+
+X_train_full = scaler_X.fit_transform(X_train_full)
+X_test = scaler_X.transform(X_test)  # Only transform the test data
+Y_train_full = scaler_Y.fit_transform(Y_train_full)
+Y_test = scaler_Y.transform(Y_test)  # Only transform the test data
+
+mean_X = np.mean(X_train_full, axis=0)
+std_X = np.std(X_train_full, axis=0)
+mean_Y = np.mean(Y_train_full, axis=0)
+std_Y = np.std(Y_train_full, axis=0)
+print("Mean of standardized features (X):", mean_X)
+print("Standard deviation of standardized features (X):", std_X)
+print("\nMean of standardized target variable (Y):", mean_Y)
+print("Standard deviation of standardized target variable (Y):", std_Y)
+
+mean_X = np.mean(X_test, axis=0)
+std_X = np.std(X_test, axis=0)
+mean_Y = np.mean(Y_test, axis=0)
+std_Y = np.std(Y_test, axis=0)
 print("Mean of standardized features (X):", mean_X)
 print("Standard deviation of standardized features (X):", std_X)
 print("\nMean of standardized target variable (Y):", mean_Y)
 print("Standard deviation of standardized target variable (Y):", std_Y)
 
 # Number of folds
-k = 10  # or any other number of folds you want
+k = 5  # or any other number of folds you want
 
 # Initialize KFold
 kf = KFold(n_splits=k, shuffle=True, random_state=42)
+
+best_r2 = float('-inf')  # Initialize to negative infinity
+best_model = None
+best_indices = None
+
+all_X_train = []
+all_Y_train = []
+all_X_val = []
+all_Y_val = []
 
 # Lists to store results of each fold
 fold_mse = []
@@ -62,15 +92,14 @@ fold_mae = []
 fold_r2 = []
 
 # Iterate over each split
-for i, (train_index, val_index) in enumerate(kf.split(X_standardized)):
+for i, (train_index, val_index) in enumerate(kf.split(X_train_full)):
+
     print(f"Training on fold {i+1}/{k}...")  # Print the current fold number
 
     # Split the data
-    X_train, X_val = X_standardized[train_index], X_standardized[val_index]
-    Y_train, Y_val = Y_standardized[train_index], Y_standardized[val_index]
-    
-    # You may skip the following line if kinematic data is not used for cross-validation
-    kinematic_train, kinematic_val = kinematic_delta_values[train_index], kinematic_delta_values[val_index]
+    X_train, X_val = X_train_full[train_index], X_train_full[val_index]
+    Y_train, Y_val = Y_train_full[train_index], Y_train_full[val_index]
+    kinematic_train, kinematic_val = kinematic_train_full[train_index], kinematic_train_full[val_index]
 
     # Define the kernel for GPy model
     kernel = GPy.kern.RBF(input_dim=X_train.shape[1], variance=1.0, lengthscale=1.0) + GPy.kern.White(X_train.shape[1], variance=1.0)
@@ -94,6 +123,11 @@ for i, (train_index, val_index) in enumerate(kf.split(X_standardized)):
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(Y_val, preds)
     r2 = r2_score(Y_val, preds)
+
+    if r2 > best_r2:
+        best_r2 = r2
+        best_model = model
+        best_indices = (train_index, val_index)
     
     fold_mse.append(mse)
     fold_rmse.append(rmse)
@@ -110,3 +144,41 @@ print("Average MSE across all folds:", average_mse)
 print("Average RMSE across all folds:", average_rmse)
 print("Average MAE across all folds:", average_mae)
 print("Average R-squared across all folds:", average_r2)
+
+print("MSE across all folds:", fold_mse)
+print("RMSE across all folds:", fold_rmse)
+print("MAE across all folds:", fold_mae)
+print("R-squared across all folds:", fold_r2)
+
+print(best_model)
+
+# Save the model and scalers
+model_filename = f'{isSparse}gpy_model_{ith_datapoint}DP{SpecialCase}.pkl'
+scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}{SpecialCase}.pkl'
+scaler_filenameY = f'{isSparse}scaler_Y_{ith_datapoint}{SpecialCase}.pkl'
+
+with open(os.path.join(modelFilePath, model_filename), 'wb') as file:
+    pickle.dump(best_model, file)
+
+with open(os.path.join(scalerFilePath, scaler_filenameX), 'wb') as file:
+    pickle.dump(scaler_X, file)
+
+with open(os.path.join(scalerFilePath, scaler_filenameY), 'wb') as file:
+    pickle.dump(scaler_Y, file)
+
+# Prepare datasets for the best model
+X_train, X_val = X_train_full[best_indices[0]], X_train_full[best_indices[1]]
+Y_train, Y_val = Y_train_full[best_indices[0]], Y_train_full[best_indices[1]]
+kinematic_train, kinematic_val = kinematic_train_full[best_indices[0]], kinematic_train_full[best_indices[1]]
+
+# Save data for the best model
+train_data = pandas.concat([pandas.DataFrame(X_train, columns=features), pandas.DataFrame(Y_train, columns=target),
+                        pandas.DataFrame(kinematic_train, columns=kinematic_deltas)], axis=1)
+val_data = pandas.concat([pandas.DataFrame(X_val, columns=features), pandas.DataFrame(Y_val, columns=target),
+                      pandas.DataFrame(kinematic_val, columns=kinematic_deltas)], axis=1)
+test_data = pandas.concat([pandas.DataFrame(X_test, columns=features), pandas.DataFrame(Y_test, columns=target),
+                       pandas.DataFrame(kinematic_test, columns=kinematic_deltas)], axis=1)
+
+train_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data{SpecialCase}.csv'), index=False)
+val_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data{SpecialCase}.csv'), index=False)
+test_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_test_data{SpecialCase}.csv'), index=False)

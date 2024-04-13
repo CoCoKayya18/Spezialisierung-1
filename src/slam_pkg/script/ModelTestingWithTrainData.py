@@ -41,14 +41,14 @@ tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-# isSparse = 'sparse40k_'
-isSparse = ''
+isSparse = 'sparseKFold1_'
+# isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-SpecialCase = '_OneDirection'
-# SpecialCase = ''
+# SpecialCase = '_OneDirection'
+SpecialCase = ''
 
 model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP{SpecialCase}.pkl'
 scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}{SpecialCase}.pkl'
@@ -67,9 +67,9 @@ if isTuned != '':
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data{SpecialCase}.csv'))
 
-if isTuned == '':
-    validationDataFrame = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data{SpecialCase}.csv'))
-    dataframe = pandas.concat([dataframe, validationDataFrame], ignore_index=True)
+# if isTuned == '':
+#     validationDataFrame = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data{SpecialCase}.csv'))
+#     dataframe = pandas.concat([dataframe, validationDataFrame], ignore_index=True)
 
 features = ['linear_velocity_x', 'angular_velocity_yaw']
 target = ['delta_position_x', 'delta_position_y', 'delta_yaw']
