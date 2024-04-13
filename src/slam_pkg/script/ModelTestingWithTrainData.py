@@ -41,14 +41,14 @@ tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparseKFold2_'
+isSparse = 'sparseKFoldX_And_Y_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-# SpecialCase = '_OneDirection'
-SpecialCase = ''
+SpecialCase = '_X_And_Y_Direction'
+# SpecialCase = ''
 
 model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP{SpecialCase}.pkl'
 scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}{SpecialCase}.pkl'

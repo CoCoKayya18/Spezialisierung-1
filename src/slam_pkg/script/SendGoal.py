@@ -5,6 +5,7 @@ from geometry_msgs.msg import Twist
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from tf.transformations import quaternion_from_euler
 import os
+import math
 
 def move_to_goal(client, x_goal, y_goal, yaw_goal):
     # Creates a new goal with the MoveBaseGoal constructor
@@ -56,26 +57,36 @@ def stop_ros_master():
 
 def main():
     try:
-        rospy.init_node('move_base_sequence_py')
+        rospy.init_node('move_base_rectangle_py')
         client = initialize_action_client()
 
-        goals = [1, 2, 3, 2, 1]  # Distances for each goal in y-direction
-        y_current = 0  # Initialize current y position
-        x_goal = 0.5  # Constant x goal
-        yaw_goal = 1.57079632679  # No rotation
+        # Define the rectangle's length and width
+        length = 3.0  # Length of the rectangle
+        width = 3.0   # Width of the rectangle
 
-        for i, increment in enumerate(goals):
-            y_current += increment  # Update y position by increment
-            rospy.loginfo("Sending goal: y = %s meters", y_current)
-            result = move_to_goal(client, x_goal, y_current, yaw_goal)
-            if result:
-                rospy.loginfo("Goal %d reached", i+1)
-            else:
-                rospy.loginfo("Failed to reach goal %d", i+1)
+        # Define the corners of the rectangle (assuming starting at (0,0))
+        rectangle_corners = [
+            (0, 0),
+            (0, width),
+            (length, width),
+            (length, 0)
+        ]
+
+        # Starting yaw, facing upwards
+        yaw_goal = 0  
+
+        for i, (x_goal, y_goal) in enumerate(rectangle_corners):
+            rospy.loginfo("Sending goal: x = %s, y = %s meters", x_goal, y_goal)
+            result = move_to_goal(client, x_goal, y_goal, yaw_goal)
+            if not result:
+                rospy.loginfo("Failed to reach corner %d", i+1)
                 break
 
+            # Update the yaw_goal for the next corner
+            yaw_goal += math.pi / 2  # Turn 90 degrees at each corner
+
         if result:
-            rospy.loginfo("All goals reached successfully. Shutting down.")
+            rospy.loginfo("Rectangle path completed successfully. Shutting down.")
             stop_robot()  # Ensure the robot is stopped
             stop_ros_master()  # Shutdown ROS master
 
@@ -84,3 +95,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+### Rectangle Movement ###
