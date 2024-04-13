@@ -46,7 +46,7 @@ def plot_trajectories(ground_truth, calculated):
     ground_truth_x, ground_truth_y = zip(*ground_truth)
     calculated_x, calculated_y = zip(*calculated)  # Unzip calculated if it's a list of tuples
 
-    axes[0, 0].plot(ground_truth_x, ground_truth_y, 'b-', marker='.', markersize=1, label='Ground Truth')
+    axes[0, 0].plot(ground_truth_x, ground_truth_y, 'b--', marker='.', markersize=1, label='Ground Truth')
     axes[0, 0].scatter(start_x, start_y, color='green', s=10, label='Start')
     axes[0, 0].set_title('Ground Truth Trajectory')
     axes[0, 0].legend()
@@ -70,10 +70,17 @@ def plot_trajectories(ground_truth, calculated):
     plt.show()
 
 # Paths to your ROS bag file and deltas CSV file
-deltas_csv_path = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet1.csv', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet2.csv', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet3.csv', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet4.csv']
+deltas_csv_path = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_Diagonal_Direction1.csv',
+'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_Diagonal_Direction2.csv',
+'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_Diagonal_Direction3.csv',
+'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas_Diagonal_Direction4.csv']
+
 ground_truth_topic_name = 'ground_truth/state'
 
-bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag']
+bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Diagonal_data_2024-04-13-17-37-13.bag',
+'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Diagonal_data_2024-04-13-17-42-51.bag',
+'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Diagonal_data_2024-04-13-17-45-49.bag',
+'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Diagonal_data_2024-04-13-17-48-15.bag']
     
 all_ground_truth_positions = []
 all_calculated_positions = []
@@ -84,7 +91,7 @@ for bag_file_path in bag_files:
     all_ground_truth_positions.extend(ground_truth_positions)
 
 # Initial position (change if needed)
-start_x, start_y = 0.5, 0.5
+start_x, start_y = 0.0, 0.0
 
 # Read the ground truth positions from the ROS bag
 

@@ -41,14 +41,16 @@ tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldX_And_Y_'
+isSparse = 'sparseKFoldFullDiagonalFirstDirection_'
 # isSparse = ''
+SpecialCase = '_One_Full_Diagonal_Direction'
+# SpecialCase = ''
+# dataName = 'Data.csv'
+dataName = 'Data_One_Full_Diagonal_Direction.csv'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-SpecialCase = '_X_And_Y_Direction'
-# SpecialCase = ''
 
 model_filename = f'{isTuned}{isSparse}gpy_model_{ith_datapoint}DP{SpecialCase}.pkl'
 scaler_filenameX = f'{isSparse}scaler_X_{ith_datapoint}{SpecialCase}.pkl'
@@ -96,7 +98,7 @@ y_predict_mean, y_predict_variance = loaded_model.predict(X_train_standardized)
 print(loaded_model)
 
 predicted_means_rescaled = scaler_Y.inverse_transform(y_predict_mean)
-real_values = scaler_Y.inverse_transform(Y_train)
+real_values = Y_train
 predicted_variances = y_predict_variance
 
 filename = f'{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real_train.csv'

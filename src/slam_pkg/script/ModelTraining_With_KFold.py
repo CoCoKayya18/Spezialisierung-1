@@ -32,12 +32,12 @@ modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldX_And_Y_'
+isSparse = 'sparseKFoldFullDiagonalFirstDirection_'
 # isSparse = ''
-SpecialCase = '_X_And_Y_Direction'
+SpecialCase = '_One_Full_Diagonal_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_X_And_Y_Direction.csv'
+dataName = 'Data_One_Full_Diagonal_Direction.csv'
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, dataName))

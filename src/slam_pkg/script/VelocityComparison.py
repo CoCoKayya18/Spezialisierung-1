@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Load the complete filtered_dfset
-filtered_dfframe = pd.read_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_ALLSet.csv')
+filtered_dfframe = pd.read_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_Diagonal_Direction.csv')
 
 # List all columns that you want to keep. Adjust this list based on your specific filtered_dfset and the columns you are interested in.
 columns_of_interest = [

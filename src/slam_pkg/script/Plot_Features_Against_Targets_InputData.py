@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-dataname = 'Data_Only_X_Direction.csv'
+dataname = 'Data_Diagonal_Direction.csv'
 
 featurePath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{dataname}'
 

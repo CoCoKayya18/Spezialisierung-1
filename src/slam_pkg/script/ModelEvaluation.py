@@ -5,16 +5,18 @@ from sklearn.metrics import r2_score
 from sklearn.preprocessing import MinMaxScaler
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldX_And_Y_'
+isSparse = 'sparseKFoldFullDiagonalFirstDirection_'
 # isSparse = ''
+SpecialCase = '_One_Full_Diagonal_Direction'
+# SpecialCase = ''
+# dataName = 'Data.csv'
+dataName = 'Data_One_Full_Diagonal_Direction.csv'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-trainOrTest = '_test'
 # trainOrTest = '_train'
-SpecialCase = '_X_And_Y_Direction'
-# SpecialCase = ''
+trainOrTest = '_test'
 
 # Load the standardized predictions and real values
 filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'

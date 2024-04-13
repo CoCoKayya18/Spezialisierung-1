@@ -4,15 +4,15 @@ import os
 import matplotlib.pyplot as plt
 
 ith_datapoint = 1
-isSparse = 'sparseKFold1_'
+isSparse = 'sparseKFoldDiagonal_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-# SpecialCase = '_OneDirection'
-SpecialCase = ''
-dataname = 'Data_Only_X_Direction.csv'
+SpecialCase = '_Diagonal_Direction'
+# SpecialCase = ''
+dataname = 'Data_Diagonal_Direction.csv'
 
 featurePath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{dataname}'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
