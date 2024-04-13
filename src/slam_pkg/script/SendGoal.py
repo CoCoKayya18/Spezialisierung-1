@@ -55,24 +55,32 @@ def stop_ros_master():
     os.system("killall -9 rosmaster")  # Stops the ROS master
     os.system("killall -9 roscore")  # Stops the roscore as well
 
-def main():
-    try:
-        rospy.init_node('move_base_diagonal_py')
-        client = initialize_action_client()
+def move_square(client):
+    waypoints = [
+        # (4, 4, 0),  # Start at (4, 4)
+        (-1.5, 1.5, math.pi/2),  # Move to (-4, 4)
+        (-1.5, -1.5, math.pi),  # Move to (-4, -4)
+        (1.5, -1.5, -math.pi/2),  # Move to (4, -4)
+        (1.5, 1.5, 0)
+    ]
 
-        # Diagonal goal to point (4,4)
-        x_goal = -4.0
-        y_goal = -4.0
-        yaw_goal = -math.pi / 4  # 45 degrees, adjust this angle as needed
-
-        rospy.loginfo("Sending diagonal goal: x = %s, y = %s meters", x_goal, y_goal)
+    for waypoint in waypoints:
+        x_goal, y_goal, yaw_goal = waypoint
+        rospy.loginfo("Moving to waypoint: x = %s, y = %s meters", x_goal, y_goal)
         result = move_to_goal(client, x_goal, y_goal, yaw_goal)
         if result:
-            rospy.loginfo("Diagonal goal reached successfully.")
+            rospy.loginfo("Reached waypoint successfully.")
         else:
-            rospy.loginfo("Failed to reach the diagonal goal")
+            rospy.loginfo("Failed to reach the waypoint.")
+            break  # Exit the loop if we fail to reach a waypoint
+        rospy.sleep(1)  # Short pause at each waypoint
 
-        stop_robot()  # Ensure the robot is stopped after reaching the goal or failing
+def main():
+    try:
+        rospy.init_node('move_base_square_py')
+        client = initialize_action_client()
+        move_square(client)
+        stop_robot()  # Ensure the robot is stopped after completing the square
         stop_ros_master()  # Shutdown ROS master
 
     except rospy.ROSInterruptException:
@@ -81,4 +89,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-### Diagonal Movement ###
+### Quadratic Movement ###

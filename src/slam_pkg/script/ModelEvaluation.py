@@ -5,12 +5,12 @@ from sklearn.metrics import r2_score
 from sklearn.preprocessing import MinMaxScaler
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldFullDiagonalFirstDirection_'
+isSparse = 'sparseKFoldSquareDirection_'
 # isSparse = ''
-SpecialCase = '_One_Full_Diagonal_Direction'
+SpecialCase = '_Square_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_One_Full_Diagonal_Direction.csv'
+dataName = 'Data_Square_Direction_Direction.csv'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'

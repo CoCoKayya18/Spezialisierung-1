@@ -10,7 +10,7 @@ isSparse = 'sparseKFoldDiagonal_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-SpecialCase = '_Diagonal_Direction'
+SpecialCase = '_Square_Direction'
 # SpecialCase = ''
 dataname = 'Data_Diagonal_Direction.csv'
 

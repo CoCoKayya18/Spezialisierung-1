@@ -55,7 +55,7 @@ class BagDataProcessor:
         df['kinematic_delta_yaw'] = 0.0
         
         # Initial pose
-        x, y, theta = 4.0, 4.0, -0.78539816339
+        x, y, theta = 1.5, 1.5, 3.1415
         
         for index, row in df.iterrows():
             if index == 0:
@@ -102,7 +102,7 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        SpecialCase = '_One_Full_Diagonal_Direction'
+        SpecialCase = '_Square_Direction'
         # SpecialCase = ''
         dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}.csv'
         dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}.csv'
@@ -174,7 +174,26 @@ def process_bag_file(bag_file_path, counter):
 
 if __name__ == '__main__':
     
-    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/OneFullDiagonal_data_2024-04-13-22-02-18.bag']
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-00-52-33.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-00-54-28.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-00-57-08.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-00-59-07.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-01-04.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-03-36.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-05-41.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-07-58.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-10-10.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-12-12.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-14-10.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-16-00.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-18-12.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-20-10.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-22-00.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-23-50.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-27-10.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-30-51.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-33-02.bag',
+                '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/Square_data_2024-04-14-01-35-27.bag']
     counter = 1
     for bag_file in bag_files:
         process_bag_file(bag_file, counter)
