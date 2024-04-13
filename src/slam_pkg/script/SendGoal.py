@@ -6,13 +6,7 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from tf.transformations import quaternion_from_euler
 import os
 
-def move_to_goal(x_goal, y_goal, yaw_goal):
-    # Create an action client called "move_base" with action definition file "MoveBaseAction"
-    client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-
-    # Waits until the action server has started up and started listening for goals.
-    client.wait_for_server()
-
+def move_to_goal(client, x_goal, y_goal, yaw_goal):
     # Creates a new goal with the MoveBaseGoal constructor
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = 'map'  # Replace with your frame ID
@@ -37,9 +31,15 @@ def move_to_goal(x_goal, y_goal, yaw_goal):
     if not wait:
         rospy.logerr("Action server not available!")
         rospy.signal_shutdown("Action server not available!")
+        return False
     else:
         # Result of executing the action
         return client.get_result()
+
+def initialize_action_client():
+    client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+    client.wait_for_server()
+    return client
 
 def stop_robot():
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
@@ -54,18 +54,33 @@ def stop_ros_master():
     os.system("killall -9 rosmaster")  # Stops the ROS master
     os.system("killall -9 roscore")  # Stops the roscore as well
 
-# Initializes a rospy node to let the SimpleActionClient publish and subscribe
-if __name__ == '__main__':
+def main():
     try:
-        rospy.init_node('move_base_goal_py')
-        x_goal = 3.0  # Change to your x goal
-        y_goal = 0.5  # Change to your y goal
-        yaw_goal = 0  # Change to your yaw goal (in radians)
+        rospy.init_node('move_base_sequence_py')
+        client = initialize_action_client()
 
-        result = move_to_goal(x_goal, y_goal, yaw_goal)
+        goals = [1, 2, 3, 2, 1]  # Distances for each goal in y-direction
+        y_current = 0  # Initialize current y position
+        x_goal = 0.5  # Constant x goal
+        yaw_goal = 1.57079632679  # No rotation
+
+        for i, increment in enumerate(goals):
+            y_current += increment  # Update y position by increment
+            rospy.loginfo("Sending goal: y = %s meters", y_current)
+            result = move_to_goal(client, x_goal, y_current, yaw_goal)
+            if result:
+                rospy.loginfo("Goal %d reached", i+1)
+            else:
+                rospy.loginfo("Failed to reach goal %d", i+1)
+                break
+
         if result:
-            rospy.loginfo("Goal execution done!")
-            stop_robot()  # Stop the robot when the goal is reached
-            stop_ros_master()
+            rospy.loginfo("All goals reached successfully. Shutting down.")
+            stop_robot()  # Ensure the robot is stopped
+            stop_ros_master()  # Shutdown ROS master
+
     except rospy.ROSInterruptException:
-        rospy.loginfo("Navigation test finished.")
+        rospy.loginfo("Navigation sequence interrupted.")
+
+if __name__ == '__main__':
+    main()

@@ -5,14 +5,14 @@ from sklearn.metrics import r2_score
 from sklearn.preprocessing import MinMaxScaler
 
 ith_datapoint = 1
-isSparse = 'sparseKFold1_'
+isSparse = 'sparseKFold2_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-# trainOrTest = '_test'
-trainOrTest = '_train'
+trainOrTest = '_test'
+# trainOrTest = '_train'
 # SpecialCase = '_OneDirection'
 SpecialCase = ''
 

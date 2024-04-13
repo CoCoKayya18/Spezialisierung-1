@@ -102,7 +102,7 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        SpecialCase = '_Only_X_Direction'
+        SpecialCase = '_Only_Y_Direction'
         # SpecialCase = ''
         dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}.csv'
         dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}.csv'
@@ -174,7 +174,7 @@ def process_bag_file(bag_file_path, counter):
 
 if __name__ == '__main__':
     # bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-18-21.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-15-44.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-50.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/AllSensor_data_2024-04-10-15-03-04.bag']
-    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/10mX_Direction_data_2024-04-12-23-58-11.bag']
+    bag_files = ['/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/10mY_Direction_data_2024-04-13-13-45-40.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/10mY_Direction_data_2024-04-13-13-47-35.bag', '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/rosbag_files/10mY_Direction_data_2024-04-13-13-48-37.bag']
     counter = 1
     for bag_file in bag_files:
         process_bag_file(bag_file, counter)

@@ -7,18 +7,37 @@ import pandas
 import os
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_feature_distribution(X_train, X_test, feature_names, title_suffix=''):
+    num_features = len(feature_names)
+    fig, axes = plt.subplots(1, num_features, figsize=(5 * num_features, 4))
+    
+    if num_features == 1:
+        axes = [axes]
+    
+    for i, feature_name in enumerate(feature_names):
+        axes[i].hist(X_train[:, i], bins=20, color='blue', alpha=0.5, label='Train')
+        axes[i].hist(X_test[:, i], bins=20, color='orange', alpha=0.5, label='Test')
+        axes[i].set_title(f'{feature_name} Distribution {title_suffix}')
+        axes[i].set_xlabel(feature_name)
+        axes[i].set_ylabel('Frequency')
+        axes[i].legend()
+    
+    plt.tight_layout()
+    plt.show()
 
 datafilepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
 modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparseKFold1_'
+isSparse = 'sparseKFold2_'
 # isSparse = ''
 # SpecialCase = '_OneDirection'
 SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_Only_X_Direction.csv'
+dataName = 'Data_Only_Y_Direction.csv'
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, dataName))
@@ -43,6 +62,10 @@ kinematic_data = dataframe[kinematic_deltas].values
 
 X_train_full, X_test, Y_train_full, Y_test, kinematic_train_full, kinematic_test = train_test_split(X, Y, kinematic_data, test_size=0.3, random_state=42)
 
+# Plotting target distributions
+plot_feature_distribution(X_train_full, X_test, features, title_suffix='(Features)')
+plot_feature_distribution(Y_train_full, Y_test, target, title_suffix='(Targets)')
+
 # Then fit and transform with standardization
 scaler_X = StandardScaler()
 scaler_Y = StandardScaler()
@@ -58,16 +81,16 @@ mean_Y = np.mean(Y_train_full, axis=0)
 std_Y = np.std(Y_train_full, axis=0)
 print("Mean of standardized features (X):", mean_X)
 print("Standard deviation of standardized features (X):", std_X)
-print("\nMean of standardized target variable (Y):", mean_Y)
+print("Mean of standardized target variable (Y):", mean_Y)
 print("Standard deviation of standardized target variable (Y):", std_Y)
 
 mean_X = np.mean(X_test, axis=0)
 std_X = np.std(X_test, axis=0)
 mean_Y = np.mean(Y_test, axis=0)
 std_Y = np.std(Y_test, axis=0)
-print("Mean of standardized features (X):", mean_X)
+print("\nMean of standardized features (X):", mean_X)
 print("Standard deviation of standardized features (X):", std_X)
-print("\nMean of standardized target variable (Y):", mean_Y)
+print("Mean of standardized target variable (Y):", mean_Y)
 print("Standard deviation of standardized target variable (Y):", std_Y)
 
 # Number of folds
@@ -171,13 +194,22 @@ X_train, X_val = X_train_full[best_indices[0]], X_train_full[best_indices[1]]
 Y_train, Y_val = Y_train_full[best_indices[0]], Y_train_full[best_indices[1]]
 kinematic_train, kinematic_val = kinematic_train_full[best_indices[0]], kinematic_train_full[best_indices[1]]
 
+# Inverse transform features and targets for saving to CSV
+X_train_inv = scaler_X.inverse_transform(X_train)
+X_val_inv = scaler_X.inverse_transform(X_val)
+X_test_inv = scaler_X.inverse_transform(X_test)
+
+Y_train_inv = scaler_Y.inverse_transform(Y_train)
+Y_val_inv = scaler_Y.inverse_transform(Y_val)
+Y_test_inv = scaler_Y.inverse_transform(Y_test)
+
 # Save data for the best model
-train_data = pandas.concat([pandas.DataFrame(X_train, columns=features), pandas.DataFrame(Y_train, columns=target),
-                        pandas.DataFrame(kinematic_train, columns=kinematic_deltas)], axis=1)
-val_data = pandas.concat([pandas.DataFrame(X_val, columns=features), pandas.DataFrame(Y_val, columns=target),
-                      pandas.DataFrame(kinematic_val, columns=kinematic_deltas)], axis=1)
-test_data = pandas.concat([pandas.DataFrame(X_test, columns=features), pandas.DataFrame(Y_test, columns=target),
-                       pandas.DataFrame(kinematic_test, columns=kinematic_deltas)], axis=1)
+# Concatenate the inversely transformed data and kinematic data
+train_data = pandas.concat([pandas.DataFrame(X_train_inv, columns=features), pandas.DataFrame(Y_train_inv, columns=target), pandas.DataFrame(kinematic_train, columns=kinematic_deltas)], axis=1)
+
+val_data = pandas.concat([pandas.DataFrame(X_val_inv, columns=features), pandas.DataFrame(Y_val_inv, columns=target), pandas.DataFrame(kinematic_val, columns=kinematic_deltas)], axis=1)
+
+test_data = pandas.concat([pandas.DataFrame(X_test_inv, columns=features), pandas.DataFrame(Y_test_inv, columns=target), pandas.DataFrame(kinematic_test, columns=kinematic_deltas)], axis=1)
 
 train_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_train_data{SpecialCase}.csv'), index=False)
 val_data.to_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data{SpecialCase}.csv'), index=False)
