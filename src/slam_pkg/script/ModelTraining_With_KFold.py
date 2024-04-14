@@ -37,7 +37,7 @@ isSparse = 'sparseKFoldSquareDirection_'
 SpecialCase = '_Square_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_Square_Direction_Direction.csv'
+dataName = 'Data_Square_Direction.csv'
 
 # Get the data out of the csv
 dataframe = pandas.read_csv(os.path.join(datafilepath, dataName))

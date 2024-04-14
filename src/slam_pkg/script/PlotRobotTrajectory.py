@@ -43,6 +43,8 @@ if getKinematic:
     # df['cumulative_kinematic_y'] = df['kinematic_delta_y'].cumsum()
     cumulative_kinematic_x = df['cumulative_kinematic_x'].to_numpy()
     cumulative_kinematic_y = df['cumulative_kinematic_y'].to_numpy()
+    plt.plot(cumulative_kinematic_x[0], cumulative_kinematic_y[0], 'go', label='Kinematic Start', markersize=8)  # Start point
+    plt.plot(cumulative_kinematic_x[-1], cumulative_kinematic_y[-1], 'ro', label='Kinematic End', markersize=8)
     plt.plot(cumulative_kinematic_x, cumulative_kinematic_y, label='Kinematic Path', marker='o', linestyle='-', markersize=2)
 
 if getGT: 
@@ -52,6 +54,8 @@ if getGT:
     # print(df['Real_Y'].cumsum())
     cumulative_ground_truth_x = df['cumulative_ground_truth_x'].to_numpy()
     cumulative_ground_truth_y = df['cumulative_ground_truth_y'].to_numpy()
+    plt.plot(cumulative_ground_truth_x[0], cumulative_ground_truth_y[0], 'g^', label='Ground Truth Start', markersize=8)  # Start point
+    plt.plot(cumulative_ground_truth_x[-1], cumulative_ground_truth_y[-1], 'r^', label='Ground Truth End', markersize=8)  # End point
     plt.plot(cumulative_ground_truth_x, cumulative_ground_truth_y, label='Ground Truth Path', marker='x', linestyle='dotted', markersize=2)
 
 if getPredicted:
@@ -59,6 +63,8 @@ if getPredicted:
     df['cumulative_predicted_y'] = df['Predicted_Y'].cumsum()
     cumulative_predicted_x = df['cumulative_predicted_x'].to_numpy()
     cumulative_predicted_y = df['cumulative_predicted_y'].to_numpy()
+    plt.plot(cumulative_predicted_x[0], cumulative_predicted_y[0], 'gs', label='Predicted Start', markersize=8)  # Start point
+    plt.plot(cumulative_predicted_x[-1], cumulative_predicted_y[-1], 'rs', label='Predicted End', markersize=8)  # End point
     plt.plot(cumulative_predicted_x, cumulative_predicted_y, label='Predicted Path', marker='x', linestyle='dotted', markersize=2)
 
 if limit:

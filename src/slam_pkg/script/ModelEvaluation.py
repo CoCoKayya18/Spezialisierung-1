@@ -15,8 +15,8 @@ dataName = 'Data_Square_Direction_Direction.csv'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-# trainOrTest = '_train'
-trainOrTest = '_test'
+trainOrTest = '_train'
+# trainOrTest = '_test'
 
 # Load the standardized predictions and real values
 filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'
