@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import os
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldSquareDirection_'
+isSparse = 'sparseKFoldSquareWorldDirection_'
 # isSparse = ''
-SpecialCase = '_Square_Direction'
+SpecialCase = '_Square_World_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_Square_Direction_Direction.csv'
+dataName = 'Data_Square_World_Direction.csv'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'

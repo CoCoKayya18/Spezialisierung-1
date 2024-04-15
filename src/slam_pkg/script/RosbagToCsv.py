@@ -37,17 +37,29 @@ class BagDataProcessor:
         wheel_base = 0.160  # distance between wheels in meters
         time_diffs = 0.0333
 
+
         # print(df['position_0'].diff() + df['position_1'].diff())
 
         # Calculate linear and angular velocities
         df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
         df['angular_velocity_yaw'] = (((df['position_0'].diff() - df['position_1'].diff()) / wheel_base) / time_diffs) * wheel_radius
+
+        df['angular_velocity_yaw'].fillna(method='bfill', inplace=True)  # Backward fill for the first NaN
+        df['angular_velocity_yaw'].interpolate(inplace=True)  # Interpolate remaining NaNs if any
+
+        theta = 3.1415 + np.cumsum(np.insert(df['angular_velocity_yaw'].values, 0, 0)[:-1]) * time_diffs
+        theta = (theta + np.pi) % (2 * np.pi) - np.pi
+
+        print(theta)
+
+        df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
+        df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(theta)
         
         # Calculate accelerations
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
         df['angular_acceleration_yaw'] = df['angular_velocity_yaw'].diff() / time_diffs
         
-        return df[['Time', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
+        return df[['Time', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
     
     def calculate_kinematic_deltas(self, df):
         df['kinematic_delta_x'] = 0.0
@@ -102,7 +114,7 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        SpecialCase = '_Square_Direction'
+        SpecialCase = '_Square_World_Direction'
         # SpecialCase = ''
         dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}.csv'
         dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}.csv'
@@ -133,7 +145,7 @@ class BagDataProcessor:
         combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
         combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
 
-        columns_of_interest = ['linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x', 'delta_position_y', 'delta_yaw']
+        columns_of_interest = ['linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x', 'delta_position_y', 'delta_yaw']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
         if missing_values.any():

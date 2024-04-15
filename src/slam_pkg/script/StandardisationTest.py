@@ -4,13 +4,13 @@ import os
 import matplotlib.pyplot as plt
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldDiagonal_'
+isSparse = 'sparseKFoldSquareWorldDirection_'
 # isSparse = ''
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-SpecialCase = '_Square_Direction'
+SpecialCase = 'Data_Square_World_Direction'
 # SpecialCase = ''
 dataname = 'Data_Diagonal_Direction.csv'
 
