@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import os
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldSquareWorldDirection_'
+isSparse = 'sparseKFold1_'
 # isSparse = ''
-SpecialCase = '_Square_World_Direction'
-# SpecialCase = ''
+# SpecialCase = '_Square_World_Direction'
+SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_Square_World_Direction.csv'
+# dataName = 'Data_Square_World_Direction.csv'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
@@ -25,7 +25,7 @@ DataFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
 # print(os.path.join(DataFilePath, filename))
 df = pd.read_csv(os.path.join(DataFilePath, filename))
 
-getKinematic = False
+getKinematic = True
 getGT = True
 getPredicted = True
 

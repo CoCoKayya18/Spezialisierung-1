@@ -16,12 +16,12 @@ def mean_absolute_percentage_error(y_true, y_pred):
 
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldSquareDirection_'
+isSparse = 'sparseKFoldSquareWorldDirection_'
 # isSparse = ''
-SpecialCase = '_Square_Direction'
+SpecialCase = '_Square_World_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = '_Data_Diagonal_Direction'
+dataName = 'Data_Square_World_Direction'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
