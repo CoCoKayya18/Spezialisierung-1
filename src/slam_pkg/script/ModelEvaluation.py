@@ -16,18 +16,20 @@ def mean_absolute_percentage_error(y_true, y_pred):
 
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldSquareWorldDirection_'
+isSparse = 'sparseKFoldDiagonalFirstDirection_'
 # isSparse = ''
-SpecialCase = '_Square_World_Direction'
+SpecialCase = '_First_Diagonal_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_Square_World_Direction'
+dataName = 'Data_Square_Direction'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
 # trainOrTest = '_train'
 trainOrTest = '_test'
+
+# /home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparseKFoldDiagonal_1_Diagonal_Direction_DP_predictions_vs_real_test.csv
 
 # Load the standardized predictions and real values
 filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'
@@ -82,11 +84,12 @@ for i, feat in enumerate(features, start=1):
     plt.scatter(data[f'Real_{feat}'], data[f'Predicted_{feat}'], alpha=0.1)  # Plot real vs predicted with transparency
     plt.plot(data[f'Real_{feat}'].values, data[f'Predicted_{feat}_LM'].values, 'r--')  # Plot linear model predictions
     # plt.title(figure_titles[i-1])
-    plt.xlabel(f'GT Δ{feat}')
-    plt.ylabel(f'Predicted Δ{feat}')
+    plt.xlabel(f'GT Δ{feat} [m]')
+    plt.ylabel(f'Predicted Δ{feat} [m]')
     plt.text(0.05, 0.95, error_texts[i-1], transform=plt.gca().transAxes, fontsize=9, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
     plt.grid(True)
 
+plt.subplots_adjust(left=0.06, bottom=0.06, right=0.30, top=0.70, wspace=0.20, hspace=0.22)
 plt.tight_layout()
 plt.show()
 
