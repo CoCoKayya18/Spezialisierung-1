@@ -30,8 +30,8 @@ def calculate_trajectory_from_deltas(deltas_csv_path, start_x=0.5, start_y=0.5):
             current_x = start_x
             current_y = start_y
 
-        current_x += row['delta_position_x']
-        current_y += row['delta_position_y']
+        current_x += row['delta_position_x_robot']
+        current_y += row['delta_position_y_robot']
         trajectory_x.append(current_x)
         trajectory_y.append(current_y)
         last_time = row['Time']

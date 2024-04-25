@@ -125,6 +125,7 @@ class BagDataProcessor:
 
         SpecialCase = '_Square_RobotFrameDeltas_Direction'
         # SpecialCase = ''
+        
         dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}.csv'
         dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}.csv'
         mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data{SpecialCase}.csv'
@@ -154,7 +155,7 @@ class BagDataProcessor:
         combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
         combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
 
-        columns_of_interest = ['Theta', 'yaw', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']
+        columns_of_interest = ['Theta', 'yaw', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
         if missing_values.any():

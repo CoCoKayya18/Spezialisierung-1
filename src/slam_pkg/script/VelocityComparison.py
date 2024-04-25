@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Load the complete filtered_dfset
-filtered_dfframe = pd.read_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_Square_World_Direction.csv')
+filtered_dfframe = pd.read_csv('/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data_Square_RobotFrameDeltas_Direction.csv')
 
 # List all columns that you want to keep. Adjust this list based on your specific filtered_dfset and the columns you are interested in.
 columns_of_interest = [
@@ -81,30 +81,30 @@ plt.figure(figsize=(15, 15))
 
 # Plot linear velocities
 plt.subplot(3, 2, 1)
-# plt.plot(filtered_df['Time'].values, calculated_linear, label='Calculated Linear Velocity', marker='.')
-# plt.plot(filtered_df['Time'].values, odometry_linear, label='Odometry Linear Velocity', marker='.')
-# plt.title('Comparison of Linear Velocities')
-# plt.xlabel('Time (s)')
-# plt.ylabel('Linear Velocity (m/s)')
-# plt.legend()
-# plt.grid(True)
+plt.plot(filtered_df['Time'].values, calculated_linear, label='Calculated Linear Velocity', marker='.')
+plt.plot(filtered_df['Time'].values, odometry_linear, label='Odometry Linear Velocity', marker='.')
+plt.title('Comparison of Linear Velocities')
+plt.xlabel('Time (s)')
+plt.ylabel('Linear Velocity (m/s)')
+plt.legend()
+plt.grid(True)
 
-# # Plot angular velocities
-# plt.subplot(3, 2, 2)
-# plt.plot(filtered_df['Time'].values, calculated_angular, label='Calculated Angular Velocity', marker='.')
-# plt.plot(filtered_df['Time'].values, odometry_angular, label='Odometry Angular Velocity', marker='.')
-# plt.title('Comparison of Angular Velocities')
-# plt.xlabel('Time (s)')
-# plt.ylabel('Angular Velocity (rad/s)')
-# plt.legend()
-# plt.grid(True)
+# Plot angular velocities
+plt.subplot(3, 2, 2)
+plt.plot(filtered_df['Time'].values, calculated_angular, label='Calculated Angular Velocity', marker='.')
+plt.plot(filtered_df['Time'].values, odometry_angular, label='Odometry Angular Velocity', marker='.')
+plt.title('Comparison of Angular Velocities')
+plt.xlabel('Time (s)')
+plt.ylabel('Angular Velocity (rad/s)')
+plt.legend()
+plt.grid(True)
 
-# # Bland-Altman Plots
-# mean_linear, diff_linear, md_linear, sd_linear = bland_altman_stats(calculated_linear, odometry_linear)
-# bland_altman_plot(mean_linear, diff_linear, md_linear, sd_linear, 'Bland-Altman Plot for Linear Velocities', 3)
+# Bland-Altman Plots
+mean_linear, diff_linear, md_linear, sd_linear = bland_altman_stats(calculated_linear, odometry_linear)
+bland_altman_plot(mean_linear, diff_linear, md_linear, sd_linear, 'Bland-Altman Plot for Linear Velocities', 3)
 
-# mean_angular, diff_angular, md_angular, sd_angular = bland_altman_stats(calculated_angular, odometry_angular)
-# bland_altman_plot(mean_angular, diff_angular, md_angular, sd_angular, 'Bland-Altman Plot for Angular Velocities', 4)
+mean_angular, diff_angular, md_angular, sd_angular = bland_altman_stats(calculated_angular, odometry_angular)
+bland_altman_plot(mean_angular, diff_angular, md_angular, sd_angular, 'Bland-Altman Plot for Angular Velocities', 4)
 
 # Error Analysis for Linear Velocities
 errors_linear = calculated_linear - odometry_linear
