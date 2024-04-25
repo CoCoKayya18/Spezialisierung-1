@@ -3,6 +3,7 @@ from bagpy import bagreader
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 import os
+import math
 
 class BagDataProcessor:
     def __init__(self, bagfilepath):
@@ -27,7 +28,14 @@ class BagDataProcessor:
         df['delta_yaw'] = df['yaw'].diff().fillna(0) # Get Delta_Yaw
         df['delta_yaw'] = np.arctan2(np.sin(df['delta_yaw']), np.cos(df['delta_yaw']))  # Normalize the yaw delta
 
-        return df[['Time', 'delta_position_x', 'delta_position_y', 'delta_yaw']]
+        # Transform World Frame Deltas to Robot Frame Deltas
+        cos_yaw = np.cos(df['yaw'])
+        sin_yaw = np.sin(df['yaw'])
+        df['delta_position_x_robot'] = cos_yaw * df['delta_position_x'] + sin_yaw * df['delta_position_y']
+        df['delta_position_y_robot'] = -sin_yaw * df['delta_position_x'] + cos_yaw * df['delta_position_y']        
+
+        # return df[['Time', 'delta_position_x', 'delta_position_y', 'delta_yaw']]
+        return df[['Time', 'yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']]
 
     def calculate_joint_velocities_and_accelerations(self, df):
         # Convert seconds and nanoseconds to a single time column in seconds.
@@ -49,17 +57,18 @@ class BagDataProcessor:
 
         theta = 3.1415 + np.cumsum(np.insert(df['angular_velocity_yaw'].values, 0, 0)[:-1]) * time_diffs
         theta = (theta + np.pi) % (2 * np.pi) - np.pi
+        df['Theta'] = theta
 
         print(theta)
 
-        df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
-        df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(theta)
+        # df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
+        # df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(theta)
         
         # Calculate accelerations
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
         df['angular_acceleration_yaw'] = df['angular_velocity_yaw'].diff() / time_diffs
         
-        return df[['Time', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
+        return df[['Time', 'Theta', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
     
     def calculate_kinematic_deltas(self, df):
         df['kinematic_delta_x'] = 0.0
@@ -114,7 +123,7 @@ class BagDataProcessor:
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df)
 
-        SpecialCase = '_Square_World_Direction'
+        SpecialCase = '_Square_RobotFrameDeltas_Direction'
         # SpecialCase = ''
         dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}.csv'
         dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}.csv'
@@ -145,7 +154,7 @@ class BagDataProcessor:
         combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
         combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
 
-        columns_of_interest = ['linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x', 'delta_position_y', 'delta_yaw']
+        columns_of_interest = ['Theta', 'yaw', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
         if missing_values.any():

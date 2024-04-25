@@ -58,10 +58,10 @@ def stop_ros_master():
 def move_square(client):
     waypoints = [
         # (4, 4, 0),  # Start at (4, 4)
-        (-1.5, 1.5, math.pi/2),  # Move to (-4, 4)
-        (-1.5, -1.5, math.pi),  # Move to (-4, -4)
-        (1.5, -1.5, -math.pi/2),  # Move to (4, -4)
-        (1.5, 1.5, 0)
+        (-1.5, 1.5, math.pi/2),  # Move to Goal 1
+        (-1.5, -1.5, math.pi),  # Move to Goal 2
+        (1.5, -1.5, -math.pi/2),  # Move to Goal 3
+        (1.5, 1.5, 0)           # Move back to the start
     ]
 
     for waypoint in waypoints:
