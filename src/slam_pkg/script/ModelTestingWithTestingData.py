@@ -41,12 +41,12 @@ tunedModelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel
 scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
 
 ith_datapoint = 1
-isSparse = 'sparseKFoldSquareWorldDirection_'
+isSparse = 'sparseKFoldSquareRobotFrameDirection_'
 # isSparse = ''
-SpecialCase = '_Square_World_Direction'
+SpecialCase = '_Square_RobotFrameDeltas_Direction'
 # SpecialCase = ''
 # dataName = 'Data.csv'
-dataName = 'Data_Square_World_Direction.csv'
+dataName = 'Data_Square_RobotFrameDeltas_Direction.csv'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = isTuned + 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
@@ -73,9 +73,10 @@ dataframe = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoin
 #     validationDataFrame = pandas.read_csv(os.path.join(datafilepath, f'{isSparse}{ith_datapoint}_DP_val_data{SpecialCase}.csv'))
 #     dataframe = pandas.concat([dataframe, validationDataFrame], ignore_index=True)
 
-# features = ['linear_velocity_x', 'angular_velocity_yaw']
-features = ['world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw']
-target = ['delta_position_x', 'delta_position_y', 'delta_yaw']
+features = ['linear_velocity_x', 'angular_velocity_yaw']
+# features = ['world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw']
+# target = ['delta_position_x', 'delta_position_y', 'delta_yaw']
+target = ['delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']
 kinematicDeltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
 #get every i-th datapoint out of the csv
