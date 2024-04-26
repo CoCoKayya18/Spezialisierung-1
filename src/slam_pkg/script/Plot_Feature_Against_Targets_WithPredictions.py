@@ -4,16 +4,18 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 ith_datapoint = 1
-isSparse = 'sparseKFold1_'
+isSparse = 'sparseKFoldSquareRobotFrameDirection_'
 # isSparse = ''
+SpecialCase = '_Square_RobotFrameDeltas_Direction'
+# SpecialCase = ''
+# dataName = 'Data.csv'
+dataName = 'Data_Square_RobotFrameDeltas_Direction'
 # isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
 # isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
-trainOrTest = '_test'
 # trainOrTest = '_train'
-# SpecialCase = '_OneDirection'
-SpecialCase = ''
+trainOrTest = '_test'
 
 featurePathTest = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP{trainOrTest}_data{SpecialCase}.csv'
 featurePathVal = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}_DP{trainOrTest}_data{SpecialCase}.csv'

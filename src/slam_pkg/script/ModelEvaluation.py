@@ -31,7 +31,7 @@ trainOrTest = '_test'
 
 # /home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/sparseKFoldDiagonal_1_Diagonal_Direction_DP_predictions_vs_real_test.csv
 
-# Load the standardized predictions and real values
+# Load predictions and real values
 filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'
 
 data = pd.read_csv(filepath)

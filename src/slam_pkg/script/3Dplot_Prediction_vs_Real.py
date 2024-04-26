@@ -5,14 +5,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-ith_datapoint = 100
-# isSparse = 'sparse0_'
-isSparse = ''
+ith_datapoint = 1
+isSparse = 'sparseKFoldSquareRobotFrameDirection_'
+# isSparse = ''
+SpecialCase = '_Square_RobotFrameDeltas_Direction'
+# SpecialCase = ''
+# dataName = 'Data.csv'
+dataName = 'Data_Square_RobotFrameDeltas_Direction'
+# isTuned = 'BayesianOptimizationTuned_'
 # isTuned = 'GridSearchTuned_'
+# isTuned = 'BayesianOptimizationTuned_GridSearchTuned_'
 isTuned = ''
+# trainOrTest = '_train'
+trainOrTest = '_test'
 
-# Load the standardized predictions and real values
-filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isSparse}{ith_datapoint}_DP_predictions_vs_real.csv'
+# Load predictions and real values
+filepath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{isTuned}{isSparse}{ith_datapoint}{SpecialCase}_DP_predictions_vs_real{trainOrTest}.csv'
+
 data = pd.read_csv(filepath)
 
 features = ['X', 'Y', 'Yaw']
