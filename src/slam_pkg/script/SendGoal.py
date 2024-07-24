@@ -58,10 +58,10 @@ def stop_ros_master():
 def move_square(client):
     waypoints = [
         # (4, 4, 0),  # Start at (4, 4)
-        (-1.5, 1.5, math.pi/2),  # Move to Goal 1
-        (-1.5, -1.5, math.pi),  # Move to Goal 2
-        (1.5, -1.5, -math.pi/2),  # Move to Goal 3
-        (1.5, 1.5, 0)           # Move back to the start
+        (-1, 1, 5*math.pi/4),  # Move to Goal 1
+        (-1, -1, 0),  # Move to Goal 2
+        (1, -1, math.pi/2),  # Move to Goal 3
+        (1, 1, 0)           # Move back to the start
     ]
 
     for waypoint in waypoints:
@@ -80,9 +80,9 @@ def main():
         rospy.init_node('move_base_square_py')
         client = initialize_action_client()
 
-        # move_square(client)
-        move_to_goal(client, 5, 5, 3.1415)
-        
+        move_square(client)
+        # move_to_goal(client, 2, -2, 5.498)
+
         stop_robot()  # Ensure the robot is stopped after completing the square
         stop_ros_master()  # Shutdown ROS master
 
