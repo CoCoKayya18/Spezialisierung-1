@@ -79,7 +79,10 @@ def main():
     try:
         rospy.init_node('move_base_square_py')
         client = initialize_action_client()
-        move_square(client)
+
+        # move_square(client)
+        move_to_goal(client, 5, 5, 3.1415)
+        
         stop_robot()  # Ensure the robot is stopped after completing the square
         stop_ros_master()  # Shutdown ROS master
 

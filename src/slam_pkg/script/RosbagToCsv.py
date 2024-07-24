@@ -15,10 +15,12 @@ class BagDataProcessor:
         return pd.read_csv(csv_path) if csv_path else pd.DataFrame()
 
     def calculate_ground_truth_deltas(self, df):
+        
         # Convert seconds and nanoseconds to a single time column in seconds
         df['Time'] = pd.to_numeric(df['header.stamp.secs']) + pd.to_numeric(df['header.stamp.nsecs']) * 1e-9
         df['delta_position_x'] = df['pose.pose.position.x'].diff().fillna(0) # Get Delta_X
         df['delta_position_y'] = df['pose.pose.position.y'].diff().fillna(0) # Get Delta_Y
+        
         # Convert quaternion to Euler angles (yaw)
         quaternions = df[['pose.pose.orientation.x', 'pose.pose.orientation.y', 'pose.pose.orientation.z', 'pose.pose.orientation.w']].to_numpy()
         eulers = R.from_quat(quaternions).as_euler('xyz', degrees=False)  # xyz order, output in radians
@@ -29,13 +31,13 @@ class BagDataProcessor:
         df['delta_yaw'] = np.arctan2(np.sin(df['delta_yaw']), np.cos(df['delta_yaw']))  # Normalize the yaw delta
 
         # Transform World Frame Deltas to Robot Frame Deltas
-        cos_yaw = np.cos(df['yaw'])
-        sin_yaw = np.sin(df['yaw'])
-        df['delta_position_x_robot'] = cos_yaw * df['delta_position_x'] + sin_yaw * df['delta_position_y']
-        df['delta_position_y_robot'] = -sin_yaw * df['delta_position_x'] + cos_yaw * df['delta_position_y']        
+        # cos_yaw = np.cos(df['yaw'])
+        # sin_yaw = np.sin(df['yaw'])
+        # df['delta_position_x_robot'] = cos_yaw * df['delta_position_x'] + sin_yaw * df['delta_position_y']
+        # df['delta_position_y_robot'] = -sin_yaw * df['delta_position_x'] + cos_yaw * df['delta_position_y']        
 
-        # return df[['Time', 'delta_position_x', 'delta_position_y', 'delta_yaw']]
-        return df[['Time', 'yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']]
+        return df[['Time', 'delta_position_x', 'delta_position_y', 'delta_yaw']]
+        # return df[['Time', 'yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']]
 
     def calculate_joint_velocities_and_accelerations(self, df):
         # Convert seconds and nanoseconds to a single time column in seconds.
@@ -59,7 +61,7 @@ class BagDataProcessor:
         theta = (theta + np.pi) % (2 * np.pi) - np.pi
         df['Theta'] = theta
 
-        print(theta)
+        # print(theta)
 
         # df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
         # df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(theta)
@@ -126,9 +128,9 @@ class BagDataProcessor:
         SpecialCase = '_Square_RobotFrameDeltas_Direction'
         # SpecialCase = ''
         
-        dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}.csv'
-        dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}.csv'
-        mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data{SpecialCase}.csv'
+        dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{SpecialCase}/GT_Deltas.csv'
+        dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{SpecialCase}/Vels_And_Accels.csv'
+        mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/{SpecialCase}/Data.csv'
 
         # dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}{counter}.csv'
         # dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}{counter}.csv'
