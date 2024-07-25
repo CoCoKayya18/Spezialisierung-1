@@ -1,3 +1,5 @@
 .vscode
 **/build/
 **/devel/
+**/src/m-explore
+**/src/nav2d_random_map_generator/
