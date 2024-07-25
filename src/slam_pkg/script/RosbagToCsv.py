@@ -75,13 +75,13 @@ class BagDataProcessor:
         # return df[['Time', 'Theta', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
         return df[['Time', 'Theta_calculated', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
     
-    def calculate_kinematic_deltas(self, df):
+    def calculate_kinematic_deltas(self, df, initialTheta):
         df['kinematic_delta_x'] = 0.0
         df['kinematic_delta_y'] = 0.0
         df['kinematic_delta_yaw'] = 0.0
         
         # Initial pose
-        x, y, theta = 1.5, 1.5, 3.1415
+        x, y, theta = 0.0, 0.0, initialTheta
         
         for index, row in df.iterrows():
             if index == 0:
@@ -153,7 +153,7 @@ class BagDataProcessor:
         processed_joint_df = processed_joint_df.dropna()
 
         # Calculate the kinematic Delta_X too and add to DF
-        processed_joint_df = self.calculate_kinematic_deltas(processed_joint_df)
+        processed_joint_df = self.calculate_kinematic_deltas(processed_joint_df, initialOrientation)
 
         processed_gt_df.to_csv(dataFilePathDeltas, index=False)
         processed_joint_df.to_csv(dataFilePathVelsAndAccs, index=False)
@@ -215,20 +215,100 @@ def get_bag_files(directory):
     bag_files = glob.glob(os.path.join(directory, '*.bag'))
     return bag_files
 
+def combine_csv_files(paths, filenames, output_dir):
+    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for filename in filenames:
+        combined_df = pd.DataFrame()
+        
+        for path in paths:
+            file_path = os.path.join(path, filename)
+            if os.path.exists(file_path):
+                df = pd.read_csv(file_path)
+                combined_df = pd.concat([combined_df, df], ignore_index=True)
+            else:
+                print(f"File {file_path} does not exist.")
+        
+        # Save the combined DataFrame to the output directory
+        output_file_path = os.path.join(output_dir, filename)
+        combined_df.to_csv(output_file_path, index=False)
+        print(f"Combined file saved to {output_file_path}")
 
 if __name__ == '__main__':
     
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad'
-    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad'
-    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad'
-    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
     # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive'
     # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative'
     # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive'
     # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative'
-    bag_files = get_bag_files(directory_path)
-    counter = 1
+    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad'
+    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad'
+    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad'
+    # directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
+    # bag_files = get_bag_files(directory_path)
+    # counter = 1
+    # folderName = os.path.basename(directory_path)
+    
+    # if folderName == 'x_direction_positive':
+    #     initialTheta = 0.0
+    # elif folderName == 'x_direction_negative':
+    #     initialTheta = np.pi
+    # elif folderName == 'y_direction_positive':
+    #     initialTheta = np.pi / 2
+    # elif folderName == 'y_direction_negative':
+    #     initialTheta = -np.pi / 2
+    # elif folderName == 'diagonal_first_quad':
+    #     initialTheta = np.pi / 4
+    # elif folderName == 'diagonal_second_quad':
+    #     initialTheta = 3 * np.pi / 4
+    # elif folderName == 'diagonal_third_quad':
+    #     initialTheta = -3 * np.pi / 4
+    # elif folderName == 'diagonal_fourth_quad':
+    #     initialTheta = -np.pi / 4
 
-    for bag_file in bag_files:
-        process_bag_file(bag_file, counter, 0.0, 'diagonal_first_quad')
-        counter = counter + 1
+    # for bag_file in bag_files:
+    #     # print(bag_file)
+    #     print(initialTheta)
+    #     process_bag_file(bag_file, counter, initialTheta, folderName)
+    #     counter = counter + 1
+    
+    filenames = ['FullData.csv', 'GT_Deltas.csv', 'Vels_And_Accels.csv']
+
+    combPathsSquare = [
+        '../Spezialisierung-1/src/slam_pkg/data/x_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/data/x_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/data/y_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/data/y_direction_negative'
+    ]
+
+    combPathsDiagonal_first_and_third_quad = [
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_quad',
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_third_quad'
+    ]
+
+    combPathsDiagonal_second_and_fourth_quad = [
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_quad',
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_fourth_quad'
+    ]
+
+    combPathsAll = [
+        '../Spezialisierung-1/src/slam_pkg/data/x_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/data/x_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/data/y_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/data/y_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_quad',
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_quad',
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_third_quad',
+        '../Spezialisierung-1/src/slam_pkg/data/diagonal_fourth_quad'
+    ]
+
+    output_dirSquare = '../Spezialisierung-1/src/slam_pkg/data/square'
+    output_dirFirstAndThird = '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_and_third_quad'
+    output_dirSecondAndFourth = '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_and_fourth_quad'
+    output_dirAll = '../Spezialisierung-1/src/slam_pkg/data/AllCombined'
+
+    combine_csv_files(combPathsSquare, filenames, output_dirSquare)
+    combine_csv_files(combPathsDiagonal_first_and_third_quad, filenames, output_dirFirstAndThird)
+    combine_csv_files(combPathsDiagonal_second_and_fourth_quad, filenames, output_dirSecondAndFourth)
+    combine_csv_files(combPathsAll, filenames, output_dirAll)
