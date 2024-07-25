@@ -1,0 +1,82 @@
+Basic Information:
+None
+
+
+Statistical Summaries:
+       Theta_calculated    yaw_world  linear_velocity_x  world_velocity_x  world_velocity_y  angular_velocity_yaw  linear_acceleration_x  angular_acceleration_yaw  delta_position_x_world  delta_position_y_world    delta_yaw  kinematic_delta_x  kinematic_delta_y  kinematic_delta_yaw  twist.twist.linear.x
+count       4864.000000  4864.000000        4864.000000       4864.000000       4864.000000           4864.000000            4864.000000               4864.000000             4864.000000             4864.000000  4864.000000        4864.000000        4864.000000          4864.000000           4864.000000
+mean           0.841692     0.792950           0.169749          0.113054          0.126256              0.003433              -0.000366                 -0.001022                0.004031                0.004072    -0.000003           0.003764           0.004205             0.000114              0.168844
+std            0.071132     0.054334           0.080292          0.054758          0.059509              0.081565               0.316601                  1.547828                0.001920                0.001909     0.002695           0.001823           0.001982             0.002716              0.079351
+min            0.692579     0.628672          -0.000340         -0.000248         -0.000233             -1.400951              -1.714031                -15.560394               -0.000009               -0.000007    -0.036886          -0.000008          -0.000008            -0.046652             -0.000339
+25%            0.794916     0.761877           0.138269          0.088147          0.111262             -0.017289              -0.184941                 -0.061593                0.003170                0.003436    -0.000695           0.002939           0.003703            -0.000576              0.138981
+50%            0.830099     0.784997           0.212780          0.141471          0.155320              0.000192               0.000045                 -0.000010                0.005026                0.005038     0.000010           0.004709           0.005173             0.000006              0.208780
+75%            0.859320     0.803215           0.218277          0.149305          0.162032              0.028765               0.189823                  0.049233                0.005272                0.005229     0.000889           0.004971           0.005396             0.000958              0.219716
+max            1.125076     1.119731           0.252010          0.166834          0.199200              0.396876               1.545053                 17.347005                0.005715                0.005948     0.022752           0.005552           0.006643             0.013216              0.230178
+
+
+No missing values detected.
+
+
+No infinite values detected.
+
+
+Data Types:
+Theta_calculated            float64
+yaw_world                   float64
+linear_velocity_x           float64
+world_velocity_x            float64
+world_velocity_y            float64
+angular_velocity_yaw        float64
+linear_acceleration_x       float64
+angular_acceleration_yaw    float64
+delta_position_x_world      float64
+delta_position_y_world      float64
+delta_yaw                   float64
+kinematic_delta_x           float64
+kinematic_delta_y           float64
+kinematic_delta_yaw         float64
+twist.twist.linear.x        float64
+dtype: object
+
+
+Data Range:
+     Theta_calculated  yaw_world  linear_velocity_x  world_velocity_x  world_velocity_y  angular_velocity_yaw  linear_acceleration_x  angular_acceleration_yaw  delta_position_x_world  delta_position_y_world  delta_yaw  kinematic_delta_x  kinematic_delta_y  kinematic_delta_yaw  twist.twist.linear.x
+min          0.692579   0.628672           -0.00034         -0.000248         -0.000233             -1.400951              -1.714031                -15.560394               -0.000009               -0.000007  -0.036886          -0.000008          -0.000008            -0.046652             -0.000339
+max          1.125076   1.119731            0.25201          0.166834          0.199200              0.396876               1.545053                 17.347005                0.005715                0.005948   0.022752           0.005552           0.006643             0.013216              0.230178
+
+
+Duplicate rows detected: 36
+
+
+Outliers detected: 634
+
+
+Correlation Matrix:
+                          Theta_calculated  yaw_world  linear_velocity_x  world_velocity_x  world_velocity_y  angular_velocity_yaw  linear_acceleration_x  angular_acceleration_yaw  delta_position_x_world  delta_position_y_world  delta_yaw  kinematic_delta_x  kinematic_delta_y  kinematic_delta_yaw  twist.twist.linear.x
+Theta_calculated                  1.000000   0.780644           0.182375          0.073889          0.264927              0.154694              -0.018312                 -0.037326                0.109174                0.263613   0.154140           0.073518           0.265109             0.154694              0.192156
+yaw_world                         0.780644   1.000000          -0.028037         -0.127125          0.049877              0.154171              -0.005273                 -0.017097               -0.106717                0.053660   0.151804          -0.127491           0.050091             0.154171             -0.023076
+linear_velocity_x                 0.182375  -0.028037           1.000000          0.992259          0.995290              0.097516               0.072258                 -0.001717                0.991166                0.991144   0.059032           0.992200           0.995266             0.097516              0.993035
+world_velocity_x                  0.073889  -0.127125           0.992259          1.000000          0.975588              0.075820               0.072512                  0.004490                0.994022                0.971646   0.037281           0.999998           0.975535             0.075820              0.984122
+world_velocity_y                  0.264927   0.049877           0.995290          0.975588          1.000000              0.112787               0.071324                 -0.006607                0.978356                0.995860   0.075322           0.975487           0.999998             0.112787              0.989424
+angular_velocity_yaw              0.154694   0.154171           0.097516          0.075820          0.112787              1.000000               0.005850                  0.321832                0.078844                0.106843   0.821211           0.073680           0.114457             1.000000              0.092672
+linear_acceleration_x            -0.018312  -0.005273           0.072258          0.072512          0.071324              0.005850               1.000000                 -0.029202                0.026938                0.027607  -0.023858           0.072498           0.071333             0.005850              0.005545
+angular_acceleration_yaw         -0.037326  -0.017097          -0.001717          0.004490         -0.006607              0.321832              -0.029202                  1.000000                0.000851               -0.005761   0.169988           0.003767          -0.006027             0.321832             -0.001609
+delta_position_x_world            0.109174  -0.106717           0.991166          0.994022          0.978356              0.078844               0.026938                  0.000851                1.000000                0.981885   0.062117           0.994009           0.978306             0.078844              0.993513
+delta_position_y_world            0.263613   0.053660           0.991144          0.971646          0.995860              0.106843               0.027607                 -0.005761                0.981885                1.000000   0.088879           0.971561           0.995849             0.106843              0.994171
+delta_yaw                         0.154140   0.151804           0.059032          0.037281          0.075322              0.821211              -0.023858                  0.169988                0.062117                0.088879   1.000000           0.035536           0.076684             0.821211              0.078487
+kinematic_delta_x                 0.073518  -0.127491           0.992200          0.999998          0.975487              0.073680               0.072498                  0.003767                0.994009                0.971561   0.035536           1.000000           0.975430             0.073680              0.984073
+kinematic_delta_y                 0.265109   0.050091           0.995266          0.975535          0.999998              0.114457               0.071333                 -0.006027                0.978306                0.995849   0.076684           0.975430           1.000000             0.114457              0.989392
+kinematic_delta_yaw               0.154694   0.154171           0.097516          0.075820          0.112787              1.000000               0.005850                  0.321832                0.078844                0.106843   0.821211           0.073680           0.114457             1.000000              0.092672
+twist.twist.linear.x              0.192156  -0.023076           0.993035          0.984122          0.989424              0.092672               0.005545                 -0.001609                0.993513                0.994171   0.078487           0.984073           0.989392             0.092672              1.000000
+
+
+No NaN values detected after standardization.
+Mean of standardized features (X): [ 1.35433605e-16  8.89992263e-16  2.25722675e-16 -7.41660219e-17
+ -2.22498066e-16  1.28984386e-17  0.00000000e+00  5.64306688e-18
+ -3.45033232e-16 -4.41771522e-16 -1.61230482e-18 -6.44921929e-17
+ -3.45033232e-16  0.00000000e+00  1.28984386e-16]
+Standard deviation of standardized features (X): [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+Mean Absolute Error (MAE) between yaw_world and Theta_calculated: 0.04868890510677973
+Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: 0.0544112710487995
+
+
