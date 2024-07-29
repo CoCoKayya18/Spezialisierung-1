@@ -19,7 +19,7 @@ def process_and_check_data(file_path):
                        'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 
                        'linear_acceleration_x', 'angular_acceleration_yaw', 
                        'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 
-                       'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'twist.twist.linear.x']
+                       'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'twist.twist.linear.x', 'Time']
     
     if not all(col in data_df.columns for col in columns_of_interest):
         print(f"Columns of interest not found in {file_path}")
@@ -199,25 +199,31 @@ def process_and_check_data(file_path):
     # Convert odom velocities to world frame and plot
     cos_yaw = np.cos(data_df['yaw_world'].values)
     sin_yaw = np.sin(data_df['yaw_world'].values)
-    odom_world_velocity_x = data_df['twist.twist.linear.x'] * cos_yaw - data_df['twist.twist.linear.x'] * sin_yaw
-    odom_world_velocity_y = data_df['twist.twist.linear.x'] * sin_yaw + data_df['twist.twist.linear.x'] * cos_yaw
+    odom_world_velocity_x = data_df['twist.twist.linear.x'] * cos_yaw
+    odom_world_velocity_y = data_df['twist.twist.linear.x'] * sin_yaw
 
+    mae_x = mean_absolute_error(data_df['world_velocity_x'], odom_world_velocity_x)
+    rmse_x = np.sqrt(mean_squared_error(data_df['world_velocity_x'], odom_world_velocity_x))
+    
     plt.figure(figsize=(10, 6))
-    plt.plot(data_df['world_velocity_x'].values, label='world_velocity_x')
-    plt.plot(odom_world_velocity_x, label='odom_world_velocity_x')
-    plt.xlabel('Index')
+    plt.plot(data_df['Time'].values, data_df['world_velocity_x'].values, label='world_velocity_x')
+    plt.plot(data_df['Time'].values, odom_world_velocity_x, label='odom_world_velocity_x')
+    plt.xlabel('Time')
     plt.ylabel('World Velocity X')
-    plt.title('World Velocity X vs Odometry World Velocity X')
+    plt.title(f'World Velocity X vs Odometry World Velocity X\nMAE: {mae_x:.4f}, RMSE: {rmse_x:.4f}')
     plt.legend()
     plt.savefig(os.path.join(plots_dir, 'world_velocity_x_vs_odom.png'))
     plt.close()
 
+    mae_y = mean_absolute_error(data_df['world_velocity_y'], odom_world_velocity_y)
+    rmse_y = np.sqrt(mean_squared_error(data_df['world_velocity_y'], odom_world_velocity_y))
+
     plt.figure(figsize=(10, 6))
-    plt.plot(data_df['world_velocity_y'].values, label='world_velocity_y')
-    plt.plot(odom_world_velocity_y, label='odom_world_velocity_y')
-    plt.xlabel('Index')
+    plt.plot(data_df['Time'].values, data_df['world_velocity_y'].values, label='world_velocity_y')
+    plt.plot(data_df['Time'].values, odom_world_velocity_y, label='odom_world_velocity_y')
+    plt.xlabel('Time')
     plt.ylabel('World Velocity Y')
-    plt.title('World Velocity Y vs Odometry World Velocity Y')
+    plt.title(f'World Velocity Y vs Odometry World Velocity Y\nMAE: {mae_y:.4f}, RMSE: {rmse_y:.4f}')
     plt.legend()
     plt.savefig(os.path.join(plots_dir, 'world_velocity_y_vs_odom.png'))
     plt.close()
