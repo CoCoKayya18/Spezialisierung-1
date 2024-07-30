@@ -178,9 +178,9 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     test_data.to_csv(os.path.join(datafilepath, direction, f'sparse_test_data_{SpecialCase}.csv'), index=False)
 
 if __name__ == '__main__':
-    datafilepath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data'
-    modelFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/myMLmodel'
-    scalerFilePath = '/home/cocokayya18/Spezialisierung-1/src/slam_pkg/Scaler'
+    datafilepath = '../Spezialisierung-1/src/slam_pkg/data'
+    modelFilePath = '../Spezialisierung-1/src/slam_pkg/myMLmodel'
+    scalerFilePath = '../Spezialisierung-1/src/slam_pkg/Scaler'
 
     combPaths = [
         'x_direction_positive',
