@@ -32,6 +32,11 @@ def plot_feature_distribution(X_train, X_test, feature_names, title_suffix='', p
         plt.show()
     plt.close(fig)
 
+def check_standardization(data, tolerance=1e-6):
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0)
+    return np.all(np.abs(mean) < tolerance) and np.all(np.abs(std - 1.0) < tolerance)
+
 def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase='', direction=''):
     X = dataframe[features].values
     Y = dataframe[target].values
@@ -53,8 +58,13 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     Y_train_full = scaler_Y.fit_transform(Y_train_full)
     Y_test = scaler_Y.transform(Y_test)  # Only transform the test data
 
+    # Check if data is standardized correctly
+    if not (check_standardization(X_train_full) and check_standardization(Y_train_full)):
+        print(f"Standardization check failed for {direction}. Skipping model training.")
+        return
+
     # Number of folds
-    k = 5  # or any other number of folds you want
+    k = 5  
 
     # Initialize KFold
     kf = KFold(n_splits=k, shuffle=True, random_state=42)
