@@ -121,17 +121,22 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     average_mae = np.mean(fold_mae)
     average_r2 = np.mean(fold_r2)
 
-    print("Average MSE across all folds:", average_mse)
-    print("Average RMSE across all folds:", average_rmse)
-    print("Average MAE across all folds:", average_mae)
-    print("Average R-squared across all folds:", average_r2)
+    # Prepare the report content
+    report_content = [
+        f"Average MSE across all folds: {average_mse}",
+        f"Average RMSE across all folds: {average_rmse}",
+        f"Average MAE across all folds: {average_mae}",
+        f"Average R-squared across all folds: {average_r2}",
+        f"MSE across all folds: {fold_mse}",
+        f"RMSE across all folds: {fold_rmse}",
+        f"MAE across all folds: {fold_mae}",
+        f"R-squared across all folds: {fold_r2}",
+        f"Best Model: {best_model}"
+    ]
 
-    print("MSE across all folds:", fold_mse)
-    print("RMSE across all folds:", fold_rmse)
-    print("MAE across all folds:", fold_mae)
-    print("R-squared across all folds:", fold_r2)
-
-    print(best_model)
+    # Print the report
+    for line in report_content:
+        print(line)
 
     # Save the model and scalers
     model_dir = os.path.join(modelFilePath, direction)
@@ -151,6 +156,12 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
 
     with open(os.path.join(scaler_dir, scaler_filenameY), 'wb') as file:
         pickle.dump(scaler_Y, file)
+
+    # Save the report
+    report_filename = os.path.join(model_dir, 'ModelReport.txt')
+    with open(report_filename, 'w') as report_file:
+        for line in report_content:
+            report_file.write(line + '\n')
 
     # Prepare datasets for the best model
     X_train, X_val = X_train_full[best_indices[0]], X_train_full[best_indices[1]]

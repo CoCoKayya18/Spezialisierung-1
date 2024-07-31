@@ -33,6 +33,11 @@ def process_and_check_data(file_path):
     report.append("Basic Information:")
     report.append(str(data_df.info()))
     report.append("\n")
+
+    # Data length
+    report.append("Dataset Initial Length:")
+    report.append(str(len(data_df)))
+    report.append("\n")
     
     # Statistical summaries
     report.append("Statistical Summaries:")
@@ -77,6 +82,28 @@ def process_and_check_data(file_path):
         report.append("No duplicate rows detected.")
     report.append("\n")
 
+    # Remove near-duplicates
+    threshold = 1e-4  # Define a threshold for considering values as near-duplicates
+    near_duplicate_rows = 0
+
+    # Create a mask to identify near-duplicate rows
+    mask = pd.Series([False] * len(data_df))
+
+    for i in range(len(data_df) - 1):
+        row = data_df.iloc[i]
+        for j in range(i + 1, len(data_df)):
+            if all((data_df.iloc[j] - row).abs() < threshold):
+                mask[j] = True
+
+    # Count and remove near-duplicate rows
+    near_duplicate_rows = mask.sum()
+    if near_duplicate_rows > 0:
+        report.append(f"Near-duplicate rows detected and removed: {near_duplicate_rows}")
+        data_df = data_df[~mask]
+    else:
+        report.append("No near-duplicate rows detected.")
+    report.append("\n")
+
     # Outlier detection using Z-score
     z_scores = np.abs(zscore(data_df))
     outliers = np.where(z_scores > 3)
@@ -92,6 +119,59 @@ def process_and_check_data(file_path):
     correlation_matrix = data_df.corr()
     report.append(str(correlation_matrix))
     report.append("\n")
+
+    # Inspect unique values and their counts
+    report.append("\nQuantization Check:")
+
+    unique_values_x = data_df['delta_position_x_world'].value_counts().sort_index()
+    unique_values_y = data_df['delta_position_y_world'].value_counts().sort_index()
+    unique_values_yaw = data_df['delta_yaw'].value_counts().sort_index()
+
+    # Check for quantization problems and potential dataset discontinuities
+    diffs_x = unique_values_x.index.to_series().diff().dropna()
+    large_gaps_x = diffs_x[diffs_x > diffs_x.mean() + 3 * diffs_x.std()]
+    if not large_gaps_x.empty:
+        report.append("\nQuantization problem check for delta_position_x_world:")
+        report.append("Potential quantization issues detected. Large gaps found:")
+        report.append(large_gaps_x.to_string())
+        for idx in large_gaps_x.index:
+            prev_val = idx - large_gaps_x[idx]
+            rows_before = data_df[data_df['delta_position_x_world'] == prev_val].index.tolist()
+            rows_after = data_df[data_df['delta_position_x_world'] == idx].index.tolist()
+            report.append(f"Large gap before value {prev_val} (rows {rows_before}) to value {idx} (rows {rows_after})")
+    else:
+        report.append("\nQuantization problem check for delta_position_x_world:")
+        report.append("No significant quantization issues detected.")
+
+    diffs_y = unique_values_y.index.to_series().diff().dropna()
+    large_gaps_y = diffs_y[diffs_y > diffs_y.mean() + 3 * diffs_y.std()]
+    if not large_gaps_y.empty:
+        report.append("\nQuantization problem check for delta_position_y_world:")
+        report.append("Potential quantization issues detected. Large gaps found:")
+        report.append(large_gaps_y.to_string())
+        for idx in large_gaps_y.index:
+            prev_val = idx - large_gaps_y[idx]
+            rows_before = data_df[data_df['delta_position_y_world'] == prev_val].index.tolist()
+            rows_after = data_df[data_df['delta_position_y_world'] == idx].index.tolist()
+            report.append(f"Large gap before value {prev_val} (rows {rows_before}) to value {idx} (rows {rows_after})")
+    else:
+        report.append("\nQuantization problem check for delta_position_y_world:")
+        report.append("No significant quantization issues detected.")
+
+    diffs_yaw = unique_values_yaw.index.to_series().diff().dropna()
+    large_gaps_yaw = diffs_yaw[diffs_yaw > diffs_yaw.mean() + 3 * diffs_yaw.std()]
+    if not large_gaps_yaw.empty:
+        report.append("\nQuantization problem check for delta_yaw:")
+        report.append("Potential quantization issues detected. Large gaps found:")
+        report.append(large_gaps_yaw.to_string())
+        for idx in large_gaps_yaw.index:
+            prev_val = idx - large_gaps_yaw[idx]
+            rows_before = data_df[data_df['delta_yaw'] == prev_val].index.tolist()
+            rows_after = data_df[data_df['delta_yaw'] == idx].index.tolist()
+            report.append(f"Large gap before value {prev_val} (rows {rows_before}) to value {idx} (rows {rows_after})")
+    else:
+        report.append("\nQuantization problem check for delta_yaw:")
+        report.append("No significant quantization issues detected.")
     
     # Standardize the data
     scaler = StandardScaler()
@@ -108,15 +188,20 @@ def process_and_check_data(file_path):
     else:
         mean_X = np.mean(X_standardized, axis=0)
         std_X = np.std(X_standardized, axis=0)
-        report.append("No NaN values detected after standardization.")
+        report.append("\nNo NaN values detected after standardization.")
         report.append(f"Mean of standardized features (X): {mean_X}")
         report.append(f"Standard deviation of standardized features (X): {std_X}")
 
     # Calculate error metrics between 'yaw_world' and 'Theta_calculated'
     mae = mean_absolute_error(data_df['yaw_world'].values, data_df['Theta_calculated'].values)
     rmse = np.sqrt(mean_squared_error(data_df['yaw_world'].values, data_df['Theta_calculated'].values))
-    report.append(f"Mean Absolute Error (MAE) between yaw_world and Theta_calculated: {mae}")
+    report.append(f"\nMean Absolute Error (MAE) between yaw_world and Theta_calculated: {mae}")
     report.append(f"Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: {rmse}")
+    report.append("\n")
+
+    # New Data length
+    report.append("\nDataset New Length:")
+    report.append(str(len(data_df)))
     report.append("\n")
     
     # Save the report to a text file in the same directory

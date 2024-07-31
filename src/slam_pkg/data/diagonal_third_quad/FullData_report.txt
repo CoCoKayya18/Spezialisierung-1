@@ -2,6 +2,10 @@ Basic Information:
 None
 
 
+Dataset Initial Length:
+4937
+
+
 Statistical Summaries:
        Theta_calculated    yaw_world  linear_velocity_x  world_velocity_x  world_velocity_y  angular_velocity_yaw  linear_acceleration_x  ...  delta_position_y_world    delta_yaw  kinematic_delta_x  kinematic_delta_y  kinematic_delta_yaw  twist.twist.linear.x         Time
 count       4937.000000  4937.000000        4937.000000       4937.000000       4937.000000           4937.000000            4937.000000  ...             4937.000000  4937.000000        4937.000000        4937.000000          4937.000000           4937.000000  4937.000000
@@ -53,6 +57,9 @@ max         -1.830883  -1.898006           0.241016          0.000298          0
 No duplicate rows detected.
 
 
+No near-duplicate rows detected.
+
+
 Outliers detected: 603
 
 
@@ -78,13 +85,192 @@ Time                              0.369624   0.252992          -0.274344        
 [16 rows x 16 columns]
 
 
+
+Quantization Check:
+
+Quantization problem check for delta_position_x_world:
+Potential quantization issues detected. Large gaps found:
+delta_position_x_world
+-0.003319    0.000041
+-0.002194    0.000077
+-0.002081    0.000036
+-0.001955    0.000125
+-0.001901    0.000054
+-0.001566    0.000335
+-0.001323    0.000243
+-0.000979    0.000327
+-0.000907    0.000072
+-0.000812    0.000092
+-0.000745    0.000067
+-0.000543    0.000195
+-0.000416    0.000063
+-0.000313    0.000065
+-0.000168    0.000064
+-0.000072    0.000036
+ 0.000053    0.000042
+Large gap before value -0.0033598716757072 (rows [3311]) to value -0.0033185780363642 (rows [2815])
+Large gap before value -0.0022703248436528 (rows [4878]) to value -0.0021937568485181 (rows [3385])
+Large gap before value -0.0021163659850907 (rows [1983]) to value -0.0020806794457092 (rows [2454])
+Large gap before value -0.0020805094492431 (rows [1007]) to value -0.001955048813638 (rows [3475])
+Large gap before value -0.001955048813638 (rows [3475]) to value -0.0019009044040365 (rows [3384])
+Large gap before value -0.0019009044040365 (rows [3384]) to value -0.0015661615761515 (rows [3383])
+Large gap before value -0.0015661615761515 (rows [3383]) to value -0.0013228906192619 (rows [1910])
+Large gap before value -0.0013057135391161 (rows [3382]) to value -0.0009791143143861 (rows [3960])
+Large gap before value -0.0009791143143861 (rows [3960]) to value -0.0009069638539952 (rows [4474])
+Large gap before value -0.0009035902230922 (rows [927]) to value -0.0008119250842484 (rows [1911])
+Large gap before value -0.0008119250842484 (rows [1911]) to value -0.0007446424767305 (rows [2861])
+Large gap before value -0.0007377276882758 (rows [1427]) to value -0.0005428104425151 (rows [1428])
+Large gap before value -0.0004790693772762 (rows [3884]) to value -0.0004161952745556 (rows [1912])
+Large gap before value -0.0003772325855588 (rows [4893]) to value -0.0003125611573144 (rows [3886])
+Large gap before value -0.0002315983277338 (rows [3887]) to value -0.0001678657324606 (rows [1431])
+Large gap before value -0.0001085131826648 (rows [4895]) to value -7.219226945709423e-05 (rows [3889])
+Large gap before value 1.1464830667051729e-05 (rows [929]) to value 5.307779966012838e-05 (rows [930])
+
+Quantization problem check for delta_position_y_world:
+Potential quantization issues detected. Large gaps found:
+delta_position_y_world
+-0.006257    0.000048
+-0.006189    0.000060
+-0.003938    0.000036
+-0.003731    0.000036
+-0.002410    0.000030
+-0.002300    0.000085
+-0.002109    0.000191
+-0.001994    0.000070
+-0.001942    0.000053
+-0.001826    0.000116
+-0.001775    0.000050
+-0.001657    0.000119
+-0.001530    0.000127
+-0.001302    0.000228
+-0.001126    0.000177
+-0.000977    0.000148
+-0.000907    0.000070
+-0.000771    0.000125
+-0.000682    0.000089
+-0.000500    0.000131
+-0.000405    0.000072
+-0.000363    0.000042
+-0.000245    0.000060
+-0.000213    0.000031
+-0.000178    0.000034
+-0.000024    0.000028
+ 0.000043    0.000034
+Large gap before value -0.0063051270392562 (rows [865]) to value -0.006256916628748 (rows [864])
+Large gap before value -0.0062491372906177 (rows [867]) to value -0.0061887275483303 (rows [822])
+Large gap before value -0.0039730555222325 (rows [1370]) to value -0.0039375159975323 (rows [1864])
+Large gap before value -0.0037668566189463 (rows [4335]) to value -0.0037308857239297 (rows [3965])
+Large gap before value -0.0024406216281065 (rows [3867]) to value -0.0024104203882697 (rows [1502])
+Large gap before value -0.0023850725013223 (rows [3871]) to value -0.0022995855857743 (rows [3872])
+Large gap before value -0.0022995855857743 (rows [3872]) to value -0.0021088050316548 (rows [3873])
+Large gap before value -0.0020644292780884 (rows [1007]) to value -0.0019943569274301 (rows [925])
+Large gap before value -0.0019943569274301 (rows [925]) to value -0.0019416166152437 (rows [3475])
+Large gap before value -0.0019416166152437 (rows [3475]) to value -0.0018257059249568 (rows [3384])
+Large gap before value -0.0018257059249568 (rows [3384]) to value -0.0017754968313317 (rows [3874])
+Large gap before value -0.0017754968313317 (rows [3874]) to value -0.0016568705837418 (rows [427])
+Large gap before value -0.0016568705837418 (rows [427]) to value -0.001529988181351 (rows [3383])
+Large gap before value -0.001529988181351 (rows [3383]) to value -0.0013023281679083 (rows [3382])
+Large gap before value -0.0013023281679083 (rows [3382]) to value -0.0011256933955108 (rows [1910])
+Large gap before value -0.0011256933955108 (rows [1910]) to value -0.0009773099875628 (rows [3960])
+Large gap before value -0.0009773099875628 (rows [3960]) to value -0.0009071903495532 (rows [2861])
+Large gap before value -0.0008958836092956 (rows [1427]) to value -0.0007708487928854 (rows [927])
+Large gap before value -0.0007708487928854 (rows [927]) to value -0.0006817784576356 (rows [1911])
+Large gap before value -0.0006313145074656 (rows [3398]) to value -0.0005004011238078 (rows [1429])
+Large gap before value -0.0004769513541842 (rows [4893]) to value -0.0004049794454823 (rows [3885])
+Large gap before value -0.0004049794454823 (rows [3885]) to value -0.0003632434202349 (rows [1430])
+Large gap before value -0.0003049079412327 (rows [4894]) to value -0.00024478004422 (rows [2451])
+Large gap before value -0.0002440650891035 (rows [3887]) to value -0.0002133705910805 (rows [1431])
+Large gap before value -0.0002124046155742 (rows [928]) to value -0.0001784967758777 (rows [2862])
+Large gap before value -5.289531963459382e-05 (rows [3373]) to value -2.441581719669905e-05 (rows [2393])
+Large gap before value 9.772898755588955e-06 (rows []) to value 4.3409672246141895e-05 (rows [930])
+
+Quantization problem check for delta_yaw:
+Potential quantization issues detected. Large gaps found:
+delta_yaw
+-0.010692    0.000138
+-0.010505    0.000187
+-0.010130    0.000375
+-0.009843    0.000287
+-0.009483    0.000360
+-0.009295    0.000111
+-0.008812    0.000472
+-0.008701    0.000111
+-0.008144    0.000415
+-0.007891    0.000239
+-0.007500    0.000278
+-0.007267    0.000188
+-0.006957    0.000185
+-0.006704    0.000241
+-0.006338    0.000148
+-0.006218    0.000100
+-0.005845    0.000205
+-0.005568    0.000132
+-0.005395    0.000098
+ 0.005673    0.000116
+ 0.006145    0.000155
+ 0.006520    0.000280
+ 0.006786    0.000160
+ 0.007891    0.001105
+ 0.008238    0.000278
+ 0.008497    0.000259
+ 0.008902    0.000202
+ 0.009196    0.000239
+ 0.009295    0.000100
+ 0.009682    0.000271
+ 0.009775    0.000093
+ 0.009997    0.000152
+ 0.010136    0.000139
+ 0.010715    0.000578
+ 0.011303    0.000522
+Large gap before value -0.0108301506635406 (rows [427]) to value -0.0106921781968276 (rows [4308])
+Large gap before value -0.0106921781968276 (rows [4308]) to value -0.0105051329593299 (rows [4307])
+Large gap before value -0.0105051329593299 (rows [4307]) to value -0.010129969614967 (rows [915])
+Large gap before value -0.010129969614967 (rows [915]) to value -0.0098427216639045 (rows [3382])
+Large gap before value -0.0098427216639045 (rows [3382]) to value -0.0094825301281495 (rows [2389])
+Large gap before value -0.009406087200225 (rows [4892]) to value -0.0092949802826596 (rows [914])
+Large gap before value -0.0092837548855935 (rows [913]) to value -0.0088120471871389 (rows [420])
+Large gap before value -0.0088120471871389 (rows [420]) to value -0.0087010263906082 (rows [421])
+Large gap before value -0.008558500726473 (rows [423]) to value -0.0081435548827646 (rows [1911])
+Large gap before value -0.0081309495677142 (rows [3383]) to value -0.00789148318482 (rows [2319])
+Large gap before value -0.0077780501692266 (rows [2318]) to value -0.0075003058395979 (rows [2317])
+Large gap before value -0.0074551983235084 (rows [410]) to value -0.0072670949298996 (rows [3299])
+Large gap before value -0.0071423087286115 (rows [922]) to value -0.0069574982637519 (rows [906])
+Large gap before value -0.0069453903685188 (rows [388]) to value -0.0067042482829355 (rows [3384])
+Large gap before value -0.0064858242774254 (rows [1229]) to value -0.0063381793716565 (rows [908])
+Large gap before value -0.0063185218872208 (rows [907]) to value -0.0062183931232429 (rows [892])
+Large gap before value -0.0060501591791437 (rows [894]) to value -0.0058451326308377 (rows [1912])
+Large gap before value -0.0056993876302713 (rows [890]) to value -0.0055676532028914 (rows [389])
+Large gap before value -0.0054930827602119 (rows [4485]) to value -0.0053954859251881 (rows [3870])
+Large gap before value 0.0055567393274431 (rows [4883]) to value 0.0056725953189351 (rows [3390])
+Large gap before value 0.005990409583708 (rows [3399]) to value 0.0061449946402682 (rows [3272])
+Large gap before value 0.0062392772692874 (rows [4805]) to value 0.0065197144920885 (rows [2857])
+Large gap before value 0.0066263056155237 (rows [3886]) to value 0.0067860742911469 (rows [2858])
+Large gap before value 0.0067860742911469 (rows [2858]) to value 0.0078913152054274 (rows [2380])
+Large gap before value 0.007959691158125 (rows [3335]) to value 0.0082380068781033 (rows [3885])
+Large gap before value 0.0082380068781033 (rows [3885]) to value 0.0084969810609658 (rows [2790])
+Large gap before value 0.0087002220625702 (rows [3336]) to value 0.0089021766791201 (rows [3391])
+Large gap before value 0.0089568984572845 (rows [2382]) to value 0.0091955538547927 (rows [1415])
+Large gap before value 0.0091955538547927 (rows [1415]) to value 0.0092953019948387 (rows [1418])
+Large gap before value 0.0094109302971689 (rows [1416]) to value 0.0096819084631567 (rows [1414])
+Large gap before value 0.0096819084631567 (rows [1414]) to value 0.0097749244179734 (rows [3338])
+Large gap before value 0.0098453510307692 (rows [3884]) to value 0.0099969972395541 (rows [3340])
+Large gap before value 0.0099969972395541 (rows [3340]) to value 0.0101364913241286 (rows [3339])
+Large gap before value 0.0101364913241286 (rows [3339]) to value 0.0107146436655014 (rows [1428])
+Large gap before value 0.0107811501496923 (rows [1419]) to value 0.0113028207303558 (rows [3398])
+
 No NaN values detected after standardization.
 Mean of standardized features (X): [-2.30750512e-15  2.33877213e-15 -8.75476198e-17 -1.62588437e-16
   1.06307824e-16 -1.87602042e-17  2.18869050e-17 -1.95418794e-18
  -5.31539120e-16  1.75095240e-16 -1.25068028e-17  1.40701532e-16
   1.87602042e-16  0.00000000e+00  3.12670071e-18 -2.81403064e-17]
 Standard deviation of standardized features (X): [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+
 Mean Absolute Error (MAE) between yaw_world and Theta_calculated: 0.059558498208195115
 Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: 0.07617777999068058
+
+
+
+Dataset New Length:
+4545
 
 

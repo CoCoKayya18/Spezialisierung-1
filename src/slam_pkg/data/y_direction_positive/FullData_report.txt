@@ -2,6 +2,10 @@ Basic Information:
 None
 
 
+Dataset Initial Length:
+3730
+
+
 Statistical Summaries:
        Theta_calculated    yaw_world  linear_velocity_x  world_velocity_x  world_velocity_y  angular_velocity_yaw  linear_acceleration_x  ...  delta_position_y_world    delta_yaw  kinematic_delta_x  kinematic_delta_y  kinematic_delta_yaw  twist.twist.linear.x         Time
 count       3730.000000  3730.000000        3730.000000      3.730000e+03       3730.000000           3730.000000            3730.000000  ...             3730.000000  3730.000000       3.730000e+03        3730.000000          3730.000000           3730.000000  3730.000000
@@ -53,38 +57,208 @@ max          1.964204   1.816406           0.246698          0.025038          0
 No duplicate rows detected.
 
 
-Outliers detected: 598
+Near-duplicate rows detected and removed: 20
+
+
+Outliers detected: 595
 
 
 Correlation Matrix:
                           Theta_calculated  yaw_world  linear_velocity_x  world_velocity_x  world_velocity_y  angular_velocity_yaw  ...  delta_yaw  kinematic_delta_x  kinematic_delta_y  kinematic_delta_yaw  twist.twist.linear.x      Time
-Theta_calculated                  1.000000   0.888760           0.083458         -0.706452          0.082215              0.190170  ...   0.296605          -0.707025           0.082212             0.190170              0.084404  0.054157
-yaw_world                         0.888760   1.000000           0.037565         -0.573865          0.036593              0.214302  ...   0.326366          -0.575194           0.036587             0.214302              0.034271 -0.011978
-linear_velocity_x                 0.083458   0.037565           1.000000         -0.351278          0.999994              0.009998  ...  -0.016024          -0.350442           0.999994             0.009998              0.996273 -0.271645
-world_velocity_x                 -0.706452  -0.573865          -0.351278          1.000000         -0.349352             -0.189387  ...  -0.228676           0.999814          -0.349352            -0.189387             -0.353325  0.124355
-world_velocity_y                  0.082215   0.036593           0.999994         -0.349352          1.000000              0.009695  ...  -0.016401          -0.348519           1.000000             0.009695              0.996256 -0.272311
-angular_velocity_yaw              0.190170   0.214302           0.009998         -0.189387          0.009695              1.000000  ...   0.800974          -0.207665           0.009657             1.000000             -0.005943 -0.124460
-linear_acceleration_x             0.020138   0.038955           0.052174         -0.038764          0.052057              0.055741  ...   0.052044          -0.039833           0.052057             0.055741              0.008584 -0.041553
-angular_acceleration_yaw         -0.017143   0.016459           0.000046          0.017134          0.000069              0.332095  ...   0.145715           0.009956           0.000058             0.332095             -0.006071 -0.009085
-delta_position_x_world           -0.652620  -0.707222          -0.137852          0.846535         -0.136172             -0.225259  ...  -0.305441           0.847339          -0.136168            -0.225259             -0.136583  0.081126
-delta_position_y_world            0.085082   0.035986           0.997523         -0.353980          0.997519             -0.003321  ...  -0.020282          -0.352852           0.997519            -0.003321              0.999144 -0.263199
-delta_yaw                         0.296605   0.326366          -0.016024         -0.228676         -0.016401              0.800974  ...   1.000000          -0.242634          -0.016431             0.800974             -0.021545 -0.078971
-kinematic_delta_x                -0.707025  -0.575194          -0.350442          0.999814         -0.348519             -0.207665  ...  -0.242634           1.000000          -0.348518            -0.207665             -0.352135  0.126677
-kinematic_delta_y                 0.082212   0.036587           0.999994         -0.349352          1.000000              0.009657  ...  -0.016431          -0.348518           1.000000             0.009657              0.996256 -0.272317
-kinematic_delta_yaw               0.190170   0.214302           0.009998         -0.189387          0.009695              1.000000  ...   0.800974          -0.207665           0.009657             1.000000             -0.005943 -0.124460
-twist.twist.linear.x              0.084404   0.034271           0.996273         -0.353325          0.996256             -0.005943  ...  -0.021545          -0.352135           0.996256            -0.005943              1.000000 -0.256359
-Time                              0.054157  -0.011978          -0.271645          0.124355         -0.272311             -0.124460  ...  -0.078971           0.126677          -0.272317            -0.124460             -0.256359  1.000000
+Theta_calculated                  1.000000   0.889056           0.079025         -0.706116          0.077768              0.189523  ...   0.296655          -0.706688           0.077765             0.189523              0.079867  0.049891
+yaw_world                         0.889056   1.000000           0.036561         -0.574226          0.035578              0.213408  ...   0.326128          -0.575549           0.035572             0.213408              0.033122 -0.013590
+linear_velocity_x                 0.079025   0.036561           1.000000         -0.348717          0.999994              0.010226  ...  -0.015778          -0.347894           0.999994             0.010226              0.996169 -0.296297
+world_velocity_x                 -0.706116  -0.574226          -0.348717          1.000000         -0.346766             -0.188715  ...  -0.228782           0.999813          -0.346765            -0.188715             -0.350692  0.131428
+world_velocity_y                  0.077768   0.035578           0.999994         -0.346766          1.000000              0.009920  ...  -0.016159          -0.345946           1.000000             0.009920              0.996152 -0.296965
+angular_velocity_yaw              0.189523   0.213408           0.010226         -0.188715          0.009920              1.000000  ...   0.800765          -0.207021           0.009881             1.000000             -0.005703 -0.124539
+linear_acceleration_x             0.021484   0.040323           0.053204         -0.040321          0.053085              0.052830  ...   0.051139          -0.041340           0.053084             0.052830              0.008832 -0.042683
+angular_acceleration_yaw         -0.017979   0.015426           0.000236          0.018107          0.000260              0.333337  ...   0.146037           0.010898           0.000248             0.333337             -0.005675 -0.008025
+delta_position_x_world           -0.652744  -0.707326          -0.137406          0.846946         -0.135706             -0.224102  ...  -0.305123           0.847740          -0.135702            -0.224102             -0.135994  0.083852
+delta_position_y_world            0.080624   0.034927           0.997462         -0.351424          0.997458             -0.003178  ...  -0.020069          -0.350306           0.997458            -0.003178              0.999117 -0.287763
+delta_yaw                         0.296655   0.326128          -0.015778         -0.228782         -0.016159              0.800765  ...   1.000000          -0.242758          -0.016190             0.800765             -0.021312 -0.079024
+kinematic_delta_x                -0.706688  -0.575549          -0.347894          0.999813         -0.345946             -0.207021  ...  -0.242758           1.000000          -0.345944            -0.207021             -0.349514  0.133741
+kinematic_delta_y                 0.077765   0.035572           0.999994         -0.346765          1.000000              0.009881  ...  -0.016190          -0.345944           1.000000             0.009881              0.996152 -0.296971
+kinematic_delta_yaw               0.189523   0.213408           0.010226         -0.188715          0.009920              1.000000  ...   0.800765          -0.207021           0.009881             1.000000             -0.005703 -0.124539
+twist.twist.linear.x              0.079867   0.033122           0.996169         -0.350692          0.996152             -0.005703  ...  -0.021312          -0.349514           0.996152            -0.005703              1.000000 -0.280794
+Time                              0.049891  -0.013590          -0.296297          0.131428         -0.296965             -0.124539  ...  -0.079024           0.133741          -0.296971            -0.124539             -0.280794  1.000000
 
 [16 rows x 16 columns]
 
 
+
+Quantization Check:
+
+Quantization problem check for delta_position_x_world:
+Potential quantization issues detected. Large gaps found:
+delta_position_x_world
+-0.000754    0.000057
+-0.000748    0.000006
+-0.000727    0.000020
+-0.000722    0.000005
+-0.000703    0.000011
+-0.000667    0.000006
+-0.000657    0.000006
+-0.000643    0.000011
+-0.000476    0.000007
+ 0.000290    0.000005
+ 0.000475    0.000007
+ 0.000514    0.000006
+ 0.000522    0.000008
+ 0.000537    0.000012
+ 0.000550    0.000010
+ 0.000573    0.000020
+ 0.000593    0.000020
+ 0.000601    0.000009
+ 0.000615    0.000006
+ 0.000629    0.000009
+ 0.000654    0.000006
+ 0.000702    0.000018
+ 0.000710    0.000007
+ 0.000717    0.000008
+ 0.000739    0.000012
+ 0.000785    0.000005
+ 0.000799    0.000011
+ 0.000818    0.000008
+ 0.000836    0.000013
+ 0.000842    0.000007
+Large gap before value -0.0008110994451192 (rows [3669]) to value -0.0007544078914869 (rows [239])
+Large gap before value -0.0007544078914869 (rows [239]) to value -0.0007479819230797 (rows [240])
+Large gap before value -0.0007467126323105 (rows [3666]) to value -0.0007270708413825 (rows [245])
+Large gap before value -0.0007270708413825 (rows [245]) to value -0.0007220002681891 (rows [3665])
+Large gap before value -0.0007133491176921 (rows [238]) to value -0.0007026903139737 (rows [3664])
+Large gap before value -0.0006726406398814 (rows [249]) to value -0.0006668816752891 (rows [243])
+Large gap before value -0.0006623448467958 (rows [237]) to value -0.0006565013614904 (rows [236])
+Large gap before value -0.0006533732925453 (rows [227]) to value -0.0006425848780548 (rows [253])
+Large gap before value -0.0004830987096293 (rows [2778]) to value -0.0004763763349581 (rows [3637])
+Large gap before value 0.0002845956633107 (rows [953]) to value 0.0002897583836184 (rows [459])
+Large gap before value 0.0004680753635376 (rows [544]) to value 0.0004751215114427 (rows [552])
+Large gap before value 0.0005073560470294 (rows [598]) to value 0.0005136656949957 (rows [602])
+Large gap before value 0.0005136656949957 (rows [602]) to value 0.0005221515669298 (rows [599])
+Large gap before value 0.00052507120306 (rows [600]) to value 0.0005368293842057 (rows [3226])
+Large gap before value 0.0005401081365719 (rows [3223]) to value 0.0005504174681736 (rows [3228])
+Large gap before value 0.0005530243894553 (rows [3222]) to value 0.0005726079827617 (rows [3229])
+Large gap before value 0.0005726079827617 (rows [3229]) to value 0.0005928563189087 (rows [3230])
+Large gap before value 0.0005928563189087 (rows [3230]) to value 0.0006014108248169 (rows [3232])
+Large gap before value 0.0006086290686764 (rows [3243]) to value 0.000614909629472 (rows [3239])
+Large gap before value 0.0006199705254081 (rows [616]) to value 0.0006293837554896 (rows [3235])
+Large gap before value 0.000648166404073 (rows [647]) to value 0.0006538843766689 (rows [615])
+Large gap before value 0.000684514123552 (rows [638]) to value 0.0007023016178406 (rows [654])
+Large gap before value 0.0007027421793425 (rows [641]) to value 0.0007095220358085 (rows [612])
+Large gap before value 0.0007095220358085 (rows [612]) to value 0.0007172294996306 (rows [623])
+Large gap before value 0.0007272818838335 (rows [637]) to value 0.0007393369417331 (rows [3304])
+Large gap before value 0.0007798305916811 (rows [660]) to value 0.000785157867567 (rows [3286])
+Large gap before value 0.0007875222860865 (rows [631]) to value 0.0007986772833335 (rows [3276])
+Large gap before value 0.0008102629764173 (rows [661]) to value 0.0008183240085523 (rows [627])
+Large gap before value 0.0008223438316242 (rows [629]) to value 0.0008355101586734 (rows [626])
+Large gap before value 0.0008355101586734 (rows [626]) to value 0.0008424543496163 (rows [3256])
+
+Quantization problem check for delta_position_y_world:
+Potential quantization issues detected. Large gaps found:
+delta_position_y_world
+0.000234    0.000083
+0.000539    0.000099
+0.000743    0.000082
+0.000833    0.000091
+0.000959    0.000105
+0.001109    0.000150
+0.001426    0.000317
+0.001956    0.000470
+0.002885    0.000930
+0.003114    0.000228
+0.003485    0.000372
+0.003578    0.000073
+0.003696    0.000091
+0.004173    0.000123
+0.005007    0.000082
+0.005446    0.000075
+Large gap before value 0.000150917064609 (rows [1424]) to value 0.0002335464546623 (rows [385])
+Large gap before value 0.0004397267047409 (rows [1421]) to value 0.0005388783647115 (rows [1420])
+Large gap before value 0.0006602289057984 (rows [1402]) to value 0.0007427165497018 (rows [1418])
+Large gap before value 0.0007427165497018 (rows [1418]) to value 0.0008334405091607 (rows [3311])
+Large gap before value 0.0008539066338935 (rows [1788]) to value 0.0009589293575402 (rows [1401])
+Large gap before value 0.0009589293575402 (rows [1401]) to value 0.0011086939717777 (rows [3310])
+Large gap before value 0.0011086939717777 (rows [3310]) to value 0.0014255674809218 (rows [1400])
+Large gap before value 0.0014856090707306 (rows [1035]) to value 0.0019557658154485 (rows [1399])
+Large gap before value 0.0019557658154485 (rows [1399]) to value 0.0028854024840554 (rows [3670])
+Large gap before value 0.0028854024840554 (rows [3670]) to value 0.0031135208533652 (rows [677])
+Large gap before value 0.0031135208533652 (rows [677]) to value 0.0034851099971335 (rows [3669])
+Large gap before value 0.003504946124667 (rows [1784]) to value 0.0035777856912799 (rows [1396])
+Large gap before value 0.0036053807822988 (rows [317]) to value 0.0036962898191519 (rows [1769])
+Large gap before value 0.0040497574534634 (rows [2133]) to value 0.0041730309998582 (rows [3655])
+Large gap before value 0.0049254101582056 (rows [1353]) to value 0.0050072858252907 (rows [1004])
+Large gap before value 0.0053706078478046 (rows [1350]) to value 0.0054457388159832 (rows [999])
+
+Quantization problem check for delta_yaw:
+Potential quantization issues detected. Large gaps found:
+delta_yaw
+-0.011637    0.000951
+-0.011072    0.000565
+-0.010604    0.000468
+-0.010368    0.000236
+-0.009931    0.000437
+-0.009583    0.000349
+-0.008152    0.001292
+-0.007292    0.000735
+-0.006299    0.000993
+-0.005881    0.000334
+-0.005344    0.000225
+-0.005125    0.000183
+-0.004800    0.000291
+-0.004234    0.000212
+-0.004039    0.000176
+ 0.003585    0.000241
+ 0.005328    0.000174
+ 0.005927    0.000312
+ 0.006460    0.000236
+ 0.006986    0.000210
+ 0.007899    0.000449
+ 0.008272    0.000334
+ 0.008750    0.000477
+ 0.010193    0.001443
+ 0.010795    0.000602
+ 0.011611    0.000817
+ 0.011961    0.000350
+Large gap before value -0.0125879459351678 (rows [3310]) to value -0.0116372850861166 (rows [2132])
+Large gap before value -0.0116372850861166 (rows [2132]) to value -0.0110718264523572 (rows [1380])
+Large gap before value -0.0110718264523572 (rows [1380]) to value -0.0106038010357745 (rows [2174])
+Large gap before value -0.0106038010357745 (rows [2174]) to value -0.010368071811394 (rows [1401])
+Large gap before value -0.010368071811394 (rows [1401]) to value -0.0099314009414503 (rows [1400])
+Large gap before value -0.0099314009414503 (rows [1400]) to value -0.0095825278493797 (rows [2133])
+Large gap before value -0.0094436490185974 (rows [3311]) to value -0.00815153866768 (rows [1399])
+Large gap before value -0.008027223763249 (rows [1381]) to value -0.0072924605454778 (rows [1402])
+Large gap before value -0.0072924605454778 (rows [1402]) to value -0.0062991053711753 (rows [3312])
+Large gap before value -0.0062157529212278 (rows [2173]) to value -0.0058812956854898 (rows [3255])
+Large gap before value -0.0055692257642503 (rows [660]) to value -0.0053439778461206 (rows [659])
+Large gap before value -0.0053076522330808 (rows [655]) to value -0.0051248953359226 (rows [3256])
+Large gap before value -0.005091113267178 (rows [2125]) to value -0.0047998837725116 (rows [658])
+Large gap before value -0.0044459341704587 (rows [1374]) to value -0.0042338909198731 (rows [657])
+Large gap before value -0.0042141527605523 (rows [1375]) to value -0.0040385649847292 (rows [3251])
+Large gap before value 0.0033439034698232 (rows [612]) to value 0.0035849357736033 (rows [2777])
+Large gap before value 0.005154013403555 (rows [2769]) to value 0.0053280083546565 (rows [1769])
+Large gap before value 0.005614848778527 (rows [1766]) to value 0.0059272629318389 (rows [1421])
+Large gap before value 0.0062231999833775 (rows [3634]) to value 0.0064595333767498 (rows [3631])
+Large gap before value 0.0067762543996832 (rows [1768]) to value 0.0069859293466871 (rows [3636])
+Large gap before value 0.0074498857264591 (rows [3635]) to value 0.0078990228836568 (rows [3666])
+Large gap before value 0.0079385941848111 (rows [1789]) to value 0.0082724849582598 (rows [3670])
+Large gap before value 0.0082724849582598 (rows [3670]) to value 0.0087496112293814 (rows [1419])
+Large gap before value 0.0087496112293814 (rows [1419]) to value 0.0101925977884225 (rows [1418])
+Large gap before value 0.0101925977884225 (rows [1418]) to value 0.0107947711679257 (rows [3669])
+Large gap before value 0.0107947711679257 (rows [3669]) to value 0.011611336837177 (rows [1417])
+Large gap before value 0.011611336837177 (rows [1417]) to value 0.0119608500266847 (rows [1788])
+
 No NaN values detected after standardization.
-Mean of standardized features (X): [ 1.65282123e-15 -1.93397124e-15  2.21512124e-16 -1.70393941e-17
- -9.79765163e-17  0.00000000e+00 -4.25984854e-18  4.25984854e-18
-  1.70393941e-17  1.10756062e-16 -2.55590912e-17 -3.83386368e-17
-  5.11181824e-17  4.25984854e-18  2.98189398e-17  4.25984854e-17]
+Mean of standardized features (X): [-2.99897447e-15  1.57231947e-15 -3.53450562e-16  7.28322370e-17
+ -7.06901124e-17 -2.14212462e-17 -1.28527477e-17  1.49948723e-17
+ -3.42739939e-17 -6.85479878e-17  0.00000000e+00  2.99897447e-17
+ -1.97075465e-16 -2.99897447e-17  8.35428601e-17  2.05643963e-16]
 Standard deviation of standardized features (X): [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
-Mean Absolute Error (MAE) between yaw_world and Theta_calculated: 0.02413381294790227
-Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: 0.03555695046855248
+
+Mean Absolute Error (MAE) between yaw_world and Theta_calculated: 0.02427928981235856
+Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: 0.03566524863778145
+
+
+
+Dataset New Length:
+3317
 
 
