@@ -90,8 +90,8 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
     Y_test = test_data[target].values
 
     # Load the scalers
-    scaler_filenameX = os.path.join(scalerFilePath, model_type, direction, f'sparse_scaler_X_{SpecialCase}{suffix}.pkl')
-    scaler_filenameY = os.path.join(scalerFilePath, model_type, direction, f'sparse_scaler_Y_{SpecialCase}{suffix}.pkl')
+    scaler_filenameX = os.path.join(scalerFilePath, direction, model_type, f'sparse_scaler_X_{SpecialCase}{suffix}.pkl')
+    scaler_filenameY = os.path.join(scalerFilePath, direction, model_type, f'sparse_scaler_Y_{SpecialCase}{suffix}.pkl')
 
     with open(scaler_filenameX, 'rb') as file:
         scaler_X = pickle.load(file)
@@ -103,7 +103,7 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
     Y_test_scaled = scaler_Y.transform(Y_test)
 
     # Load the model
-    model_filename = os.path.join(modelFilePath, model_type, direction, f'sparse_gpy_model_{SpecialCase}{suffix}.pkl')
+    model_filename = os.path.join(modelFilePath, direction, model_type, f'sparse_gpy_model_{SpecialCase}{suffix}.pkl')
     with open(model_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -142,7 +142,7 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
         print(line)
 
     # Save the report
-    testing_dir = os.path.join(modelFilePath, direction, 'testing', model_type)
+    testing_dir = os.path.join(modelFilePath, direction, model_type, 'Testing')
     os.makedirs(testing_dir, exist_ok=True)
     report_filename = os.path.join(testing_dir, 'TestingReport.txt')
     with open(report_filename, 'w') as report_file:
@@ -150,19 +150,19 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
             report_file.write(line + '\n')
 
     # Plot comparisons
-    plot_comparison_dir = os.path.join(testing_dir, 'plots', 'comparison_plots')
+    plot_comparison_dir = os.path.join(testing_dir, 'Plots', 'comparison_plots')
     plot_comparison(Y_test, Y_pred, target, metrics, plot_comparison_dir)
 
-    plot_path_comparison_dir = os.path.join(testing_dir, 'plots', 'path_comparison_plot')
+    plot_path_comparison_dir = os.path.join(testing_dir, 'Plots', 'path_comparison_plot')
     plot_path_comparison(Y_test, Y_pred, plot_path_comparison_dir)
 
-    plot_residuals_dir = os.path.join(testing_dir, 'plots', 'residuals_plots')
+    plot_residuals_dir = os.path.join(testing_dir, 'Plots', 'residuals_plots')
     plot_residuals(Y_test, Y_pred, target, plot_residuals_dir)
 
-    plot_histogram_residuals_dir = os.path.join(testing_dir, 'plots', 'histogram_residuals')
+    plot_histogram_residuals_dir = os.path.join(testing_dir, 'Plots', 'histogram_residuals')
     plot_histogram_residuals(Y_test, Y_pred, target, plot_histogram_residuals_dir)
 
-    plot_index_comparison_dir = os.path.join(testing_dir, 'plots', 'index_comparison_plots')
+    plot_index_comparison_dir = os.path.join(testing_dir, 'Plots', 'index_comparison_plots')
     plot_index_comparison(Y_test, Y_pred, target, plot_index_comparison_dir)
 
 if __name__ == '__main__':
