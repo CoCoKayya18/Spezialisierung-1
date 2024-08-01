@@ -17,11 +17,10 @@ class BagDataProcessor:
         return pd.read_csv(csv_path) if csv_path else pd.DataFrame()
 
     def calculate_ground_truth_deltas(self, df):
-        
         # Convert seconds and nanoseconds to a single time column in seconds
         df['Time'] = pd.to_numeric(df['header.stamp.secs']) + pd.to_numeric(df['header.stamp.nsecs']) * 1e-9
-        df['delta_position_x_world'] = df['pose.pose.position.x'].diff().fillna(0) # Get Delta_X
-        df['delta_position_y_world'] = df['pose.pose.position.y'].diff().fillna(0) # Get Delta_Y
+        df['delta_position_x_world'] = df['pose.pose.position.x'].diff().fillna(0)  # Get Delta_X
+        df['delta_position_y_world'] = df['pose.pose.position.y'].diff().fillna(0)  # Get Delta_Y
         
         # Convert quaternion to Euler angles (yaw)
         quaternions = df[['pose.pose.orientation.x', 'pose.pose.orientation.y', 'pose.pose.orientation.z', 'pose.pose.orientation.w']].to_numpy()
@@ -29,28 +28,18 @@ class BagDataProcessor:
         df['yaw_world'] = eulers[:, 2]  # z-axis (yaw)
         
         # Calculate yaw delta and normalize
-        df['delta_yaw'] = df['yaw_world'].diff().fillna(0) # Get Delta_Yaw
+        df['delta_yaw'] = df['yaw_world'].diff().fillna(0)  # Get Delta_Yaw
         df['delta_yaw'] = np.arctan2(np.sin(df['delta_yaw']), np.cos(df['delta_yaw']))  # Normalize the yaw delta
 
-        # Transform World Frame Deltas to Robot Frame Deltas
-        # cos_yaw = np.cos(df['yaw'])
-        # sin_yaw = np.sin(df['yaw'])
-        # df['delta_position_x_robot'] = cos_yaw * df['delta_position_x'] + sin_yaw * df['delta_position_y']
-        # df['delta_position_y_robot'] = -sin_yaw * df['delta_position_x'] + cos_yaw * df['delta_position_y']        
-
         return df[['Time', 'yaw_world', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw']]
-        # return df[['Time', 'yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw']]
 
     def calculate_joint_velocities_and_accelerations(self, df, initialOrientation):
-        # Convert seconds and nanoseconds to a single time column in seconds.
+        # Convert seconds and nanoseconds to a single time column in seconds
         df['Time'] = pd.to_numeric(df['header.stamp.secs']) + pd.to_numeric(df['header.stamp.nsecs']) * 1e-9
         
-        wheel_radius = 0.066/2  # meter
+        wheel_radius = 0.066 / 2  # meter
         wheel_base = 0.160  # distance between wheels in meters
         time_diffs = 0.0333
-
-
-        # print(df['position_0'].diff() + df['position_1'].diff())
 
         # Calculate linear and angular velocities
         df['linear_velocity_x'] = (((df['position_0'].diff() + df['position_1'].diff()) / 2) / time_diffs) * wheel_radius
@@ -63,8 +52,6 @@ class BagDataProcessor:
         theta = (theta + np.pi) % (2 * np.pi) - np.pi
         df['Theta_calculated'] = theta
 
-        # print(theta)
-
         df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
         df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(theta)
         
@@ -72,7 +59,6 @@ class BagDataProcessor:
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
         df['angular_acceleration_yaw'] = df['angular_velocity_yaw'].diff() / time_diffs
         
-        # return df[['Time', 'Theta', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
         return df[['Time', 'Theta_calculated', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw']]
     
     def calculate_kinematic_deltas(self, df, initialTheta):
@@ -104,9 +90,7 @@ class BagDataProcessor:
             x += delta_x
             y += delta_y
             theta += delta_theta
-            # print(f'Theta unnormalized: {theta}')
-            theta = np.arctan2(np.sin(theta), np.cos(theta)) # Normalize Theta
-            # print(f'Theta normalized: {theta}')
+            theta = np.arctan2(np.sin(theta), np.cos(theta))  # Normalize Theta
         
         return df
 
@@ -124,27 +108,17 @@ class BagDataProcessor:
 
         return calculated_delta_x, calculated_delta_y, calculated_delta_theta
 
-    def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, counter, initialOrientation, folderName):
+    def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, counter, initialOrientation, folderName, single=False):
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df, initialOrientation)
 
-        # SpecialCase = folderName
-        # SpecialCase = ''
-        
-        data_dir = f'../Spezialisierung-1/src/slam_pkg/data/{folderName}'
-        dataFilePathDeltas = os.path.join(data_dir, 'GT_Deltas.csv')
-        dataFilePathVelsAndAccs = os.path.join(data_dir, 'Vels_And_Accels.csv')
-        mergedPath = os.path.join(data_dir, 'FullData.csv')
+        suffix = "_single" if single else ""
+        data_dir = f'../Spezialisierung-1/src/slam_pkg/data/{folderName}{suffix}'
+        dataFilePathDeltas = os.path.join(data_dir, f'GT_Deltas{suffix}.csv')
+        dataFilePathVelsAndAccs = os.path.join(data_dir, f'Vels_And_Accels{suffix}.csv')
+        mergedPath = os.path.join(data_dir, f'FullData{suffix}.csv')
 
         os.makedirs(data_dir, exist_ok=True)
-
-        # dataFilePathDeltas = f'../Spezialisierung-1/src/slam_pkg/data/{SpecialCase}/GT_Deltas.csv'
-        # dataFilePathVelsAndAccs = f'../Spezialisierung-1/src/slam_pkg/data/{SpecialCase}/Vels_And_Accels.csv'
-        # mergedPath = f'../Spezialisierung-1/src/slam_pkg/data/{SpecialCase}/FullData.csv'
-
-        # dataFilePathDeltas = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/GT_Deltas{SpecialCase}{counter}.csv'
-        # dataFilePathVelsAndAccs = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Vels_And_Accels{SpecialCase}{counter}.csv'
-        # mergedPath = f'/home/cocokayya18/Spezialisierung-1/src/slam_pkg/data/Data{SpecialCase}{counter}.csv'
 
         # Remove rows with any NaN values (which now includes the original 'inf' values)
         processed_gt_df.replace([np.inf, -np.inf], np.nan, inplace=True)
@@ -167,7 +141,6 @@ class BagDataProcessor:
         combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
         combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
 
-        # columns_of_interest = ['Theta', 'yaw', 'linear_velocity_x', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_robot', 'delta_position_y_robot', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
         columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
@@ -182,7 +155,7 @@ class BagDataProcessor:
         # Remove first two lines
         combined_df = combined_df.iloc[2:].reset_index(drop=True)
 
-        if os.path.exists(mergedPath):
+        if os.path.exists(mergedPath) and not single:
             # If it does, read the existing data and append the new data
             existing_data = pd.read_csv(mergedPath)
             combined_df = pd.concat([existing_data, combined_df], ignore_index=True)
@@ -193,8 +166,7 @@ class BagDataProcessor:
         return processed_gt_df, processed_joint_df
     
 
-
-def process_bag_file(bag_file_path, counter, initialOrientation, folderName):
+def process_bag_file(bag_file_path, counter, initialOrientation, folderName, single=False):
     Incounter = counter
     processor = BagDataProcessor(bag_file_path)
     ground_truth_df = processor.read_topic_to_dataframe('ground_truth/state')
@@ -207,7 +179,7 @@ def process_bag_file(bag_file_path, counter, initialOrientation, folderName):
         print("One or more of the topics do not exist in the bag file or are empty.")
         return
 
-    processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, Incounter, initialOrientation, folderName)
+    processed_gt_df, processed_joint_df = processor.process_and_save_data(ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, Incounter, initialOrientation, folderName, single)
 
 
 def get_bag_files(directory):
@@ -216,40 +188,46 @@ def get_bag_files(directory):
     return bag_files
 
 if __name__ == '__main__':
-    
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad'
-    directory_path = '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
-    bag_files = get_bag_files(directory_path)
-    counter = 1
-    folderName = os.path.basename(directory_path)
-    
-    if folderName == 'x_direction_positive':
-        initialTheta = 0.0
-    elif folderName == 'x_direction_negative':
-        initialTheta = np.pi
-    elif folderName == 'y_direction_positive':
-        initialTheta = np.pi / 2
-    elif folderName == 'y_direction_negative':
-        initialTheta = -np.pi / 2
-    elif folderName == 'diagonal_first_quad':
-        initialTheta = np.pi / 4
-    elif folderName == 'diagonal_second_quad':
-        initialTheta = 3 * np.pi / 4
-    elif folderName == 'diagonal_third_quad':
-        initialTheta = -3 * np.pi / 4
-    elif folderName == 'diagonal_fourth_quad':
-        initialTheta = -np.pi / 4
+    directories = [
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
+    ]
 
-    for bag_file in bag_files:
-        # print(bag_file)
-        print(initialTheta)
-        process_bag_file(bag_file, counter, initialTheta, folderName)
-        counter = counter + 1
-    
-    
+    for directory_path in directories:
+        bag_files = get_bag_files(directory_path)
+        counter = 1
+        folderName = os.path.basename(directory_path)
+
+        if folderName == 'x_direction_positive':
+            initialTheta = 0.0
+        elif folderName == 'x_direction_negative':
+            initialTheta = np.pi
+        elif folderName == 'y_direction_positive':
+            initialTheta = np.pi / 2
+        elif folderName == 'y_direction_negative':
+            initialTheta = -np.pi / 2
+        elif folderName == 'diagonal_first_quad':
+            initialTheta = np.pi / 4
+        elif folderName == 'diagonal_second_quad':
+            initialTheta = 3 * np.pi / 4
+        elif folderName == 'diagonal_third_quad':
+            initialTheta = -3 * np.pi / 4
+        elif folderName == 'diagonal_fourth_quad':
+            initialTheta = -np.pi / 4
+
+        for bag_file in bag_files:
+            print(f"Processing {bag_file} with initialTheta {initialTheta}")
+            process_bag_file(bag_file, counter, initialTheta, folderName)
+            counter += 1
+
+        # Process a single file for each direction
+        if bag_files:
+            single_bag_file = bag_files[0]
+            print(f"Processing single file {single_bag_file} with initialTheta {initialTheta}")
+            process_bag_file(single_bag_file, 1, initialTheta, folderName, single=True)

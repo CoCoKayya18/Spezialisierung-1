@@ -8,6 +8,13 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 from scipy.stats import zscore
 from tqdm import tqdm
 
+def get_comb_paths(base_dir, suffix=''):
+    comb_paths = []
+    for root, dirs, files in os.walk(base_dir):
+        if f'FullData{suffix}.csv' in files:
+            comb_paths.append((root, f'FullData{suffix}.csv'))
+    return comb_paths
+
 def process_and_check_data(file_path):
     try:
         data_df = pd.read_csv(file_path)
@@ -127,51 +134,12 @@ def process_and_check_data(file_path):
     unique_values_y = data_df['delta_position_y_world'].value_counts().sort_index()
     unique_values_yaw = data_df['delta_yaw'].value_counts().sort_index()
 
-    # Check for quantization problems and potential dataset discontinuities
-    diffs_x = unique_values_x.index.to_series().diff().dropna()
-    large_gaps_x = diffs_x[diffs_x > diffs_x.mean() + 3 * diffs_x.std()]
-    if not large_gaps_x.empty:
-        report.append("\nQuantization problem check for delta_position_x_world:")
-        report.append("Potential quantization issues detected. Large gaps found:")
-        report.append(large_gaps_x.to_string())
-        for idx in large_gaps_x.index:
-            prev_val = idx - large_gaps_x[idx]
-            rows_before = data_df[data_df['delta_position_x_world'] == prev_val].index.tolist()
-            rows_after = data_df[data_df['delta_position_x_world'] == idx].index.tolist()
-            report.append(f"Large gap before value {prev_val} (rows {rows_before}) to value {idx} (rows {rows_after})")
-    else:
-        report.append("\nQuantization problem check for delta_position_x_world:")
-        report.append("No significant quantization issues detected.")
-
-    diffs_y = unique_values_y.index.to_series().diff().dropna()
-    large_gaps_y = diffs_y[diffs_y > diffs_y.mean() + 3 * diffs_y.std()]
-    if not large_gaps_y.empty:
-        report.append("\nQuantization problem check for delta_position_y_world:")
-        report.append("Potential quantization issues detected. Large gaps found:")
-        report.append(large_gaps_y.to_string())
-        for idx in large_gaps_y.index:
-            prev_val = idx - large_gaps_y[idx]
-            rows_before = data_df[data_df['delta_position_y_world'] == prev_val].index.tolist()
-            rows_after = data_df[data_df['delta_position_y_world'] == idx].index.tolist()
-            report.append(f"Large gap before value {prev_val} (rows {rows_before}) to value {idx} (rows {rows_after})")
-    else:
-        report.append("\nQuantization problem check for delta_position_y_world:")
-        report.append("No significant quantization issues detected.")
-
-    diffs_yaw = unique_values_yaw.index.to_series().diff().dropna()
-    large_gaps_yaw = diffs_yaw[diffs_yaw > diffs_yaw.mean() + 3 * diffs_yaw.std()]
-    if not large_gaps_yaw.empty:
-        report.append("\nQuantization problem check for delta_yaw:")
-        report.append("Potential quantization issues detected. Large gaps found:")
-        report.append(large_gaps_yaw.to_string())
-        for idx in large_gaps_yaw.index:
-            prev_val = idx - large_gaps_yaw[idx]
-            rows_before = data_df[data_df['delta_yaw'] == prev_val].index.tolist()
-            rows_after = data_df[data_df['delta_yaw'] == idx].index.tolist()
-            report.append(f"Large gap before value {prev_val} (rows {rows_before}) to value {idx} (rows {rows_after})")
-    else:
-        report.append("\nQuantization problem check for delta_yaw:")
-        report.append("No significant quantization issues detected.")
+    report.append("Unique Values x: ")
+    report.append(str(unique_values_x))
+    report.append("Unique Values y: ")
+    report.append(str(unique_values_y))
+    report.append("Unique Values yaw: ")
+    report.append(str(unique_values_yaw))
     
     # Standardize the data
     scaler = StandardScaler()
@@ -317,24 +285,17 @@ def process_and_check_data(file_path):
 
 
 if __name__ == '__main__':
-
-    combPaths = [
-        '../Spezialisierung-1/src/slam_pkg/data/x_direction_positive',
-        '../Spezialisierung-1/src/slam_pkg/data/x_direction_negative',
-        '../Spezialisierung-1/src/slam_pkg/data/y_direction_positive',
-        '../Spezialisierung-1/src/slam_pkg/data/y_direction_negative',
-        '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_quad',
-        '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_quad',
-        '../Spezialisierung-1/src/slam_pkg/data/diagonal_third_quad',
-        '../Spezialisierung-1/src/slam_pkg/data/diagonal_fourth_quad',
-        '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_and_third_quad',
-        '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_and_fourth_quad',
-        '../Spezialisierung-1/src/slam_pkg/data/square',
-        '../Spezialisierung-1/src/slam_pkg/data/AllCombined'
-    ]
+    base_dir = '../Spezialisierung-1/src/slam_pkg/data'
     
-    with tqdm(total=len(combPaths), desc="Processing files", unit="file") as pbar:
-        for combPath in combPaths:
-            file_path = os.path.join(combPath, 'FullData.csv')
+    # Get paths for FullData and FullData_single
+    combPaths = get_comb_paths(base_dir)
+    combPaths_single = get_comb_paths(base_dir, suffix='_single')
+    
+    all_paths = combPaths + combPaths_single
+    print(all_paths)
+    
+    with tqdm(total=len(all_paths), desc="Processing files", unit="file") as pbar:
+        for combPath, filename in all_paths:
+            file_path = os.path.join(combPath, filename)
             process_and_check_data(file_path)
             pbar.update(1)  # Update the progress bar

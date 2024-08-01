@@ -35,9 +35,10 @@ def plot_feature_distribution(X_train, X_test, feature_names, title_suffix='', p
 def check_standardization(data, tolerance=1e-6):
     mean = np.mean(data, axis=0)
     std = np.std(data, axis=0)
-    return np.all(np.abs(mean) < tolerance) and np.all(np.abs(std - 1.0) < tolerance)
+    return np.all(np.abs(mean) < tolerance) and np.all(np.abs(std - 1.0) < tolerance), mean, std
 
-def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase='', direction=''):
+def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase='', direction='', model_type='FullData', single=False):
+    suffix = '_single' if single else ''
     X = dataframe[features].values
     Y = dataframe[target].values
     kinematic_data = dataframe[kinematic_deltas].values
@@ -45,7 +46,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     X_train_full, X_test, Y_train_full, Y_test, kinematic_train_full, kinematic_test = train_test_split(X, Y, kinematic_data, test_size=0.3, random_state=42)
 
     # Plotting target distributions
-    plot_dir = os.path.join(datafilepath, direction, 'plots', 'Training')
+    plot_dir = os.path.join(modelFilePath, 'Training', f'{direction}{suffix}', model_type)
     plot_feature_distribution(X_train_full, X_test, features, title_suffix='(Features)', plot_dir=plot_dir)
     plot_feature_distribution(Y_train_full, Y_test, target, title_suffix='(Targets)', plot_dir=plot_dir)
 
@@ -59,8 +60,11 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     Y_test = scaler_Y.transform(Y_test)  # Only transform the test data
 
     # Check if data is standardized correctly
-    if not (check_standardization(X_train_full) and check_standardization(Y_train_full)):
-        print(f"Standardization check failed for {direction}. Skipping model training.")
+    X_std_check, X_mean, X_std = check_standardization(X_train_full)
+    Y_std_check, Y_mean, Y_std = check_standardization(Y_train_full)
+    
+    if not (X_std_check and Y_std_check):
+        print(f"Standardization check failed for {direction} ({model_type}{suffix}). Skipping model training.")
         return
 
     # Number of folds
@@ -123,6 +127,8 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
 
     # Prepare the report content
     report_content = [
+        f"Standardization Check (Features): Mean - {X_mean}, Std - {X_std}",
+        f"Standardization Check (Targets): Mean - {Y_mean}, Std - {Y_std}",
         f"Average MSE across all folds: {average_mse}",
         f"Average RMSE across all folds: {average_rmse}",
         f"Average MAE across all folds: {average_mae}",
@@ -139,14 +145,14 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
         print(line)
 
     # Save the model and scalers
-    model_dir = os.path.join(modelFilePath, direction)
-    scaler_dir = os.path.join(scalerFilePath, direction)
+    model_dir = os.path.join(modelFilePath, model_type, f'{direction}{suffix}')
+    scaler_dir = os.path.join(scalerFilePath, model_type, f'{direction}{suffix}')
     os.makedirs(model_dir, exist_ok=True)
     os.makedirs(scaler_dir, exist_ok=True)
 
-    model_filename = f'sparse_gpy_model_{SpecialCase}.pkl'
-    scaler_filenameX = f'sparse_scaler_X_{SpecialCase}.pkl'
-    scaler_filenameY = f'sparse_scaler_Y_{SpecialCase}.pkl'
+    model_filename = f'sparse_gpy_model_{SpecialCase}{suffix}.pkl'
+    scaler_filenameX = f'sparse_scaler_X_{SpecialCase}{suffix}.pkl'
+    scaler_filenameY = f'sparse_scaler_Y_{SpecialCase}{suffix}.pkl'
 
     with open(os.path.join(model_dir, model_filename), 'wb') as file:
         pickle.dump(best_model, file)
@@ -158,7 +164,8 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
         pickle.dump(scaler_Y, file)
 
     # Save the report
-    report_filename = os.path.join(model_dir, 'ModelReport.txt')
+    report_filename = os.path.join(modelFilePath, 'Training', f'{direction}{suffix}', model_type, 'ModelReport.txt')
+    os.makedirs(os.path.dirname(report_filename), exist_ok=True)
     with open(report_filename, 'w') as report_file:
         for line in report_content:
             report_file.write(line + '\n')
@@ -184,9 +191,12 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
 
     test_data = pd.concat([pd.DataFrame(X_test_inv, columns=features), pd.DataFrame(Y_test_inv, columns=target), pd.DataFrame(kinematic_test, columns=kinematic_deltas)], axis=1)
 
-    train_data.to_csv(os.path.join(datafilepath, direction, f'sparse_train_data_{SpecialCase}.csv'), index=False)
-    val_data.to_csv(os.path.join(datafilepath, direction, f'sparse_val_data_{SpecialCase}.csv'), index=False)
-    test_data.to_csv(os.path.join(datafilepath, direction, f'sparse_test_data_{SpecialCase}.csv'), index=False)
+    data_save_dir = os.path.join(datafilepath, f'{direction}{suffix}', 'training', model_type)
+    os.makedirs(data_save_dir, exist_ok=True)
+    
+    train_data.to_csv(os.path.join(data_save_dir, f'sparse_train_data_{SpecialCase}{suffix}.csv'), index=False)
+    val_data.to_csv(os.path.join(data_save_dir, f'sparse_val_data_{SpecialCase}{suffix}.csv'), index=False)
+    test_data.to_csv(os.path.join(data_save_dir, f'sparse_test_data_{SpecialCase}{suffix}.csv'), index=False)
 
 if __name__ == '__main__':
     datafilepath = '../Spezialisierung-1/src/slam_pkg/data'
@@ -215,5 +225,20 @@ if __name__ == '__main__':
     for combPath in tqdm(combPaths, desc="Training models", unit="path"):
         dataName = 'FullData.csv'
         dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
-        print(f"\nTraining model for {combPath}...")
-        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath)
+        print(f"\nTraining model for {combPath} on FullData...")
+        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData')
+
+        dataName = 'FullData_cleaned.csv'
+        dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
+        print(f"\nTraining model for {combPath} on FullData_cleaned...")
+        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData')
+
+        dataName = 'FullData_single.csv'
+        dataframe = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
+        print(f"\nTraining model for {combPath} on FullData_single...")
+        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', single=True)
+
+        dataName = 'FullData_cleaned_single.csv'
+        dataframe = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
+        print(f"\nTraining model for {combPath} on FullData_cleaned_single...")
+        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', single=True)
