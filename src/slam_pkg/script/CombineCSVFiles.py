@@ -37,6 +37,13 @@ combPathsSquare = [
     '../Spezialisierung-1/src/slam_pkg/data/y_direction_negative'
 ]
 
+combPathsSquareSingle = [
+    '../Spezialisierung-1/src/slam_pkg/data/x_direction_positive_single',
+    '../Spezialisierung-1/src/slam_pkg/data/x_direction_negative_single',
+    '../Spezialisierung-1/src/slam_pkg/data/y_direction_positive_single',
+    '../Spezialisierung-1/src/slam_pkg/data/y_direction_negative_single'
+]
+
 combPathsDiagonal_first_and_third_quad = [
     '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_quad',
     '../Spezialisierung-1/src/slam_pkg/data/diagonal_third_quad'
@@ -58,6 +65,16 @@ combPathsAll = [
     '../Spezialisierung-1/src/slam_pkg/data/diagonal_fourth_quad'
 ]
 
+combPathsDiagonal_first_and_third_quad_single = [
+    '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_quad_single',
+    '../Spezialisierung-1/src/slam_pkg/data/diagonal_third_quad_single'
+]
+
+combPathsDiagonal_second_and_fourth_quad_single = [
+    '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_quad_single',
+    '../Spezialisierung-1/src/slam_pkg/data/diagonal_fourth_quad_single'
+]
+
 combPathsAllSingle = [
     '../Spezialisierung-1/src/slam_pkg/data/x_direction_positive_single',
     '../Spezialisierung-1/src/slam_pkg/data/x_direction_negative_single',
@@ -70,13 +87,19 @@ combPathsAllSingle = [
 ]
 
 output_dirSquare = '../Spezialisierung-1/src/slam_pkg/data/square'
+output_dirSquare_single = '../Spezialisierung-1/src/slam_pkg/data/square_single'
 output_dirFirstAndThird = '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_and_third_quad'
 output_dirSecondAndFourth = '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_and_fourth_quad'
 output_dirAll = '../Spezialisierung-1/src/slam_pkg/data/AllCombined'
-output_dirAllSingle = '../Spezialisierung-1/src/slam_pkg/data/AllCombined_Single'
+output_dirFirstAndThird_single = '../Spezialisierung-1/src/slam_pkg/data/diagonal_first_and_third_quad_single'
+output_dirSecondAndFourth_single = '../Spezialisierung-1/src/slam_pkg/data/diagonal_second_and_fourth_quad_single'
+output_dirAllSingle = '../Spezialisierung-1/src/slam_pkg/data/AllCombined_single'
 
 combine_csv_files(combPathsSquare, filenames, output_dirSquare)
+combine_csv_files(combPathsSquareSingle, filenames, output_dirSquare_single, single=True)
 combine_csv_files(combPathsDiagonal_first_and_third_quad, filenames, output_dirFirstAndThird)
 combine_csv_files(combPathsDiagonal_second_and_fourth_quad, filenames, output_dirSecondAndFourth)
 combine_csv_files(combPathsAll, filenames, output_dirAll)
 combine_csv_files(combPathsAllSingle, filenames, output_dirAllSingle, single=True)
+combine_csv_files(combPathsDiagonal_first_and_third_quad_single, filenames, output_dirFirstAndThird_single, single=True)
+combine_csv_files(combPathsDiagonal_second_and_fourth_quad_single, filenames, output_dirSecondAndFourth_single, single=True)

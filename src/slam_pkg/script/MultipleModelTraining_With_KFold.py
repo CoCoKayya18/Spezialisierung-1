@@ -46,7 +46,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     X_train_full, X_test, Y_train_full, Y_test, kinematic_train_full, kinematic_test = train_test_split(X, Y, kinematic_data, test_size=0.3, random_state=42)
 
     # Plotting target distributions
-    plot_dir = os.path.join(modelFilePath, 'Training', f'{direction}{suffix}', model_type)
+    plot_dir = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, 'Training', 'Plots')
     plot_feature_distribution(X_train_full, X_test, features, title_suffix='(Features)', plot_dir=plot_dir)
     plot_feature_distribution(Y_train_full, Y_test, target, title_suffix='(Targets)', plot_dir=plot_dir)
 
@@ -129,15 +129,15 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     report_content = [
         f"Standardization Check (Features): Mean - {X_mean}, Std - {X_std}",
         f"Standardization Check (Targets): Mean - {Y_mean}, Std - {Y_std}",
-        f"Average MSE across all folds: {average_mse}",
+        f"\nAverage MSE across all folds: {average_mse}",
         f"Average RMSE across all folds: {average_rmse}",
         f"Average MAE across all folds: {average_mae}",
         f"Average R-squared across all folds: {average_r2}",
-        f"MSE across all folds: {fold_mse}",
+        f"\nMSE across all folds: {fold_mse}",
         f"RMSE across all folds: {fold_rmse}",
         f"MAE across all folds: {fold_mae}",
         f"R-squared across all folds: {fold_r2}",
-        f"Best Model: {best_model}"
+        f"\nBest Model: {best_model}"
     ]
 
     # Print the report
@@ -145,8 +145,8 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
         print(line)
 
     # Save the model and scalers
-    model_dir = os.path.join(modelFilePath, model_type, f'{direction}{suffix}')
-    scaler_dir = os.path.join(scalerFilePath, model_type, f'{direction}{suffix}')
+    model_dir = os.path.join(modelFilePath, f'{direction}{suffix}', model_type)
+    scaler_dir = os.path.join(scalerFilePath, f'{direction}{suffix}', model_type)
     os.makedirs(model_dir, exist_ok=True)
     os.makedirs(scaler_dir, exist_ok=True)
 
@@ -164,7 +164,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
         pickle.dump(scaler_Y, file)
 
     # Save the report
-    report_filename = os.path.join(modelFilePath, 'Training', f'{direction}{suffix}', model_type, 'ModelReport.txt')
+    report_filename = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, 'Training', 'ModelReport.txt')
     os.makedirs(os.path.dirname(report_filename), exist_ok=True)
     with open(report_filename, 'w') as report_file:
         for line in report_content:
@@ -238,7 +238,7 @@ if __name__ == '__main__':
         print(f"\nTraining model for {combPath} on FullData_single...")
         train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', single=True)
 
-        dataName = 'FullData_cleaned_single.csv'
+        dataName = 'FullData_single_cleaned.csv'
         dataframe = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
         print(f"\nTraining model for {combPath} on FullData_cleaned_single...")
         train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', single=True)

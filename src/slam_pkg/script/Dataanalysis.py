@@ -90,26 +90,26 @@ def process_and_check_data(file_path):
     report.append("\n")
 
     # Remove near-duplicates
-    threshold = 1e-4  # Define a threshold for considering values as near-duplicates
-    near_duplicate_rows = 0
+    # threshold = 1e-4  # Define a threshold for considering values as near-duplicates
+    # near_duplicate_rows = 0
 
-    # Create a mask to identify near-duplicate rows
-    mask = pd.Series([False] * len(data_df))
+    # # Create a mask to identify near-duplicate rows
+    # mask = pd.Series([False] * len(data_df))
 
-    for i in range(len(data_df) - 1):
-        row = data_df.iloc[i]
-        for j in range(i + 1, len(data_df)):
-            if all((data_df.iloc[j] - row).abs() < threshold):
-                mask[j] = True
+    # for i in range(len(data_df) - 1):
+    #     row = data_df.iloc[i]
+    #     for j in range(i + 1, len(data_df)):
+    #         if all((data_df.iloc[j] - row).abs() < threshold):
+    #             mask[j] = True
 
-    # Count and remove near-duplicate rows
-    near_duplicate_rows = mask.sum()
-    if near_duplicate_rows > 0:
-        report.append(f"Near-duplicate rows detected and removed: {near_duplicate_rows}")
-        data_df = data_df[~mask]
-    else:
-        report.append("No near-duplicate rows detected.")
-    report.append("\n")
+    # # Count and remove near-duplicate rows
+    # near_duplicate_rows = mask.sum()
+    # if near_duplicate_rows > 0:
+    #     report.append(f"Near-duplicate rows detected and removed: {near_duplicate_rows}")
+    #     data_df = data_df[~mask]
+    # else:
+    #     report.append("No near-duplicate rows detected.")
+    # report.append("\n")
 
     # Outlier detection using Z-score
     z_scores = np.abs(zscore(data_df))
