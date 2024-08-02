@@ -7,11 +7,12 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import GPy
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import seaborn as sns
 
 def plot_comparison(Y_true, Y_pred, target_names, metrics, plot_dir):
     for i, target_name in enumerate(target_names):
-        fig, ax = plt.subplots(figsize=(6, 6))
-        ax.scatter(Y_true[:, i], Y_pred[:, i], alpha=0.5)
+        fig, ax = plt.subplots(figsize=(12, 12))
+        ax.scatter(Y_true[:, i], Y_pred[:, i], alpha=0.3, s=10)
         ax.plot([Y_true[:, i].min(), Y_true[:, i].max()], [Y_true[:, i].min(), Y_true[:, i].max()], 'k--', lw=2)
         ax.set_title(f'{target_name} Comparison\n'
                      f'MSE: {metrics[target_name]["MSE"]:.4f}, '
@@ -25,7 +26,7 @@ def plot_comparison(Y_true, Y_pred, target_names, metrics, plot_dir):
         plt.close(fig)
 
 def plot_path_comparison(Y_true, Y_pred, plot_dir):
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 12))
     ax.plot(np.cumsum(Y_true[:, 0]), np.cumsum(Y_true[:, 1]), label='True Path', color='blue')
     ax.plot(np.cumsum(Y_pred[:, 0]), np.cumsum(Y_pred[:, 1]), label='Predicted Path', color='red', linestyle='dashed')
     ax.set_title('True vs Predicted Path')
@@ -39,7 +40,7 @@ def plot_path_comparison(Y_true, Y_pred, plot_dir):
 def plot_residuals(Y_true, Y_pred, target_names, plot_dir):
     residuals = Y_true - Y_pred
     for i, target_name in enumerate(target_names):
-        fig, ax = plt.subplots(figsize=(6, 6))
+        fig, ax = plt.subplots(figsize=(12, 12))
         ax.scatter(Y_pred[:, i], residuals[:, i], alpha=0.5)
         ax.hlines(y=0, xmin=Y_pred[:, i].min(), xmax=Y_pred[:, i].max(), color='red')
         ax.set_title(f'{target_name} Residuals')
@@ -48,11 +49,42 @@ def plot_residuals(Y_true, Y_pred, target_names, plot_dir):
         os.makedirs(plot_dir, exist_ok=True)
         plt.savefig(os.path.join(plot_dir, f'{target_name}_residuals_plot.png'))
         plt.close(fig)
+    
+def plot_high_error_points(Y_true, Y_pred, X_test, features, target_names, plot_dir, threshold=0.01):
+    residuals = Y_true - Y_pred
+    for i, target_name in enumerate(target_names):
+        high_error_indices = np.where(np.abs(residuals[:, i]) > threshold)[0]
+        high_error_points = X_test[high_error_indices, :]
+        
+        fig, ax = plt.subplots(figsize=(12, 12))
+        ax.scatter(Y_true[:, i], Y_pred[:, i], alpha=0.3, s=10, label='Data Points')
+        ax.scatter(Y_true[high_error_indices, i], Y_pred[high_error_indices, i], color='red', s=50, label='High Error Points')
+        ax.plot([Y_true[:, i].min(), Y_true[:, i].max()], [Y_true[:, i].min(), Y_true[:, i].max()], 'k--', lw=2)
+        ax.set_title(f'{target_name} High Error Points\n'
+                     f'Threshold: {threshold}')
+        ax.set_xlabel('True Values')
+        ax.set_ylabel('Predicted Values')
+        ax.legend()
+        os.makedirs(plot_dir, exist_ok=True)
+        plt.savefig(os.path.join(plot_dir, f'{target_name}_high_error_points.png'))
+        plt.close(fig)
+
+def plot_error_distribution(Y_true, Y_pred, target_names, plot_dir):
+    residuals = Y_true - Y_pred
+    for i, target_name in enumerate(target_names):
+        fig, ax = plt.subplots(figsize=(12, 12))
+        sns.kdeplot(residuals[:, i], ax=ax)
+        ax.set_title(f'Error Distribution for {target_name}')
+        ax.set_xlabel('Error')
+        ax.set_ylabel('Density')
+        os.makedirs(plot_dir, exist_ok=True)
+        plt.savefig(os.path.join(plot_dir, f'{target_name}_error_distribution.png'))
+        plt.close(fig)
 
 def plot_histogram_residuals(Y_true, Y_pred, target_names, plot_dir):
     residuals = Y_true - Y_pred
     for i, target_name in enumerate(target_names):
-        fig, ax = plt.subplots(figsize=(6, 6))
+        fig, ax = plt.subplots(figsize=(12, 12))
         ax.hist(residuals[:, i], bins=50, alpha=0.75, color='blue', edgecolor='black')
         ax.set_title(f'Histogram of {target_name} Residuals')
         ax.set_xlabel('Residual')
@@ -65,7 +97,7 @@ def plot_index_comparison(Y_true, Y_pred, target_names, plot_dir, subsample_rate
     indices = np.arange(len(Y_true))
     subsample_indices = indices[::int(1/subsample_rate)]  # Subsample the indices
     for i, target_name in enumerate(target_names):
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(12, 12))
         ax.plot(subsample_indices, Y_true[subsample_indices, i], label='True Values', color='blue', alpha=0.6)
         ax.plot(subsample_indices, Y_pred[subsample_indices, i], label='Predicted Values', color='red', linestyle='dashed', alpha=0.6)
         for j in subsample_indices:
@@ -164,6 +196,12 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
 
     plot_index_comparison_dir = os.path.join(testing_dir, 'Plots', 'index_comparison_plots')
     plot_index_comparison(Y_test, Y_pred, target, plot_index_comparison_dir)
+
+    plot_high_error_points_dir = os.path.join(testing_dir, 'Plots', 'plot_high_error_points')
+    plot_high_error_points(Y_test, Y_pred, X_test, features, target, plot_high_error_points_dir)
+
+    plot_error_distribution_dir = os.path.join(testing_dir, 'Plots', 'plot_error_distribution')
+    plot_error_distribution(Y_test, Y_pred, target, plot_error_distribution_dir)
 
 if __name__ == '__main__':
     datafilepath = '../Spezialisierung-1/src/slam_pkg/data'

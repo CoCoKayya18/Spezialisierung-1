@@ -189,14 +189,17 @@ def get_bag_files(directory):
 
 if __name__ == '__main__':
     directories = [
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad',
+        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/random',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/random2',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/random3'
     ]
 
     for directory_path in directories:
@@ -220,6 +223,12 @@ if __name__ == '__main__':
             initialTheta = -3 * np.pi / 4
         elif folderName == 'diagonal_fourth_quad':
             initialTheta = -np.pi / 4
+        elif folderName == 'random':
+            initialTheta = 0
+        elif folderName == 'random2':
+            initialTheta = 0
+        elif folderName == 'random3':
+            initialTheta = 0
 
         for bag_file in bag_files:
             print(f"Processing {bag_file} with initialTheta {initialTheta}")
