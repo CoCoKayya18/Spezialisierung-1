@@ -295,8 +295,11 @@ if __name__ == '__main__':
     # print(all_paths)
 
     all_paths = [
+        ('../Spezialisierung-1/src/slam_pkg/data/random_single', 'FullData_single.csv'),
         ('../Spezialisierung-1/src/slam_pkg/data/random', 'FullData.csv'),
+        ('../Spezialisierung-1/src/slam_pkg/data/random2_single', 'FullData_single.csv'),
         ('../Spezialisierung-1/src/slam_pkg/data/random2', 'FullData.csv'),
+        ('../Spezialisierung-1/src/slam_pkg/data/random3_single', 'FullData_single.csv'),
         ('../Spezialisierung-1/src/slam_pkg/data/random3', 'FullData.csv')
     ]
 

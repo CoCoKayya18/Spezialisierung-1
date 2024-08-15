@@ -48,8 +48,10 @@ class BagDataProcessor:
         df['angular_velocity_yaw'].fillna(method='bfill', inplace=True)  # Backward fill for the first NaN
         df['angular_velocity_yaw'].interpolate(inplace=True)  # Interpolate remaining NaNs if any
 
+        # df['angular_velocity_yaw'] = df['angular_velocity_yaw'].rolling(window=5, min_periods=1).mean()
+
         theta = initialOrientation + np.cumsum(np.insert(df['angular_velocity_yaw'].values, 0, 0)[:-1]) * time_diffs
-        theta = (theta + np.pi) % (2 * np.pi) - np.pi
+        theta = np.arctan2(np.sin(theta), np.cos(theta))
         df['Theta_calculated'] = theta
 
         df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
