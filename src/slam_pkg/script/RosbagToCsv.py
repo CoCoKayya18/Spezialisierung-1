@@ -33,9 +33,13 @@ class BagDataProcessor:
 
         return df[['Time', 'yaw_world', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw']]
 
-    def calculate_joint_velocities_and_accelerations(self, df, initialOrientation):
+    def calculate_joint_velocities_and_accelerations(self, df, ground_truth_df, initialOrientation):
         # Convert seconds and nanoseconds to a single time column in seconds
         df['Time'] = pd.to_numeric(df['header.stamp.secs']) + pd.to_numeric(df['header.stamp.nsecs']) * 1e-9
+        ground_truth_df['Time'] = pd.to_numeric(ground_truth_df['header.stamp.secs']) + pd.to_numeric(ground_truth_df['header.stamp.nsecs']) * 1e-9
+
+        # Merge ground truth and joint states based on time
+        merged_df = pd.merge_asof(df, ground_truth_df[['Time', 'yaw_world']], on='Time')
         
         wheel_radius = 0.066 / 2  # meter
         wheel_base = 0.160  # distance between wheels in meters
@@ -48,14 +52,26 @@ class BagDataProcessor:
         df['angular_velocity_yaw'].fillna(method='bfill', inplace=True)  # Backward fill for the first NaN
         df['angular_velocity_yaw'].interpolate(inplace=True)  # Interpolate remaining NaNs if any
 
-        # df['angular_velocity_yaw'] = df['angular_velocity_yaw'].rolling(window=5, min_periods=1).mean()
-
         theta = initialOrientation + np.cumsum(np.insert(df['angular_velocity_yaw'].values, 0, 0)[:-1]) * time_diffs
         theta = np.arctan2(np.sin(theta), np.cos(theta))
-        df['Theta_calculated'] = theta
 
-        df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(theta)
-        df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(theta)
+        corrected_thetas = []
+        for idx, row in merged_df.iterrows():
+            calculated_yaw = theta[idx]
+            ground_truth_yaw = row['yaw_world']
+
+            # Check for large discrepancies and correct if necessary
+            if abs(calculated_yaw - ground_truth_yaw) > np.pi / 4:
+                corrected_yaw = ground_truth_yaw
+            else:
+                corrected_yaw = calculated_yaw
+
+            corrected_thetas.append(corrected_yaw)
+
+        df['Theta_calculated'] = corrected_thetas
+
+        df['world_velocity_x'] = df['linear_velocity_x'] * np.cos(df['Theta_calculated'])
+        df['world_velocity_y'] = df['linear_velocity_x'] * np.sin(df['Theta_calculated'])
         
         # Calculate accelerations
         df['linear_acceleration_x'] = df['linear_velocity_x'].diff() / time_diffs
@@ -112,7 +128,7 @@ class BagDataProcessor:
 
     def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, counter, initialOrientation, folderName, single=False):
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
-        processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df, initialOrientation)
+        processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df, ground_truth_df, initialOrientation)
 
         suffix = "_single" if single else ""
         data_dir = f'../Spezialisierung-1/src/slam_pkg/data/{folderName}{suffix}'
@@ -187,18 +203,19 @@ def process_bag_file(bag_file_path, counter, initialOrientation, folderName, sin
 def get_bag_files(directory):
     directory = os.path.abspath(directory)
     bag_files = glob.glob(os.path.join(directory, '*.bag'))
+    print(bag_files)
     return bag_files
 
 if __name__ == '__main__':
     directories = [
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad',
-        # '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/x_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_positive',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/y_direction_negative',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad',
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/random',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/random2',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/random3'
