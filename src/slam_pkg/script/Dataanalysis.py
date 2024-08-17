@@ -265,21 +265,21 @@ def process_and_check_data(file_path):
 if __name__ == '__main__':
     base_dir = '../Spezialisierung-1/src/slam_pkg/data'
     
-    # # Get paths for FullData and FullData_single
-    # combPaths = get_comb_paths(base_dir)
-    # combPaths_single = get_comb_paths(base_dir, suffix='_single')
+    # Get paths for FullData and FullData_single
+    combPaths = get_comb_paths(base_dir)
+    combPaths_single = get_comb_paths(base_dir, suffix='_single')
     
-    # all_paths = combPaths + combPaths_single
+    all_paths = combPaths + combPaths_single
     # print(all_paths)
 
-    all_paths = [
-        ('../Spezialisierung-1/src/slam_pkg/data/random_single', 'FullData_single.csv'),
-        # ('../Spezialisierung-1/src/slam_pkg/data/random', 'FullData.csv'),
-        ('../Spezialisierung-1/src/slam_pkg/data/random2_single', 'FullData_single.csv'),
-        # ('../Spezialisierung-1/src/slam_pkg/data/random2', 'FullData.csv'),
-        ('../Spezialisierung-1/src/slam_pkg/data/random3_single', 'FullData_single.csv'),
-        # ('../Spezialisierung-1/src/slam_pkg/data/random3', 'FullData.csv')
-    ]
+    # all_paths = [
+    #     ('../Spezialisierung-1/src/slam_pkg/data/random_single', 'FullData_single.csv'),
+    #     ('../Spezialisierung-1/src/slam_pkg/data/random', 'FullData.csv'),
+    #     ('../Spezialisierung-1/src/slam_pkg/data/random2_single', 'FullData_single.csv'),
+    #     ('../Spezialisierung-1/src/slam_pkg/data/random2', 'FullData.csv'),
+    #     ('../Spezialisierung-1/src/slam_pkg/data/random3_single', 'FullData_single.csv'),
+    #     ('../Spezialisierung-1/src/slam_pkg/data/random3', 'FullData.csv')
+    # ]
 
     
     with tqdm(total=len(all_paths), desc="Processing files", unit="file") as pbar:

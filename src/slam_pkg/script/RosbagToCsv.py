@@ -5,6 +5,7 @@ from scipy.spatial.transform import Rotation as R
 import os
 import math
 import glob
+import shutil
 
 class BagDataProcessor:
 
@@ -132,6 +133,12 @@ class BagDataProcessor:
 
         suffix = "_single" if single else ""
         data_dir = f'../Spezialisierung-1/src/slam_pkg/data/{folderName}{suffix}'
+
+        # Delete the directory if it exists, and then recreate it
+        if os.path.exists(data_dir):
+            shutil.rmtree(data_dir)
+        os.makedirs(data_dir, exist_ok=True)
+
         dataFilePathDeltas = os.path.join(data_dir, f'GT_Deltas{suffix}.csv')
         dataFilePathVelsAndAccs = os.path.join(data_dir, f'Vels_And_Accels{suffix}.csv')
         mergedPath = os.path.join(data_dir, f'FullData{suffix}.csv')
@@ -215,7 +222,7 @@ if __name__ == '__main__':
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_first_quad',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_second_quad',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_third_quad',
-        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad'
+        '../Spezialisierung-1/src/slam_pkg/rosbag_files/diagonal_fourth_quad',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/random',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/random2',
         '../Spezialisierung-1/src/slam_pkg/rosbag_files/random3'

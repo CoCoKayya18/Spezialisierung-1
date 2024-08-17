@@ -190,7 +190,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     val_data = pd.concat([pd.DataFrame(X_val_inv, columns=features), pd.DataFrame(Y_val_inv, columns=target), pd.DataFrame(kinematic_train_full[best_indices[1]], columns=kinematic_deltas)], axis=1)
 
     test_data = pd.concat([pd.DataFrame(X_test_inv, columns=features), pd.DataFrame(Y_test_inv, columns=target), pd.DataFrame(kinematic_test, columns=kinematic_deltas)], axis=1)
-
+ 
     data_save_dir = os.path.join(datafilepath, f'{direction}{suffix}', 'training', model_type)
     os.makedirs(data_save_dir, exist_ok=True)
     
@@ -215,7 +215,10 @@ if __name__ == '__main__':
         'diagonal_first_and_third_quad',
         'diagonal_second_and_fourth_quad',
         'square',
-        'AllCombined'
+        'AllCombined',
+        'random',
+        'random2',
+        'random3'
     ]
 
     features = ['world_velocity_x' , 'world_velocity_y', 'angular_velocity_yaw']
