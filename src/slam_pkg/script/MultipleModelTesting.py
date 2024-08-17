@@ -220,7 +220,10 @@ if __name__ == '__main__':
         'diagonal_first_and_third_quad',
         'diagonal_second_and_fourth_quad',
         'square',
-        'AllCombined'
+        'AllCombined',
+        'random',
+        'random2',
+        'random3'
     ]
 
     features = ['world_velocity_x' , 'world_velocity_y', 'angular_velocity_yaw']
