@@ -26,7 +26,8 @@ def process_and_check_data(file_path):
                        'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 
                        'linear_acceleration_x', 'angular_acceleration_yaw', 
                        'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 
-                       'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'twist.twist.linear.x', 'Time']
+                       'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'twist.twist.linear.x', 'Time', 
+                       'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
     
     if not all(col in data_df.columns for col in columns_of_interest):
         print(f"Columns of interest not found in {file_path}")
