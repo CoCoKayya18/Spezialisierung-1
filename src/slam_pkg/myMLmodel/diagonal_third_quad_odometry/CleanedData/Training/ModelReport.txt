@@ -1,0 +1,26 @@
+Standardization Check (Features): Mean - [-1.33279631e-15 -1.08925215e-15 -2.09818054e-14], Std - [1. 1. 1.]
+Standardization Check (Targets): Mean - [2.61713050e-15 1.43412619e-15 1.35693925e-17], Std - [1. 1. 1.]
+
+Average MSE across all folds: 0.3254008970148416
+Average RMSE across all folds: 0.5686167182334912
+Average MAE across all folds: 0.248025915137293
+Average R-squared across all folds: 0.6695364833500801
+
+MSE across all folds: [0.39903078673169096, 0.3173263160561556, 0.24455355512569277, 0.3553924195948303, 0.31070140756583825]
+RMSE across all folds: [0.6316888369535202, 0.5633172428180728, 0.4945235637719327, 0.5961479846437714, 0.5574059629801589]
+MAE across all folds: [0.27361078307302394, 0.25860029486123876, 0.21842064946309156, 0.2512974189683038, 0.2382004293208069]
+R-squared across all folds: [0.6436978536736222, 0.6871291358860686, 0.6524010448518359, 0.6950315627829999, 0.6694228195558741]
+
+Best Model: 
+Name : sparse_gp
+Objective : 660.2856231858963
+Number of Parameters : 34
+Number of Optimization Parameters : 34
+Updates : True
+Parameters:
+  [1msparse_gp.             [0;0m  |                  value  |  constraints  |  priors
+  [1minducing_inputs        [0;0m  |                (10, 3)  |               |        
+  [1msum.rbf.variance       [0;0m  |     3.8845787576179696  |      +ve      |        
+  [1msum.rbf.lengthscale    [0;0m  |      5.829771063240531  |      +ve      |        
+  [1msum.white.variance     [0;0m  |  5.721963678922865e-08  |      +ve      |        
+  [1mGaussian_noise.variance[0;0m  |     0.3098588126525869  |      +ve      |        

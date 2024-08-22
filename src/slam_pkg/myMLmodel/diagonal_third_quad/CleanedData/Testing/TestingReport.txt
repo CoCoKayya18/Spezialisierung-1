@@ -1,0 +1,19 @@
+Number of test data points: 135
+delta_position_x_world Metrics:
+  Mean Squared Error (MSE): 4.853129662895043e-08
+  Root Mean Squared Error (RMSE): 0.00022029819933206543
+  Mean Absolute Error (MAE): 0.00010068740633071085
+  R-squared: 0.9886054121542128
+
+delta_position_y_world Metrics:
+  Mean Squared Error (MSE): 3.5829835422122596e-08
+  Root Mean Squared Error (RMSE): 0.00018928770541723676
+  Mean Absolute Error (MAE): 8.569543584761008e-05
+  R-squared: 0.9914155918536486
+
+delta_yaw Metrics:
+  Mean Squared Error (MSE): 1.2640979845180405e-06
+  Root Mean Squared Error (RMSE): 0.0011243211216187484
+  Mean Absolute Error (MAE): 0.0005955261306005406
+  R-squared: 0.5927082810772921
+

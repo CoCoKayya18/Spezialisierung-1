@@ -229,8 +229,8 @@ if __name__ == '__main__':
         # # First model training
         dataName = 'FullData.csv'
         dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
-        # print(f"\nTraining model for {combPath} on FullData...")
-        # train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData')
+        print(f"\nTraining model for {combPath} on FullData...")
+        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData')
 
         # Second model training using only odometry data
         odometry_features = ['odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
