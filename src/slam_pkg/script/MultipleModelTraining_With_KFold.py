@@ -236,7 +236,7 @@ if __name__ == '__main__':
         odometry_features = ['odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
         dataframe_odometry = dataframe.copy()  # or load specific data if needed
         print(f"\nTraining odometry model for {combPath}...")
-        train_and_evaluate_model(dataframe_odometry, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='OdometryData')
+        train_and_evaluate_model(dataframe_odometry, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='FullData')
 
         # Optionally, repeat for cleaned data
         dataName = 'FullData_cleaned.csv'

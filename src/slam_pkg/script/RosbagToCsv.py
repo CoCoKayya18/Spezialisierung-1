@@ -140,7 +140,7 @@ class BagDataProcessor:
         odom_df['odom_world_velocity_x'] = odom_df['twist.twist.linear.x'] * np.cos(odom_df['odom_yaw_world'])
         odom_df['odom_world_velocity_y'] = odom_df['twist.twist.linear.x'] * np.sin(odom_df['odom_yaw_world'])
 
-        return odom_df[['Time', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']]
+        return odom_df[['Time', 'twist.twist.linear.x', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']]
 
     # def process_Cmd_Vel(self, cmdVel_df):
             
@@ -210,7 +210,7 @@ class BagDataProcessor:
         # combined_df = pd.merge_asof(combined_df, processed_cmdVel_df, on='Time')
         # combined_df = pd.merge_asof(combined_df, processed_imu_df, on='Time')
 
-        columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
+        columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world', 'twist.twist.linear.x']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
         if missing_values.any():
