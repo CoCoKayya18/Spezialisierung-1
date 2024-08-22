@@ -230,7 +230,11 @@ if __name__ == '__main__':
     target = ['delta_position_x_world', 'delta_position_y_world', 'delta_yaw']
     kinematic_deltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
+    # Define odometry features for the odometry models
+    odometry_features = ['odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
+
     for combPath in tqdm(combPaths, desc="Testing models", unit="path"):
+        # Test the standard model
         print(f"\nTesting model for {combPath} on FullData...")
         test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData')
 
@@ -242,3 +246,16 @@ if __name__ == '__main__':
 
         print(f"\nTesting model for {combPath} on FullData_cleaned_single...")
         test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', single=True)
+
+        # Test the odometry model
+        print(f"\nTesting odometry model for {combPath} on FullData...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'FullData')
+
+        print(f"\nTesting odometry model for {combPath} on FullData_cleaned...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'CleanedData')
+
+        print(f"\nTesting odometry model for {combPath} on FullData_single...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'FullData', single=True)
+
+        print(f"\nTesting odometry model for {combPath} on FullData_cleaned_single...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'CleanedData', single=True)

@@ -226,22 +226,44 @@ if __name__ == '__main__':
     kinematic_deltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
     for combPath in tqdm(combPaths, desc="Training models", unit="path"):
+        # # First model training
         dataName = 'FullData.csv'
         dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
-        print(f"\nTraining model for {combPath} on FullData...")
-        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData')
+        # print(f"\nTraining model for {combPath} on FullData...")
+        # train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData')
 
+        # Second model training using only odometry data
+        odometry_features = ['odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
+        dataframe_odometry = dataframe.copy()  # or load specific data if needed
+        print(f"\nTraining odometry model for {combPath}...")
+        train_and_evaluate_model(dataframe_odometry, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='OdometryData')
+
+        # Optionally, repeat for cleaned data
         dataName = 'FullData_cleaned.csv'
-        dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
+        dataframe_cleaned = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
         print(f"\nTraining model for {combPath} on FullData_cleaned...")
-        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData')
+        train_and_evaluate_model(dataframe_cleaned, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData')
 
+        dataframe_odometry_cleaned = dataframe_cleaned.copy()  # or load specific data if needed
+        print(f"\nTraining odometry model for {combPath} on cleaned data...")
+        train_and_evaluate_model(dataframe_odometry_cleaned, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='CleanedData')
+
+        # Repeat for single data
         dataName = 'FullData_single.csv'
-        dataframe = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
+        dataframe_single = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
         print(f"\nTraining model for {combPath} on FullData_single...")
-        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', single=True)
+        train_and_evaluate_model(dataframe_single, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', single=True)
 
+        dataframe_odometry_single = dataframe_single.copy()  # or load specific data if needed
+        print(f"\nTraining odometry model for {combPath} on single data...")
+        train_and_evaluate_model(dataframe_odometry_single, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='FullData', single=True)
+
+        # Repeat for cleaned single data
         dataName = 'FullData_single_cleaned.csv'
-        dataframe = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
+        dataframe_single_cleaned = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
         print(f"\nTraining model for {combPath} on FullData_cleaned_single...")
-        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', single=True)
+        train_and_evaluate_model(dataframe_single_cleaned, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', single=True)
+
+        dataframe_odometry_single_cleaned = dataframe_single_cleaned.copy()  # or load specific data if needed
+        print(f"\nTraining odometry model for {combPath} on cleaned single data...")
+        train_and_evaluate_model(dataframe_odometry_single_cleaned, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='CleanedData', single=True)

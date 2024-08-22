@@ -127,9 +127,53 @@ class BagDataProcessor:
 
         return calculated_delta_x, calculated_delta_y, calculated_delta_theta
 
+    def calculate_odometry_world_velocities(self, odom_df):
+        # Convert seconds and nanoseconds to a single time column in seconds
+        odom_df['Time'] = pd.to_numeric(odom_df['header.stamp.secs']) + pd.to_numeric(odom_df['header.stamp.nsecs']) * 1e-9
+        
+        # Convert quaternion to Euler angles (yaw)
+        quaternions = odom_df[['pose.pose.orientation.x', 'pose.pose.orientation.y', 'pose.pose.orientation.z', 'pose.pose.orientation.w']].to_numpy()
+        eulers = R.from_quat(quaternions).as_euler('xyz', degrees=False)  # xyz order, output in radians
+        odom_df['odom_yaw_world'] = eulers[:, 2]  # z-axis (yaw)
+
+        # Calculate the world frame velocities
+        odom_df['odom_world_velocity_x'] = odom_df['twist.twist.linear.x'] * np.cos(odom_df['odom_yaw_world'])
+        odom_df['odom_world_velocity_y'] = odom_df['twist.twist.linear.x'] * np.sin(odom_df['odom_yaw_world'])
+
+        return odom_df[['Time', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']]
+
+    # def process_Cmd_Vel(self, cmdVel_df):
+            
+    #         print(cmdVel_df.columns)
+    #         # Convert seconds and nanoseconds to a single time column in seconds
+    #         cmdVel_df['Time'] = pd.to_numeric(cmdVel_df['header.stamp.secs']) + pd.to_numeric(cmdVel_df['header.stamp.nsecs']) * 1e-9
+            
+    #         # Drop the old time columns if no longer needed
+    #         cmdVel_df.drop(['header.stamp.secs', 'header.stamp.nsecs'], axis=1, inplace=True)
+            
+    #         return cmdVel_df
+
+    # def process_imu(self, imu_df):
+    #     # Convert seconds and nanoseconds to a single time column in seconds
+    #     imu_df['Time'] = pd.to_numeric(imu_df['header.stamp.secs']) + pd.to_numeric(imu_df['header.stamp.nsecs']) * 1e-9
+        
+    #     # Drop the old time columns if no longer needed
+    #     imu_df.drop(['header.stamp.secs', 'header.stamp.nsecs'], axis=1, inplace=True)
+        
+    #     return imu_df
+
+
     def process_and_save_data(self, ground_truth_df, joint_state_df, odom_df, cmdVel_df, imu_df, counter, initialOrientation, folderName, single=False):
+
         processed_gt_df = self.calculate_ground_truth_deltas(ground_truth_df)
         processed_joint_df = self.calculate_joint_velocities_and_accelerations(joint_state_df, ground_truth_df, initialOrientation)
+
+         # Calculate odometry velocities in the world frame
+        processed_odom_df = self.calculate_odometry_world_velocities(odom_df)
+
+        # processed_cmdVel_df = self.process_Cmd_Vel(cmdVel_df)
+        # processed_imu_df = self.process_imu(imu_df)
+
 
         suffix = "_single" if single else ""
         data_dir = f'../Spezialisierung-1/src/slam_pkg/data/{folderName}{suffix}'
@@ -162,11 +206,11 @@ class BagDataProcessor:
 
         # Use merge_asof to align the data based on the 'Time' column
         combined_df = pd.merge_asof(processed_gt_df, processed_joint_df, on='Time')
-        combined_df = pd.merge_asof(combined_df, odom_df, on='Time')
-        combined_df = pd.merge_asof(combined_df, cmdVel_df, on='Time')
-        combined_df = pd.merge_asof(combined_df, imu_df, on='Time')
+        combined_df = pd.merge_asof(combined_df, processed_odom_df, on='Time')
+        # combined_df = pd.merge_asof(combined_df, processed_cmdVel_df, on='Time')
+        # combined_df = pd.merge_asof(combined_df, processed_imu_df, on='Time')
 
-        columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
+        columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
         if missing_values.any():
