@@ -49,7 +49,7 @@ def plot_residuals(Y_true, Y_pred, target_names, plot_dir):
         os.makedirs(plot_dir, exist_ok=True)
         plt.savefig(os.path.join(plot_dir, f'{target_name}_residuals_plot.png'))
         plt.close(fig)
-    
+
 def plot_high_error_points(Y_true, Y_pred, X_test, features, target_names, plot_dir, threshold=0.01):
     residuals = Y_true - Y_pred
     for i, target_name in enumerate(target_names):
@@ -110,20 +110,19 @@ def plot_index_comparison(Y_true, Y_pred, target_names, plot_dir, subsample_rate
         plt.savefig(os.path.join(plot_dir, f'{target_name}_index_comparison_plot.png'))
         plt.close(fig)
 
-def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, model_type, single=False):
+def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, model_type, single=False, data_type='calcJoint'):
     suffix = '_single' if single else ''
     direction = f'{combPath}{suffix}'
-    SpecialCase = combPath
 
     # Load the test data
-    test_data_path = os.path.join(datafilepath, direction, 'training', model_type, f'sparse_test_data_{SpecialCase}{suffix}.csv')
+    test_data_path = os.path.join(datafilepath, direction, 'training', model_type, data_type, f'sparse_test_data_{combPath}{suffix}.csv')
     test_data = pd.read_csv(test_data_path)
     X_test = test_data[features].values
     Y_test = test_data[target].values
 
     # Load the scalers
-    scaler_filenameX = os.path.join(scalerFilePath, direction, model_type, f'sparse_scaler_X_{SpecialCase}{suffix}.pkl')
-    scaler_filenameY = os.path.join(scalerFilePath, direction, model_type, f'sparse_scaler_Y_{SpecialCase}{suffix}.pkl')
+    scaler_filenameX = os.path.join(scalerFilePath, direction, model_type, data_type, f'sparse_scaler_X_{combPath}{suffix}.pkl')
+    scaler_filenameY = os.path.join(scalerFilePath, direction, model_type, data_type, f'sparse_scaler_Y_{combPath}{suffix}.pkl')
 
     with open(scaler_filenameX, 'rb') as file:
         scaler_X = pickle.load(file)
@@ -135,7 +134,7 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
     Y_test_scaled = scaler_Y.transform(Y_test)
 
     # Load the model
-    model_filename = os.path.join(modelFilePath, direction, model_type, f'sparse_gpy_model_{SpecialCase}{suffix}.pkl')
+    model_filename = os.path.join(modelFilePath, direction, model_type, data_type, f'sparse_gpy_model_{combPath}{suffix}.pkl')
     with open(model_filename, 'rb') as file:
         model = pickle.load(file)
 
@@ -174,7 +173,7 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
         print(line)
 
     # Save the report
-    testing_dir = os.path.join(modelFilePath, direction, model_type, 'Testing')
+    testing_dir = os.path.join(modelFilePath, direction, model_type, 'Testing', data_type)
     os.makedirs(testing_dir, exist_ok=True)
     report_filename = os.path.join(testing_dir, 'TestingReport.txt')
     with open(report_filename, 'w') as report_file:
@@ -236,26 +235,26 @@ if __name__ == '__main__':
     for combPath in tqdm(combPaths, desc="Testing models", unit="path"):
         # Test the standard model
         print(f"\nTesting model for {combPath} on FullData...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData')
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', data_type='calcJoint')
 
         print(f"\nTesting model for {combPath} on FullData_cleaned...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData')
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', data_type='calcJoint')
 
         print(f"\nTesting model for {combPath} on FullData_single...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', single=True)
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', single=True, data_type='calcJoint')
 
         print(f"\nTesting model for {combPath} on FullData_cleaned_single...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', single=True)
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', single=True, data_type='calcJoint')
 
         # Test the odometry model
         print(f"\nTesting odometry model for {combPath} on FullData...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'FullData')
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, odometry_features, target, kinematic_deltas, 'FullData', data_type='odomVel')
 
         print(f"\nTesting odometry model for {combPath} on FullData_cleaned...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'CleanedData')
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, odometry_features, target, kinematic_deltas, 'CleanedData', data_type='odomVel')
 
         print(f"\nTesting odometry model for {combPath} on FullData_single...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'FullData', single=True)
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, odometry_features, target, kinematic_deltas, 'FullData', single=True, data_type='odomVel')
 
         print(f"\nTesting odometry model for {combPath} on FullData_cleaned_single...")
-        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath+'_odometry', odometry_features, target, kinematic_deltas, 'CleanedData', single=True)
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, odometry_features, target, kinematic_deltas, 'CleanedData', single=True, data_type='odomVel')
