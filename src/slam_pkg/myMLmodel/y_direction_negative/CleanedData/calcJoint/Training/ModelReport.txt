@@ -1,26 +1,26 @@
 Standardization Check (Features): Mean - [7.32565192e-17 9.72355165e-16 1.16738359e-16], Std - [1. 1. 1.]
 Standardization Check (Targets): Mean - [-1.41052925e-16  2.52075228e-15  2.05678484e-17], Std - [1. 1. 1.]
 
-Average MSE across all folds: 0.04434721370318493
-Average RMSE across all folds: 0.20691796186473485
-Average MAE across all folds: 0.11136591078475737
-Average R-squared across all folds: 0.9491638104608061
+Average MSE across all folds: 0.044345639899835594
+Average RMSE across all folds: 0.20691457030165
+Average MAE across all folds: 0.11136547938617927
+Average R-squared across all folds: 0.9491650954336128
 
-MSE across all folds: [0.055381839826371376, 0.02108290637251022, 0.04794767967735142, 0.032755235665601186, 0.06456840697409043]
-RMSE across all folds: [0.23533346516458592, 0.14519953984951267, 0.21896958619258386, 0.1809840757238083, 0.2541031423931834]
-MAE across all folds: [0.1297667009658514, 0.09022852174843687, 0.11158235489602138, 0.10092825711891994, 0.1243237191945572]
-R-squared across all folds: [0.9334782140801904, 0.9767789745142137, 0.9078810795654711, 0.9723643596684699, 0.9553164244756847]
+MSE across all folds: [0.055383468925725675, 0.02108920614453032, 0.047945398245161454, 0.03274227736253638, 0.06456784882122413]
+RMSE across all folds: [0.2353369263964448, 0.1452212317277688, 0.21896437665785148, 0.1809482726155085, 0.2541020441106764]
+MAE across all folds: [0.12976162939867, 0.09023024275604391, 0.11157983841142387, 0.10093167019810827, 0.1243240161666503]
+R-squared across all folds: [0.9334775365879056, 0.9767718280913926, 0.9078855338902407, 0.972373816602352, 0.9553167619961734]
 
 Best Model: 
 Name : sparse_gp
-Objective : 12.147279743951913
+Objective : 12.147804986888332
 Number of Parameters : 34
 Number of Optimization Parameters : 34
 Updates : True
 Parameters:
   [1msparse_gp.             [0;0m  |                  value  |  constraints  |  priors
   [1minducing_inputs        [0;0m  |                (10, 3)  |               |        
-  [1msum.rbf.variance       [0;0m  |     11.036232980534797  |      +ve      |        
-  [1msum.rbf.lengthscale    [0;0m  |      4.156162245538811  |      +ve      |        
-  [1msum.white.variance     [0;0m  |  8.953950152037303e-11  |      +ve      |        
-  [1mGaussian_noise.variance[0;0m  |      0.044381484281148  |      +ve      |        
+  [1msum.rbf.variance       [0;0m  |      10.94277962074755  |      +ve      |        
+  [1msum.rbf.lengthscale    [0;0m  |      4.148907447908499  |      +ve      |        
+  [1msum.white.variance     [0;0m  |  4.174645351781928e-09  |      +ve      |        
+  [1mGaussian_noise.variance[0;0m  |    0.04438491549640716  |      +ve      |        
