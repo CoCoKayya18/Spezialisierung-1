@@ -7,17 +7,17 @@ Dataset Initial Length:
 
 
 Statistical Summaries:
-       Theta_calculated    yaw_world  linear_velocity_x  world_velocity_x  ...         Time  odom_world_velocity_x  odom_world_velocity_y  odom_yaw_world
-count       1543.000000  1543.000000        1543.000000       1543.000000  ...  1543.000000            1543.000000            1543.000000     1543.000000
-mean           0.196108     0.200506           0.155132         -0.000212  ...     6.992355              -0.000696               0.003038        0.200368
-std            1.883429     1.893847           0.087135          0.125604  ...     3.811321               0.124689               0.124805        1.893786
-min           -3.141517    -3.141587          -0.000361         -0.225274  ...     0.329000              -0.221023              -0.231386       -3.141591
-25%           -1.495100    -1.486359           0.114658         -0.016819  ...     3.702500              -0.019713              -0.006227       -1.491788
-50%            0.135723     0.136951           0.206804         -0.000005  ...     6.974000              -0.000154               0.000003        0.136308
-75%            1.574259     1.603971           0.218079          0.021360  ...    10.260000               0.027291               0.033140        1.603970
-max            3.141591     3.141588           0.241059          0.228844  ...    14.250000               0.225123               0.220836        3.141584
+       Theta_calculated    yaw_world  linear_velocity_x  world_velocity_x  ...  odom_world_velocity_x  odom_world_velocity_y  odom_angular_velocity  odom_yaw_world
+count       1543.000000  1543.000000        1543.000000       1543.000000  ...            1543.000000            1543.000000            1543.000000     1543.000000
+mean           0.196108     0.200506           0.155132         -0.000212  ...              -0.000696               0.003038               0.006760        0.200368
+std            1.883429     1.893847           0.087135          0.125604  ...               0.124689               0.124805               9.602885        1.893786
+min           -3.141517    -3.141587          -0.000361         -0.225274  ...              -0.221023              -0.231386            -188.683921       -3.141591
+25%           -1.495100    -1.486359           0.114658         -0.016819  ...              -0.019713              -0.006227              -0.015124       -1.491788
+50%            0.135723     0.136951           0.206804         -0.000005  ...              -0.000154               0.000003               0.000319        0.136308
+75%            1.574259     1.603971           0.218079          0.021360  ...               0.027291               0.033140               0.026624        1.603970
+max            3.141591     3.141588           0.241059          0.228844  ...               0.225123               0.220836             188.675506        3.141584
 
-[8 rows x 19 columns]
+[8 rows x 20 columns]
 
 
 No missing values detected.
@@ -45,47 +45,49 @@ twist.twist.linear.x        float64
 Time                        float64
 odom_world_velocity_x       float64
 odom_world_velocity_y       float64
+odom_angular_velocity       float64
 odom_yaw_world              float64
 dtype: object
 
 
 Data Range:
-     Theta_calculated  yaw_world  linear_velocity_x  world_velocity_x  ...    Time  odom_world_velocity_x  odom_world_velocity_y  odom_yaw_world
-min         -3.141517  -3.141587          -0.000361         -0.225274  ...   0.329              -0.221023              -0.231386       -3.141591
-max          3.141591   3.141588           0.241059          0.228844  ...  14.250               0.225123               0.220836        3.141584
+     Theta_calculated  yaw_world  linear_velocity_x  world_velocity_x  ...  odom_world_velocity_x  odom_world_velocity_y  odom_angular_velocity  odom_yaw_world
+min         -3.141517  -3.141587          -0.000361         -0.225274  ...              -0.221023              -0.231386            -188.683921       -3.141591
+max          3.141591   3.141588           0.241059          0.228844  ...               0.225123               0.220836             188.675506        3.141584
 
-[2 rows x 19 columns]
+[2 rows x 20 columns]
 
 
 No duplicate rows detected.
 
 
-Outliers detected: 157
+Outliers detected: 161
 
 
 Correlation Matrix:
-                          Theta_calculated  yaw_world  linear_velocity_x  ...  odom_world_velocity_x  odom_world_velocity_y  odom_yaw_world
-Theta_calculated                  1.000000   0.988400          -0.107371  ...              -0.032060               0.538896        0.988403
-yaw_world                         0.988400   1.000000          -0.100788  ...              -0.036874               0.536449        1.000000
-linear_velocity_x                -0.107371  -0.100788           1.000000  ...              -0.020932              -0.004557       -0.100823
-world_velocity_x                 -0.026938  -0.032089          -0.019005  ...               0.998890               0.004771       -0.032257
-world_velocity_y                  0.537265   0.534738          -0.004519  ...               0.004533               0.999403        0.534743
-angular_velocity_yaw             -0.175824  -0.174053           0.042365  ...               0.281139              -0.081141       -0.174526
-linear_acceleration_x             0.016069   0.013612           0.052286  ...               0.000305               0.030718        0.013595
-angular_acceleration_yaw          0.042446   0.042049           0.008872  ...              -0.017017               0.035581        0.041997
-delta_position_x_world           -0.031505  -0.036300          -0.021152  ...               0.999953              -0.000142       -0.036462
-delta_position_y_world            0.538786   0.536335          -0.004720  ...              -0.000109               0.999948        0.536339
-delta_yaw                        -0.181365  -0.187412           0.047048  ...               0.268637              -0.079692       -0.188039
-kinematic_delta_x                -0.027015  -0.032165          -0.019011  ...               0.998886               0.004600       -0.032334
-kinematic_delta_y                 0.536965   0.534473          -0.004264  ...               0.004210               0.999402        0.534478
-kinematic_delta_yaw              -0.175824  -0.174053           0.042365  ...               0.281139              -0.081141       -0.174526
-twist.twist.linear.x             -0.103357  -0.097140           0.996665  ...              -0.025625              -0.002222       -0.097156
-Time                              0.287098   0.289709          -0.366739  ...               0.031865               0.026726        0.289642
-odom_world_velocity_x            -0.032060  -0.036874          -0.020932  ...               1.000000              -0.000145       -0.037036
-odom_world_velocity_y             0.538896   0.536449          -0.004557  ...              -0.000145               1.000000        0.536454
-odom_yaw_world                    0.988403   1.000000          -0.100823  ...              -0.037036               0.536454        1.000000
+                          Theta_calculated  yaw_world  linear_velocity_x  ...  odom_world_velocity_y  odom_angular_velocity  odom_yaw_world
+Theta_calculated                  1.000000   0.999810          -0.103287  ...               0.540407              -0.180420        0.999811
+yaw_world                         0.999810   1.000000          -0.106471  ...               0.538017              -0.177542        1.000000
+linear_velocity_x                -0.103287  -0.106471           1.000000  ...              -0.004640               0.059128       -0.106506
+world_velocity_x                 -0.029030  -0.030452          -0.018436  ...               0.004740               0.269042       -0.030621
+world_velocity_y                  0.538774   0.536298          -0.004608  ...               0.999403              -0.074825        0.536303
+angular_velocity_yaw             -0.176441  -0.174499           0.042391  ...              -0.081150               0.813238       -0.174974
+linear_acceleration_x             0.015031   0.014612           0.052758  ...               0.030706               0.011331        0.014594
+angular_acceleration_yaw          0.042434   0.042324           0.009046  ...               0.035584               0.013002        0.042271
+delta_position_x_world           -0.033498  -0.034824          -0.020758  ...              -0.000181               0.264508       -0.034987
+delta_position_y_world            0.540295   0.537905          -0.004802  ...               0.999948              -0.074961        0.537909
+delta_yaw                        -0.186754  -0.184237           0.052066  ...              -0.079990               0.975885       -0.184870
+kinematic_delta_x                -0.029107  -0.030528          -0.018442  ...               0.004569               0.269362       -0.030698
+kinematic_delta_y                 0.538493   0.536014          -0.004360  ...               0.999402              -0.074789        0.536020
+kinematic_delta_yaw              -0.176441  -0.174499           0.042391  ...              -0.081150               0.813238       -0.174974
+twist.twist.linear.x             -0.099385  -0.102587           0.996664  ...              -0.002293               0.039696       -0.102602
+Time                              0.288249   0.291117          -0.368419  ...               0.026756               0.078955        0.291050
+odom_world_velocity_x            -0.034066  -0.035387          -0.020523  ...              -0.000184               0.264756       -0.035549
+odom_world_velocity_y             0.540407   0.538017          -0.004640  ...               1.000000              -0.074981        0.538022
+odom_angular_velocity            -0.180420  -0.177542           0.059128  ...              -0.074981               1.000000       -0.178152
+odom_yaw_world                    0.999811   1.000000          -0.106506  ...               0.538022              -0.178152        1.000000
 
-[19 rows x 19 columns]
+[20 rows x 20 columns]
 
 
 
@@ -103,7 +105,7 @@ delta_position_x_world
  0.007508    1
  0.007510    1
  0.007557    1
-Name: count, Length: 1438, dtype: int64
+Name: count, Length: 1435, dtype: int64
 Unique Values y: 
 delta_position_y_world
 -0.007725    1
@@ -117,7 +119,7 @@ delta_position_y_world
  0.007504    1
  0.007504    1
  0.007504    1
-Name: count, Length: 1438, dtype: int64
+Name: count, Length: 1435, dtype: int64
 Unique Values yaw: 
 delta_yaw
 -0.014128    1
@@ -126,27 +128,27 @@ delta_yaw
 -0.010997    1
 -0.010779    1
             ..
- 0.009536    1
+ 0.009267    1
  0.009668    1
  0.009965    1
  0.010860    1
  0.013758    1
-Name: count, Length: 1438, dtype: int64
+Name: count, Length: 1435, dtype: int64
 
 No NaN values detected after standardization.
-Mean of standardized features (X): [-5.43530605e-17  1.97647493e-17 -4.89177544e-16 -9.38825590e-17
- -1.48235619e-17 -9.88237463e-18  2.10000461e-17 -2.47059366e-18
-  2.10000461e-17 -4.94118731e-18 -1.23529683e-17  4.32353890e-17
- -9.88237463e-18  3.95294985e-17  1.23529683e-16  4.05177360e-16
- -8.64707780e-18  3.45883112e-17 -4.44706858e-17]
-Standard deviation of standardized features (X): [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+Mean of standardized features (X): [ 1.98060693e-17  1.98060693e-17 -2.03012210e-16 -2.10439486e-17
+  1.26263692e-16  9.90303464e-18  2.47575866e-18 -1.73303106e-17
+  6.68454839e-17 -3.46606213e-17  0.00000000e+00  5.32288112e-17
+  1.48545520e-17  1.98060693e-17  5.44666905e-17  1.38642485e-16
+ -7.79863978e-17  9.90303464e-18 -4.95151732e-18  4.95151732e-18]
+Standard deviation of standardized features (X): [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
 
-Mean Absolute Error (MAE) between yaw_world and Theta_calculated: 0.03305084268051855
-Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: 0.2879864230037338
+Mean Absolute Error (MAE) between yaw_world and Theta_calculated: 0.0200564227620628
+Root Mean Squared Error (RMSE) between yaw_world and Theta_calculated: 0.03839863547861451
 
 
 
 Dataset New Length:
-1438
+1435
 
 

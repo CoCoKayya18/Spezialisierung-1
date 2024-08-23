@@ -37,7 +37,7 @@ def check_standardization(data, tolerance=1e-6):
     std = np.std(data, axis=0)
     return np.all(np.abs(mean) < tolerance) and np.all(np.abs(std - 1.0) < tolerance), mean, std
 
-def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase='', direction='', model_type='FullData', single=False):
+def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase='', direction='', model_type='FullData', single=False, data_type='calcJoint'):
     suffix = '_single' if single else ''
     X = dataframe[features].values
     Y = dataframe[target].values
@@ -46,7 +46,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
     X_train_full, X_test, Y_train_full, Y_test, kinematic_train_full, kinematic_test = train_test_split(X, Y, kinematic_data, test_size=0.3, random_state=42)
 
     # Plotting target distributions
-    plot_dir = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, 'Training', 'Plots')
+    plot_dir = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, data_type, 'Training', 'Plots')
     plot_feature_distribution(X_train_full, X_test, features, title_suffix='(Features)', plot_dir=plot_dir)
     plot_feature_distribution(Y_train_full, Y_test, target, title_suffix='(Targets)', plot_dir=plot_dir)
 
@@ -145,8 +145,8 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
         print(line)
 
     # Save the model and scalers
-    model_dir = os.path.join(modelFilePath, f'{direction}{suffix}', model_type)
-    scaler_dir = os.path.join(scalerFilePath, f'{direction}{suffix}', model_type)
+    model_dir = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, data_type)
+    scaler_dir = os.path.join(scalerFilePath, f'{direction}{suffix}', model_type, data_type)
     os.makedirs(model_dir, exist_ok=True)
     os.makedirs(scaler_dir, exist_ok=True)
 
@@ -164,7 +164,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
         pickle.dump(scaler_Y, file)
 
     # Save the report
-    report_filename = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, 'Training', 'ModelReport.txt')
+    report_filename = os.path.join(modelFilePath, f'{direction}{suffix}', model_type, data_type, 'Training', 'ModelReport.txt')
     os.makedirs(os.path.dirname(report_filename), exist_ok=True)
     with open(report_filename, 'w') as report_file:
         for line in report_content:
@@ -191,7 +191,7 @@ def train_and_evaluate_model(dataframe, features, target, kinematic_deltas, Spec
 
     test_data = pd.concat([pd.DataFrame(X_test_inv, columns=features), pd.DataFrame(Y_test_inv, columns=target), pd.DataFrame(kinematic_test, columns=kinematic_deltas)], axis=1)
  
-    data_save_dir = os.path.join(datafilepath, f'{direction}{suffix}', 'training', model_type)
+    data_save_dir = os.path.join(datafilepath, f'{direction}{suffix}', 'training', model_type, data_type)
     os.makedirs(data_save_dir, exist_ok=True)
     
     train_data.to_csv(os.path.join(data_save_dir, f'sparse_train_data_{SpecialCase}{suffix}.csv'), index=False)
@@ -222,48 +222,48 @@ if __name__ == '__main__':
     ]
 
     features = ['world_velocity_x' , 'world_velocity_y', 'angular_velocity_yaw']
+    odometry_features = ['odom_world_velocity_x', 'odom_world_velocity_y', 'odom_angular_velocity']
     target = ['delta_position_x_world', 'delta_position_y_world', 'delta_yaw']
     kinematic_deltas = ['kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw']
 
     for combPath in tqdm(combPaths, desc="Training models", unit="path"):
-        # # First model training
+        # # First model training with calculated joint velocities
         dataName = 'FullData.csv'
         dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
         print(f"\nTraining model for {combPath} on FullData...")
-        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData')
+        # train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', data_type='calcJoint')
 
         # Second model training using only odometry data
-        odometry_features = ['odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']
         dataframe_odometry = dataframe.copy()  # or load specific data if needed
         print(f"\nTraining odometry model for {combPath}...")
-        train_and_evaluate_model(dataframe_odometry, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='FullData')
+        train_and_evaluate_model(dataframe_odometry, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath, model_type='FullData', data_type='odomVel')
 
         # Optionally, repeat for cleaned data
         dataName = 'FullData_cleaned.csv'
         dataframe_cleaned = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
         print(f"\nTraining model for {combPath} on FullData_cleaned...")
-        train_and_evaluate_model(dataframe_cleaned, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData')
+        train_and_evaluate_model(dataframe_cleaned, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', data_type='calcJoint')
 
         dataframe_odometry_cleaned = dataframe_cleaned.copy()  # or load specific data if needed
         print(f"\nTraining odometry model for {combPath} on cleaned data...")
-        train_and_evaluate_model(dataframe_odometry_cleaned, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='CleanedData')
+        train_and_evaluate_model(dataframe_odometry_cleaned, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath, model_type='CleanedData', data_type='odomVel')
 
         # Repeat for single data
         dataName = 'FullData_single.csv'
         dataframe_single = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
         print(f"\nTraining model for {combPath} on FullData_single...")
-        train_and_evaluate_model(dataframe_single, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', single=True)
+        train_and_evaluate_model(dataframe_single, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', single=True, data_type='calcJoint')
 
         dataframe_odometry_single = dataframe_single.copy()  # or load specific data if needed
         print(f"\nTraining odometry model for {combPath} on single data...")
-        train_and_evaluate_model(dataframe_odometry_single, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='FullData', single=True)
+        train_and_evaluate_model(dataframe_odometry_single, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath, model_type='FullData', single=True, data_type='odomVel')
 
         # Repeat for cleaned single data
         dataName = 'FullData_single_cleaned.csv'
         dataframe_single_cleaned = pd.read_csv(os.path.join(datafilepath, f'{combPath}_single', dataName))
         print(f"\nTraining model for {combPath} on FullData_cleaned_single...")
-        train_and_evaluate_model(dataframe_single_cleaned, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', single=True)
+        train_and_evaluate_model(dataframe_single_cleaned, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='CleanedData', single=True, data_type='calcJoint')
 
         dataframe_odometry_single_cleaned = dataframe_single_cleaned.copy()  # or load specific data if needed
         print(f"\nTraining odometry model for {combPath} on cleaned single data...")
-        train_and_evaluate_model(dataframe_odometry_single_cleaned, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath+'_odometry', model_type='CleanedData', single=True)
+        train_and_evaluate_model(dataframe_odometry_single_cleaned, odometry_features, target, kinematic_deltas, SpecialCase=combPath+'_odometry', direction=combPath, model_type='CleanedData', single=True, data_type='odomVel')

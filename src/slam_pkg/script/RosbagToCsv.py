@@ -130,17 +130,20 @@ class BagDataProcessor:
     def calculate_odometry_world_velocities(self, odom_df):
         # Convert seconds and nanoseconds to a single time column in seconds
         odom_df['Time'] = pd.to_numeric(odom_df['header.stamp.secs']) + pd.to_numeric(odom_df['header.stamp.nsecs']) * 1e-9
+        time_diff = 0.0333
         
         # Convert quaternion to Euler angles (yaw)
         quaternions = odom_df[['pose.pose.orientation.x', 'pose.pose.orientation.y', 'pose.pose.orientation.z', 'pose.pose.orientation.w']].to_numpy()
         eulers = R.from_quat(quaternions).as_euler('xyz', degrees=False)  # xyz order, output in radians
         odom_df['odom_yaw_world'] = eulers[:, 2]  # z-axis (yaw)
 
+        odom_df['odom_angular_velocity'] = odom_df['odom_yaw_world'].diff().fillna(0) / time_diff
+
         # Calculate the world frame velocities
         odom_df['odom_world_velocity_x'] = odom_df['twist.twist.linear.x'] * np.cos(odom_df['odom_yaw_world'])
         odom_df['odom_world_velocity_y'] = odom_df['twist.twist.linear.x'] * np.sin(odom_df['odom_yaw_world'])
 
-        return odom_df[['Time', 'twist.twist.linear.x', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world']]
+        return odom_df[['Time', 'twist.twist.linear.x', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_angular_velocity', 'odom_yaw_world']]
 
     # def process_Cmd_Vel(self, cmdVel_df):
             
@@ -210,7 +213,7 @@ class BagDataProcessor:
         # combined_df = pd.merge_asof(combined_df, processed_cmdVel_df, on='Time')
         # combined_df = pd.merge_asof(combined_df, processed_imu_df, on='Time')
 
-        columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_yaw_world', 'twist.twist.linear.x']
+        columns_of_interest = ['Theta_calculated', 'yaw_world', 'linear_velocity_x', 'world_velocity_x', 'world_velocity_y', 'angular_velocity_yaw', 'linear_acceleration_x', 'angular_acceleration_yaw', 'delta_position_x_world', 'delta_position_y_world', 'delta_yaw', 'kinematic_delta_x', 'kinematic_delta_y', 'kinematic_delta_yaw', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_angular_velocity', 'odom_yaw_world', 'twist.twist.linear.x']
 
         missing_values = combined_df[columns_of_interest].isnull().sum()
         if missing_values.any():
