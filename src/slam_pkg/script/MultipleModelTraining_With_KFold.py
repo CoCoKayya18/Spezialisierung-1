@@ -231,7 +231,7 @@ if __name__ == '__main__':
         dataName = 'FullData.csv'
         dataframe = pd.read_csv(os.path.join(datafilepath, combPath, dataName))
         print(f"\nTraining model for {combPath} on FullData...")
-        # train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', data_type='calcJoint')
+        train_and_evaluate_model(dataframe, features, target, kinematic_deltas, SpecialCase=combPath, direction=combPath, model_type='FullData', data_type='calcJoint')
 
         # Second model training using only odometry data
         dataframe_odometry = dataframe.copy()  # or load specific data if needed
