@@ -239,17 +239,17 @@ if __name__ == '__main__':
 
     for combPath in tqdm(combPaths, desc="Testing models", unit="path"):
         # Test the standard model
-        # print(f"\nTesting model for {combPath} on FullData...")
-        # test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', data_type='calcJoint')
+        print(f"\nTesting model for {combPath} on FullData...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', data_type='calcJoint')
 
-        # print(f"\nTesting model for {combPath} on FullData_cleaned...")
-        # test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', data_type='calcJoint')
+        print(f"\nTesting model for {combPath} on FullData_cleaned...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', data_type='calcJoint')
 
-        # print(f"\nTesting model for {combPath} on FullData_single...")
-        # test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', single=True, data_type='calcJoint')
+        print(f"\nTesting model for {combPath} on FullData_single...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'FullData', single=True, data_type='calcJoint')
 
-        # print(f"\nTesting model for {combPath} on FullData_cleaned_single...")
-        # test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', single=True, data_type='calcJoint')
+        print(f"\nTesting model for {combPath} on FullData_cleaned_single...")
+        test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath, features, target, kinematic_deltas, 'CleanedData', single=True, data_type='calcJoint')
 
         # Test the odometry model
         print(f"\nTesting odometry model for {combPath} on FullData...")
