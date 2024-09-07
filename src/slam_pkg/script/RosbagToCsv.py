@@ -137,11 +137,12 @@ class BagDataProcessor:
         eulers = R.from_quat(quaternions).as_euler('xyz', degrees=False)  # xyz order, output in radians
         odom_df['odom_yaw_world'] = eulers[:, 2]  # z-axis (yaw)
 
-        odom_df['odom_angular_velocity'] = odom_df['odom_yaw_world'].diff().fillna(0) / time_diff
+        # odom_df['odom_angular_velocity'] = odom_df['odom_yaw_world'].diff().fillna(0) / time_diff
 
         # Calculate the world frame velocities
         odom_df['odom_world_velocity_x'] = odom_df['twist.twist.linear.x'] * np.cos(odom_df['odom_yaw_world'])
         odom_df['odom_world_velocity_y'] = odom_df['twist.twist.linear.x'] * np.sin(odom_df['odom_yaw_world'])
+        odom_df['odom_angular_velocity'] = odom_df['twist.twist.angular.z']
 
         return odom_df[['Time', 'twist.twist.linear.x', 'odom_world_velocity_x', 'odom_world_velocity_y', 'odom_angular_velocity', 'odom_yaw_world']]
 
