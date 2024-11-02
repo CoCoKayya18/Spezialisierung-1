@@ -38,11 +38,16 @@ def plot_comparison_for_paper(Y_true, Y_pred, target_names, metrics, plot_dir):
         fig, ax = plt.subplots(figsize=(12, 12))
         ax.scatter(Y_true[:, i], Y_pred[:, i], alpha=0.3, s=10)
         ax.plot([Y_true[:, i].min(), Y_true[:, i].max()], [Y_true[:, i].min(), Y_true[:, i].max()], 'k--', lw=2)
+        
+        # Add grid and set text size
+        ax.grid(True)
         ax.set_title(f'{plot_name} Comparison\n'
                      f'RMSE: {metrics[target_name]["RMSE"]:.4f}, '
-                     f'R^2: {metrics[target_name]["R-squared"]:.4f}')
-        ax.set_xlabel('Ground Truth [m]')
-        ax.set_ylabel('Predicted Values [m]')
+                     f'R^2: {metrics[target_name]["R-squared"]:.4f}', fontsize=18)
+        ax.set_xlabel('Ground Truth [m]', fontsize=16)
+        ax.set_ylabel('Predicted Values [m]', fontsize=16)
+        ax.tick_params(axis='both', which='major', labelsize=14)
+
         os.makedirs(plot_dir, exist_ok=True)
         plt.savefig(os.path.join(plot_dir, f'{plot_name}_comparison_plot.png'))
         plt.close(fig)
