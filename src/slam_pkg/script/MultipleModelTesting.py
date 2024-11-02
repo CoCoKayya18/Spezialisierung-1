@@ -25,6 +25,28 @@ def plot_comparison(Y_true, Y_pred, target_names, metrics, plot_dir):
         plt.savefig(os.path.join(plot_dir, f'{target_name}_comparison_plot.png'))
         plt.close(fig)
 
+def plot_comparison_for_paper(Y_true, Y_pred, target_names, metrics, plot_dir):
+    for i, target_name in enumerate(target_names):
+
+        if target_name == "delta_position_x_world":
+            plot_name = "Δx"
+        elif target_name == "delta_position_y_world":
+            plot_name = "Δy"
+        elif target_name == "delta_yaw":
+            plot_name = "Δθ"
+
+        fig, ax = plt.subplots(figsize=(12, 12))
+        ax.scatter(Y_true[:, i], Y_pred[:, i], alpha=0.3, s=10)
+        ax.plot([Y_true[:, i].min(), Y_true[:, i].max()], [Y_true[:, i].min(), Y_true[:, i].max()], 'k--', lw=2)
+        ax.set_title(f'{plot_name} Comparison\n'
+                     f'RMSE: {metrics[target_name]["RMSE"]:.4f}, '
+                     f'R^2: {metrics[target_name]["R-squared"]:.4f}')
+        ax.set_xlabel('Ground Truth [m]')
+        ax.set_ylabel('Predicted Values [m]')
+        os.makedirs(plot_dir, exist_ok=True)
+        plt.savefig(os.path.join(plot_dir, f'{plot_name}_comparison_plot.png'))
+        plt.close(fig)
+
 def plot_path_comparison(Y_true, Y_pred, plot_dir):
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.plot(np.cumsum(Y_true[:, 0]), np.cumsum(Y_true[:, 1]), label='True Path', color='blue')
@@ -186,26 +208,29 @@ def test_model_performance(datafilepath, modelFilePath, scalerFilePath, combPath
             report_file.write(line + '\n')
 
     # Plot comparisons
-    plot_comparison_dir = os.path.join(testing_dir, 'Plots', 'comparison_plots')
-    plot_comparison(Y_test, Y_pred, target, metrics, plot_comparison_dir)
+    # plot_comparison_dir = os.path.join(testing_dir, 'Plots', 'comparison_plots')
+    # plot_comparison(Y_test, Y_pred, target, metrics, plot_comparison_dir)
 
-    plot_path_comparison_dir = os.path.join(testing_dir, 'Plots', 'path_comparison_plot')
-    plot_path_comparison(Y_test, Y_pred, plot_path_comparison_dir)
+    # plot_path_comparison_dir = os.path.join(testing_dir, 'Plots', 'path_comparison_plot')
+    # plot_path_comparison(Y_test, Y_pred, plot_path_comparison_dir)
 
-    plot_residuals_dir = os.path.join(testing_dir, 'Plots', 'residuals_plots')
-    plot_residuals(Y_test, Y_pred, target, plot_residuals_dir)
+    # plot_residuals_dir = os.path.join(testing_dir, 'Plots', 'residuals_plots')
+    # plot_residuals(Y_test, Y_pred, target, plot_residuals_dir)
 
-    plot_histogram_residuals_dir = os.path.join(testing_dir, 'Plots', 'histogram_residuals')
-    plot_histogram_residuals(Y_test, Y_pred, target, plot_histogram_residuals_dir)
+    # plot_histogram_residuals_dir = os.path.join(testing_dir, 'Plots', 'histogram_residuals')
+    # plot_histogram_residuals(Y_test, Y_pred, target, plot_histogram_residuals_dir)
 
-    plot_index_comparison_dir = os.path.join(testing_dir, 'Plots', 'index_comparison_plots')
-    plot_index_comparison(Y_test, Y_pred, target, plot_index_comparison_dir)
+    # plot_index_comparison_dir = os.path.join(testing_dir, 'Plots', 'index_comparison_plots')
+    # plot_index_comparison(Y_test, Y_pred, target, plot_index_comparison_dir)
 
-    plot_high_error_points_dir = os.path.join(testing_dir, 'Plots', 'plot_high_error_points')
-    plot_high_error_points(Y_test, Y_pred, X_test, features, target, plot_high_error_points_dir)
+    # plot_high_error_points_dir = os.path.join(testing_dir, 'Plots', 'plot_high_error_points')
+    # plot_high_error_points(Y_test, Y_pred, X_test, features, target, plot_high_error_points_dir)
 
-    plot_error_distribution_dir = os.path.join(testing_dir, 'Plots', 'plot_error_distribution')
-    plot_error_distribution(Y_test, Y_pred, target, plot_error_distribution_dir)
+    # plot_error_distribution_dir = os.path.join(testing_dir, 'Plots', 'plot_error_distribution')
+    # plot_error_distribution(Y_test, Y_pred, target, plot_error_distribution_dir)
+
+    plot_comparison_for_paper_dir = os.path.join(testing_dir, 'Plots', 'comparison_plots_for_paper')
+    plot_comparison_for_paper(Y_test, Y_pred, target, metrics, plot_comparison_for_paper_dir)
 
 if __name__ == '__main__':
     datafilepath = '../Spezialisierung-1/src/slam_pkg/data'
