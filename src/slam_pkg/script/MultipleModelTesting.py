@@ -40,7 +40,7 @@ def plot_comparison_for_paper(Y_true, Y_pred, target_names, metrics, plot_dir):
         ax.plot([Y_true[:, i].min(), Y_true[:, i].max()], [Y_true[:, i].min(), Y_true[:, i].max()], 'k--', lw=2)
         
         # Add grid and set text size
-        ax.grid(True)
+        # ax.grid(True)
         ax.set_xlabel('Ground Truth [m]', fontsize=16)
         ax.set_ylabel('Predicted Values [m]', fontsize=16)
         ax.tick_params(axis='both', which='major', labelsize=14)
