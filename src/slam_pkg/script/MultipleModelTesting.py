@@ -30,10 +30,13 @@ def plot_comparison_for_paper(Y_true, Y_pred, target_names, metrics, plot_dir):
 
         if target_name == "delta_position_x_world":
             plot_name = "Δx"
+            unit = "[m]"
         elif target_name == "delta_position_y_world":
             plot_name = "Δy"
+            unit = "[m]"
         elif target_name == "delta_yaw":
             plot_name = "Δθ"
+            unit = "[rad]"
 
         fig, ax = plt.subplots(figsize=(12, 12))
         ax.scatter(Y_true[:, i], Y_pred[:, i], alpha=0.3, s=10)
@@ -41,8 +44,8 @@ def plot_comparison_for_paper(Y_true, Y_pred, target_names, metrics, plot_dir):
         
         # Add grid and set text size
         # ax.grid(True)
-        ax.set_xlabel('Ground Truth [m]', fontsize=16)
-        ax.set_ylabel('Predicted Values [m]', fontsize=16)
+        ax.set_xlabel(f'Ground Truth {unit}', fontsize=16)
+        ax.set_ylabel(f'Predicted Values {unit}', fontsize=16)
         ax.tick_params(axis='both', which='major', labelsize=14)
         
         # Display RMSE and R^2 inside the plot
